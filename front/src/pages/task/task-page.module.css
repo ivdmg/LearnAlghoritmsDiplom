@@ -1,0 +1,105 @@
+.layout {
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--header-bg, #001529);
+  gap: 16px;
+}
+
+[data-theme='dark'] .header {
+  background: #141414;
+}
+
+.headerLeft {
+  display: flex;
+  gap: 8px;
+}
+
+.taskTitle {
+  flex: 1;
+  text-align: center;
+  color: white;
+  font-weight: 600;
+  margin: 0;
+}
+
+.mainLayout {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 64px);
+}
+
+.leftPanel,
+.rightPanel {
+  flex: 1;
+  width: 50%;
+}
+
+.leftPanel {
+  background: var(--panel-bg, #fafafa);
+  overflow-y: auto;
+}
+
+[data-theme='dark'] .leftPanel {
+  background: #1f1f1f;
+}
+
+.rightPanel {
+  background: var(--panel-bg-alt, #f5f5f5);
+  overflow-y: auto;
+}
+
+[data-theme='dark'] .rightPanel {
+  background: #171717;
+}
+
+.panelContent {
+  padding: 24px;
+  max-width: 100%;
+}
+
+.panelContent h2 {
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+.panelContent h3 {
+  font-size: 1rem;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.editorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.editorHeader h3 {
+  margin: 0;
+}
+
+.output {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  border-radius: 8px;
+  font-family: 'Consolas', monospace;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  min-height: 80px;
+}
+
+[data-theme='dark'] .output {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.error {
+  padding: 24px;
+  text-align: center;
+}

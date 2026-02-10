@@ -1,0 +1,103 @@
+.roadmapWrapper {
+  min-height: 100vh;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(22, 119, 255, 0.04) 0%, rgba(105, 177, 255, 0.02) 100%);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+  color: var(--roadmap-title-color, rgba(0, 0, 0, 0.88));
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--roadmap-subtitle-color, rgba(0, 0, 0, 0.65));
+  margin-bottom: 48px;
+}
+
+.roadmapContainer {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.timelineLine {
+  position: absolute;
+  left: 35px;
+  top: 30px;
+  bottom: 30px;
+  width: 4px;
+  background: linear-gradient(180deg, #1677ff 0%, #69b1ff 50%, #bae0ff 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 20px rgba(22, 119, 255, 0.3);
+}
+
+.topicsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-left: 0;
+}
+
+.topicItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 72px;
+  padding-left: 88px;
+}
+
+.topicNode {
+  position: absolute;
+  left: 18px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1677ff 0%, #69b1ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(22, 119, 255, 0.4);
+  border: 4px solid var(--roadmap-node-border, rgba(255, 255, 255, 0.9));
+  z-index: 1;
+}
+
+.nodeNumber {
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.topicButton {
+  flex: 1;
+  height: 56px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.topicButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(22, 119, 255, 0.4);
+}
+
+[data-theme='dark'] .roadmapWrapper {
+  background: linear-gradient(135deg, rgba(22, 119, 255, 0.08) 0%, rgba(105, 177, 255, 0.04) 100%);
+}
+
+[data-theme='dark'] .title {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+[data-theme='dark'] .subtitle {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme='dark'] .topicNode {
+  border-color: rgba(20, 20, 20, 0.95);
+}

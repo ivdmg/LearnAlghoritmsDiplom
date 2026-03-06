@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout, Button } from 'antd';
-import { ThunderboltOutlined } from '@ant-design/icons';
+import { ThunderboltOutlined, NodeIndexOutlined } from '@ant-design/icons';
 import { Roadmap } from '@/widgets/roadmap/ui/roadmap';
 import type { RoadmapNode } from '@/widgets/roadmap/ui/roadmap';
 import { TopicSidebar } from '@/widgets/topic-sidebar/ui/topic-sidebar';
@@ -35,6 +35,14 @@ export function RoadmapPage() {
             className={styles.animationBtn}
           >
             Animation
+          </Button>
+          <Button
+            type="link"
+            icon={<NodeIndexOutlined />}
+            onClick={() => navigate('/react-flow')}
+            className={styles.animationBtn}
+          >
+            React Flow
           </Button>
           <ThemeToggle />
         </div>

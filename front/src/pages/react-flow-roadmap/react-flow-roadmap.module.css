@@ -1,0 +1,123 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: #001529;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .header {
+  background: #141414;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.5px;
+}
+
+.backBtn {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.backBtn:hover {
+  color: #fff !important;
+}
+
+/* full-width background area below header */
+.pageBody {
+  width: 100%;
+  height: calc(100vh - 64px);
+  background: #f0f4f8;
+}
+
+[data-theme='dark'] .pageBody {
+  background: #0f172a;
+}
+
+/* centred, width-capped React Flow canvas */
+.flowContainer {
+  max-width: 1200px;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  transition: opacity 0.18s ease;
+}
+
+/* ── Topic (main) node ── */
+
+.topicNode {
+  padding: 16px 40px;
+  border-radius: 14px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 17px;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  cursor: default;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+}
+
+.topicNode:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.28);
+}
+
+/* ── Subtopic node ── */
+
+.subtopicNode {
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: 2px solid;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  white-space: nowrap;
+  cursor: default;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+}
+
+.subtopicNode:hover {
+  transform: scale(1.04);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='dark'] .subtopicNode {
+  background: rgba(30, 41, 59, 0.92);
+  color: #e2e8f0;
+}
+
+/* ── Hidden handles ── */
+
+.handle {
+  opacity: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  pointer-events: none;
+}
+
+/* ── hide React Flow default attribution ── */
+
+:global(.react-flow__attribution) {
+  display: none !important;
+}

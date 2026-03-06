@@ -20,6 +20,8 @@ import '@xyflow/react/dist/style.css';
 import { Layout, Button } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { ThemeToggle } from '@/widgets/theme-toggle/ui/theme-toggle';
+import type { RoadmapNode } from '@/widgets/roadmap/ui/roadmap';
+import { TopicSidebar } from '@/widgets/topic-sidebar/ui/topic-sidebar';
 import { ROADMAP } from '@/shared/config/roadmap-data';
 import styles from './react-flow-roadmap.module.css';
 
@@ -195,6 +197,11 @@ function useSmoothProgress(): number {
   );
 }
 
+/** Текущий сглаженный прогресс без подписки (для проверки в handleNodeClick, чтобы не ререндерить страницу 60 fps). */
+function getSmoothProgress(): number {
+  return _smoothProgress;
+}
+
 /** Внутри React Flow подписывается на viewport и передаёт сырой прогресс в RAF-сглаживание. */
 function SmoothProgressDriver() {
   const raw = useRawProgress();
@@ -255,6 +262,40 @@ function useSubtopicReached(subtopicId: string): boolean {
   );
 }
 
+/** Синхронная проверка: дошли ли до подтемы (для блокировки открытия попапа по недостигнутой ноде). */
+function isSubtopicReached(subtopicId: string): boolean {
+  return _reachedSubtopicIds.has(subtopicId);
+}
+
+/** По ноде React Flow строит RoadmapNode для TopicSidebar. */
+function getRoadmapNodeFromFlowNode(node: Node): RoadmapNode | null {
+  if (node.type === 'topicNode') {
+    const topic = ROADMAP.find((t) => t.id === node.id);
+    return topic ? { type: 'topic', topic } : null;
+  }
+  if (node.type === 'subtopicNode') {
+    const topicId = node.data?.topicId as string | undefined;
+    if (!topicId) return null;
+    const topic = ROADMAP.find((t) => t.id === topicId);
+    if (!topic) return null;
+    const subtopic = topic.subtopics.find((s) => s.id === node.id);
+    return subtopic ? { type: 'subtopic', topic, subtopic } : null;
+  }
+  return null;
+}
+
+/** Нода считается достигнутой, если до неё дошёл фитиль (нет эффекта стекла). Попап открываем только для таких. */
+function isNodeReached(node: Node, gp: number): boolean {
+  if (node.type === 'topicNode') {
+    return node.id === 'osnovy' || gp >= (TOPIC_REACHED_AT[node.id] ?? 0) - 0.002;
+  }
+  if (node.type === 'subtopicNode') {
+    const topicId = node.data?.topicId as string | undefined;
+    return topicId === 'osnovy' || isSubtopicReached(node.id);
+  }
+  return false;
+}
+
 function SubtopicReachedDriver() {
   const gp = useSmoothProgress();
   useLayoutEffect(() => updateSubtopicReached(gp), [gp]);
@@ -279,11 +320,13 @@ function TopicNode({ id, data }: { id: string; data: Record<string, unknown> }) 
   return (
     <div
       className={styles.topicNode}
-      style={
-        reached
+      style={{
+        ...(reached
           ? { backgroundColor: color, color: '#fff' }
-          : { backgroundColor: 'var(--page-bg)', color: 'var(--page-text)' }
-      }
+          : { backgroundColor: 'var(--page-bg)', color: 'var(--page-text)' }),
+        pointerEvents: reached ? 'auto' : 'none',
+        cursor: reached ? 'pointer' : 'default',
+      }}
     >
       <Handle type="target" position={Position.Top} id="top" className={styles.handle} />
       <span>{data.label as string}</span>
@@ -310,11 +353,13 @@ function SubtopicNode({ id, data }: { id: string; data: Record<string, unknown> 
   return (
     <div
       className={styles.subtopicNode}
-      style={
-        reached
+      style={{
+        ...(reached
           ? { borderColor: color, backgroundColor: color, color: '#fff' }
-          : { borderColor: 'var(--page-text)', backgroundColor: 'var(--page-bg)', color: 'var(--page-text)' }
-      }
+          : { borderColor: 'var(--page-text)', backgroundColor: 'var(--page-bg)', color: 'var(--page-text)' }),
+        pointerEvents: reached ? 'auto' : 'none',
+        cursor: reached ? 'pointer' : 'default',
+      }}
     >
       <Handle
         type="target"
@@ -575,7 +620,19 @@ export function ReactFlowRoadmapPage() {
   const navigate = useNavigate();
   const { nodes, edges } = useMemo(buildGraph, []);
   const [ready, setReady] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedNode, setSelectedNode] = useState<RoadmapNode | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleNodeClick = useCallback((_: unknown, node: Node) => {
+    const gp = getSmoothProgress();
+    if (!isNodeReached(node, gp)) return;
+    const roadmapNode = getRoadmapNodeFromFlowNode(node);
+    if (roadmapNode) {
+      setSelectedNode(roadmapNode);
+      setSidebarOpen(true);
+    }
+  }, []);
 
   // Ссылка на инстанс React Flow для вызова setViewport из RAF-цикла
   const flowInstanceRef = useRef<ReactFlowInstance | null>(null);
@@ -715,6 +772,7 @@ export function ReactFlowRoadmapPage() {
             edgeTypes={edgeTypes}
             defaultEdgeOptions={{ type: 'default' }}
             onInit={onInit}
+            onNodeClick={handleNodeClick}
             translateExtent={graphExtent}
             panOnScroll={false}
             panOnDrag={false}
@@ -732,6 +790,11 @@ export function ReactFlowRoadmapPage() {
           </ReactFlow>
         </div>
       </div>
+      <TopicSidebar
+        open={sidebarOpen}
+        node={selectedNode}
+        onClose={() => setSidebarOpen(false)}
+      />
     </Layout>
   );
 }

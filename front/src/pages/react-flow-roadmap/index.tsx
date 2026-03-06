@@ -269,12 +269,12 @@ function SubtopicReachedDriver() {
 
 /* ── custom node components ── */
 
-/** Плашка основной темы: изначально фон как у страницы и серый текст; как только фитиль доходит до этой темы (TOPIC_REACHED_AT) — плавно цвет темы и белый текст. */
+/** Плашка основной темы: верхний блок (Основы) всегда без блюра и со своим цветом; остальные — после достижения фитилем. */
 function TopicNode({ id, data }: { id: string; data: Record<string, unknown> }) {
   const color = data.color as string;
   const gp = useSmoothProgress();
   const reachedAt = TOPIC_REACHED_AT[id] ?? 0;
-  const reached = id === 'osnovy' ? gp > 0.01 : gp >= reachedAt - 0.002;
+  const reached = id === 'osnovy' || gp >= reachedAt - 0.002;
 
   return (
     <div
@@ -290,15 +290,22 @@ function TopicNode({ id, data }: { id: string; data: Record<string, unknown> }) 
       <Handle type="source" position={Position.Bottom} id="bottom" className={styles.handle} />
       <Handle type="source" position={Position.Right} id="right" className={styles.handle} />
       <Handle type="source" position={Position.Left} id="left" className={styles.handle} />
+      <div
+        className={styles.topicNodeOverlay}
+        style={{ opacity: reached ? 0 : 1 }}
+        aria-hidden
+      />
     </div>
   );
 }
 
-/** Плашка подтемы: загорается только когда до неё доходит линия фитиля (0.55s + stagger после достижения родителя), до этого — фон как у страницы. */
+/** Плашка подтемы: подтемы верхнего блока (Основы) всегда без блюра и со своим цветом; остальные — когда до них доходит линия. */
 function SubtopicNode({ id, data }: { id: string; data: Record<string, unknown> }) {
   const color = data.color as string;
   const side = data.side as 'left' | 'right';
-  const reached = useSubtopicReached(id);
+  const topicId = data.topicId as string | undefined;
+  const reachedByFuse = useSubtopicReached(id);
+  const reached = topicId === 'osnovy' || reachedByFuse;
 
   return (
     <div
@@ -315,6 +322,11 @@ function SubtopicNode({ id, data }: { id: string; data: Record<string, unknown> 
         className={styles.handle}
       />
       <span>{data.label as string}</span>
+      <div
+        className={styles.subtopicNodeOverlay}
+        style={{ opacity: reached ? 0 : 1 }}
+        aria-hidden
+      />
     </div>
   );
 }

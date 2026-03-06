@@ -1,11 +1,17 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Layout, Collapse, Alert } from 'antd';
-import { LeftOutlined, RightOutlined, HomeOutlined } from '@ant-design/icons';
+import { Button, Layout, Collapse, Alert, Tag } from 'antd';
+import {
+  LeftOutlined,
+  RightOutlined,
+  HomeOutlined,
+  ThunderboltOutlined,
+  CheckCircleFilled,
+} from '@ant-design/icons';
 import { useMemo, useState, useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
-import { ROADMAP_TOPICS, TASKS } from '@/shared/config/roadmap-data';
+import { TASKS, getOrderedTaskIds } from '@/shared/config/roadmap-data';
 import { ThemeToggle } from '@/widgets/theme-toggle/ui/theme-toggle';
 import { usePyodide } from './model/use-pyodide';
 import styles from './task-page.module.css';
@@ -16,28 +22,19 @@ export function TaskPage() {
   const [code, setCode] = useState('');
   const [output, setOutput] = useState<string>('');
   const [isRunning, setIsRunning] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const { runPython, isLoading } = usePyodide();
   const themeMode = useAppSelector((state) => state.theme.mode);
 
   const task = useMemo(() => TASKS.find((t) => t.id === taskId), [taskId]);
 
-  const currentTopic = useMemo(
-    () => ROADMAP_TOPICS.find((t) => t.taskIds.includes(taskId ?? '')),
-    [taskId]
-  );
-
-  const tasksInTopic = useMemo(
-    () => TASKS.filter((t) => t?.topicId === currentTopic?.id) ?? [],
-    [currentTopic]
-  );
-
-  const currentIndex = tasksInTopic.findIndex((t) => t.id === taskId);
-  const prevTask = currentIndex > 0 ? tasksInTopic[currentIndex - 1] : null;
-  const nextTask =
-    currentIndex >= 0 && currentIndex < tasksInTopic.length - 1
-      ? tasksInTopic[currentIndex + 1]
-      : null;
+  const orderedIds = useMemo(() => getOrderedTaskIds(), []);
+  const currentIndex = useMemo(() => orderedIds.indexOf(taskId ?? ''), [orderedIds, taskId]);
+  const prevTaskId = currentIndex > 0 ? orderedIds[currentIndex - 1] : null;
+  const nextTaskId = currentIndex >= 0 && currentIndex < orderedIds.length - 1 ? orderedIds[currentIndex + 1] : null;
+  const prevTask = prevTaskId ? TASKS.find((t) => t.id === prevTaskId) : null;
+  const nextTask = nextTaskId ? TASKS.find((t) => t.id === nextTaskId) : null;
 
   const initCode = task?.solutionTemplate ?? '';
 
@@ -46,29 +43,36 @@ export function TaskPage() {
       setCode(task.solutionTemplate);
     }
     setOutput('');
+    setIsSuccess(false);
   }, [taskId, task?.solutionTemplate]);
 
   const handleRun = async () => {
     if (!runPython || !task) return;
     setIsRunning(true);
+    setIsSuccess(false);
     setOutput('Выполнение...');
     const testInput = task.testCases[0]?.input;
+    const expected = task.testCases[0]?.expected;
     try {
       const result = await runPython(code, testInput);
-      setOutput(result ?? '(нет вывода)');
+      const resultStr = (result ?? '(нет вывода)').trim();
+      setOutput(resultStr);
+      const expectedStr = (expected ?? '').trim();
+      setIsSuccess(resultStr === expectedStr);
     } catch (err) {
       setOutput(`Ошибка: ${String(err)}`);
+      setIsSuccess(false);
     } finally {
       setIsRunning(false);
     }
   };
 
   const handlePrev = () => {
-    if (prevTask) navigate(`/task/${prevTask.id}`);
+    if (prevTaskId) navigate(`/task/${prevTaskId}`);
   };
 
   const handleNext = () => {
-    if (nextTask) navigate(`/task/${nextTask.id}`);
+    if (nextTaskId) navigate(`/task/${nextTaskId}`);
   };
 
   const handleBack = () => {
@@ -113,7 +117,17 @@ export function TaskPage() {
           </Button>
         </div>
         <span className={styles.taskTitle}>{task.title}</span>
-        <ThemeToggle />
+        <div className={styles.headerRight}>
+          <Button
+            type="link"
+            icon={<ThunderboltOutlined />}
+            onClick={() => navigate('/animation')}
+            className={styles.animationBtn}
+          >
+            Animation
+          </Button>
+          <ThemeToggle />
+        </div>
       </Layout.Header>
 
       <div className={styles.mainLayout}>
@@ -165,7 +179,14 @@ export function TaskPage() {
                 lineNumbers: true,
               }}
             />
-            <h3 style={{ marginTop: 16 }}>Вывод</h3>
+            <div className={styles.outputHeader}>
+              <h3 style={{ margin: 0 }}>Вывод</h3>
+              {isSuccess && (
+                <Tag color="success" icon={<CheckCircleFilled />}>
+                  Успешно
+                </Tag>
+              )}
+            </div>
             <pre className={styles.output}>{output || '(нажмите Запустить)'}</pre>
           </div>
         </div>

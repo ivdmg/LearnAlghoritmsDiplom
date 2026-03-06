@@ -1,7 +1,11 @@
 .roadmapWrapper {
   min-height: 100vh;
   padding: 24px;
-  background: linear-gradient(135deg, rgba(22, 119, 255, 0.04) 0%, rgba(105, 177, 255, 0.02) 100%);
+  background: #f3f5fa;
+}
+
+[data-theme='dark'] .roadmapWrapper {
+  background: #0d1117;
 }
 
 .title {
@@ -18,78 +22,6 @@
   margin-bottom: 48px;
 }
 
-.roadmapContainer {
-  position: relative;
-  max-width: 520px;
-  margin: 0 auto;
-}
-
-.timelineLine {
-  position: absolute;
-  left: 35px;
-  top: 30px;
-  bottom: 30px;
-  width: 4px;
-  background: linear-gradient(180deg, #1677ff 0%, #69b1ff 50%, #bae0ff 100%);
-  border-radius: 2px;
-  box-shadow: 0 0 20px rgba(22, 119, 255, 0.3);
-}
-
-.topicsList {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-left: 0;
-}
-
-.topicItem {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  min-height: 72px;
-  padding-left: 88px;
-}
-
-.topicNode {
-  position: absolute;
-  left: 18px;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1677ff 0%, #69b1ff 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(22, 119, 255, 0.4);
-  border: 4px solid var(--roadmap-node-border, rgba(255, 255, 255, 0.9));
-  z-index: 1;
-}
-
-.nodeNumber {
-  color: white;
-  font-weight: 700;
-  font-size: 1rem;
-}
-
-.topicButton {
-  flex: 1;
-  height: 56px;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 12px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.topicButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(22, 119, 255, 0.4);
-}
-
-[data-theme='dark'] .roadmapWrapper {
-  background: linear-gradient(135deg, rgba(22, 119, 255, 0.08) 0%, rgba(105, 177, 255, 0.04) 100%);
-}
-
 [data-theme='dark'] .title {
   color: rgba(255, 255, 255, 0.88);
 }
@@ -98,6 +30,123 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
-[data-theme='dark'] .topicNode {
-  border-color: rgba(20, 20, 20, 0.95);
+.roadmap {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.linesSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.connectorPath {
+  stroke: #b9c6ea;
+  stroke-width: 4;
+  fill: none;
+  stroke-linecap: round;
+}
+
+[data-theme='dark'] .connectorPath {
+  stroke: #30363d;
+}
+
+.topicsList {
+  position: relative;
+  z-index: 1;
+}
+
+.row {
+  position: relative;
+  margin: 80px 0;
+  min-height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row:first-child {
+  margin-top: 24px;
+}
+
+.row:last-child {
+  margin-bottom: 24px;
+}
+
+.task {
+  width: 280px;
+  min-height: 72px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+[data-theme='dark'] .task {
+  background: #161b22;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+}
+
+.task:hover {
+  transform: translate(-50%, calc(-50% - 2px));
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='dark'] .task:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+.task-center {
+  left: 50%;
+}
+
+.task-side-left {
+  left: 25%;
+}
+
+.task-side-right {
+  left: 75%;
+}
+
+.anchor {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.taskTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: inherit;
+  text-align: center;
+}
+
+.taskType {
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='dark'] .taskType {
+  color: rgba(255, 255, 255, 0.45);
 }

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Roadmap x³ center-to-center</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 60px;
+    background: #f3f5fa;
+    font-family: Arial, sans-serif;
+}
+
+.roadmap {
+    width: 900px;
+    margin: auto;
+    position: relative;
+}
+
+svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.axis {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    top: 0;
+    bottom: 0;
+    background: #d6deef;
+    border-radius: 4px;
+}
+
+.row {
+    position: relative;
+    margin: 100px 0;
+    height: 90px;
+}
+
+.task {
+    width: 240px;
+    padding: 16px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.task.side-left  { left: 25%; }
+.task.side-right { left: 75%; }
+
+h3 { margin: 0 0 6px; }
+p { margin: 0; font-size: 14px; color: #555; }
+
+.anchor {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+path {
+    stroke: #b9c6ea;
+    stroke-width: 4;
+    fill: none;
+    stroke-linecap: round;
+}
+</style>
+</head>
+
+<body>
+
+<div class="roadmap" id="roadmap">
+<div class="axis"></div>
+<svg id="lines"></svg>
+
+<div class="row"><div class="task" id="t1"><div class="anchor"></div><h3>Task 1</h3></div></div>
+<div class="row"><div class="task" id="t2"><div class="anchor"></div><h3>Task 2</h3></div></div>
+
+<div class="row">
+  <div class="task" id="t3">
+    <div class="anchor"></div>
+    <h3>Task 3 (branch)</h3>
+  </div>
+</div>
+
+<div class="row">
+  <div class="task side-left" id="s2">
+    <div class="anchor"></div>
+    <h3>Side Task 2</h3>
+  </div>
+
+  <div class="task side-right" id="s1">
+    <div class="anchor"></div>
+    <h3>Side Task</h3>
+  </div>
+</div>
+
+<div class="row">
+  <div class="task" id="t4">
+    <div class="anchor"></div>
+    <h3>Task 4 (merge)</h3>
+  </div>
+</div>
+
+</div>
+
+<script>
+const svg = document.getElementById("lines");
+const roadmap = document.getElementById("roadmap");
+
+function center(id){
+    const el = document.querySelector("#"+id+" .anchor");
+    const a = el.getBoundingClientRect();
+    const b = roadmap.getBoundingClientRect();
+    return {x:a.left+a.width/2-b.left, y:a.top+a.height/2-b.top};
+}
+
+/* вертикальная */
+function vertical(A,B){
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("d",`M ${A.x} ${A.y} L ${B.x} ${B.y}`);
+    svg.appendChild(p);
+}
+
+/* x³-кривая центр→центр */
+function x3curve(A,B){
+    const dy = B.y - A.y;
+    const c1 = { x: A.x, y: A.y + dy*0.5 };
+    const c2 = { x: B.x, y: B.y - dy*0.5 };
+
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("d",
+      `M ${A.x} ${A.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${B.x} ${B.y}`);
+    svg.appendChild(p);
+}
+
+function draw(){
+    svg.innerHTML="";
+    svg.setAttribute("width",roadmap.offsetWidth);
+    svg.setAttribute("height",roadmap.offsetHeight);
+
+    const t1=center("t1");
+    const t2=center("t2");
+    const t3=center("t3");
+    const s1=center("s1");
+    const s2=center("s2");
+    const t4=center("t4");
+
+    /* основная вертикаль */
+    vertical(t1,t2);
+    vertical(t2,t3);
+    vertical(t3,t4);
+
+    /* ветки */
+    x3curve(t3,s1);
+    x3curve(t3,s2);
+
+    /* схождение */
+    x3curve(s1,t4);
+    x3curve(s2,t4);
+}
+
+draw();
+window.addEventListener("resize", draw);
+</script>
+
+</body>
+</html>

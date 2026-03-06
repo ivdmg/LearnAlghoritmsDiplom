@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { Layout } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Layout, Button } from 'antd';
+import { ThunderboltOutlined } from '@ant-design/icons';
 import { Roadmap } from '@/widgets/roadmap/ui/roadmap';
+import type { RoadmapNode } from '@/widgets/roadmap/ui/roadmap';
 import { TopicSidebar } from '@/widgets/topic-sidebar/ui/topic-sidebar';
 import { ThemeToggle } from '@/widgets/theme-toggle/ui/theme-toggle';
-import { ROADMAP_TOPICS } from '@/shared/config/roadmap-data';
-import type { RoadmapTopic } from '@/shared/config/roadmap-data';
+import { ROADMAP } from '@/shared/config/roadmap-data';
 import styles from './roadmap-page.module.css';
 
 export function RoadmapPage() {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedTopic, setSelectedTopic] = useState<RoadmapTopic | null>(null);
+  const [selectedNode, setSelectedNode] = useState<RoadmapNode | null>(null);
 
-  const handleTopicClick = (topic: RoadmapTopic) => {
-    setSelectedTopic(topic);
+  const handleNodeClick = (node: RoadmapNode) => {
+    setSelectedNode(node);
     setSidebarOpen(true);
   };
 
@@ -24,14 +27,24 @@ export function RoadmapPage() {
     <Layout className={styles.layout}>
       <Layout.Header className={styles.header}>
         <span className={styles.logo}>AlgoLearn</span>
-        <ThemeToggle />
+        <div className={styles.headerRight}>
+          <Button
+            type="link"
+            icon={<ThunderboltOutlined />}
+            onClick={() => navigate('/animation')}
+            className={styles.animationBtn}
+          >
+            Animation
+          </Button>
+          <ThemeToggle />
+        </div>
       </Layout.Header>
       <Layout.Content className={styles.content}>
-        <Roadmap topics={ROADMAP_TOPICS} onTopicClick={handleTopicClick} />
+        <Roadmap topics={ROADMAP} onNodeClick={handleNodeClick} />
       </Layout.Content>
       <TopicSidebar
         open={sidebarOpen}
-        topic={selectedTopic}
+        node={selectedNode}
         onClose={handleSidebarClose}
       />
     </Layout>

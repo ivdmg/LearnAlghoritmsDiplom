@@ -20,12 +20,35 @@
   gap: 8px;
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.animationBtn {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.animationBtn:hover {
+  color: #fff;
+}
+
 .taskTitle {
   flex: 1;
   text-align: center;
   color: white;
   font-weight: 600;
   margin: 0;
+}
+
+.outputHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 
 .mainLayout {

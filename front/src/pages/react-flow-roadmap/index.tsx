@@ -203,12 +203,88 @@ function SmoothProgressDriver() {
   return null;
 }
 
+/* ── подтемы загораются после того как до них дойдёт линия (0.55s + stagger), не при достижении родителя ── */
+
+const SUBTOPIC_FUSE_DUR = 0.55;
+const SUBTOPIC_STAGGER = 0.08;
+
+const _reachedSubtopicIds = new Set<string>();
+const _subtopicListeners = new Set<() => void>();
+const _subtopicTimeoutsByTopic = new Map<string, ReturnType<typeof setTimeout>[]>();
+
+function _notifySubtopicReached() {
+  for (const fn of _subtopicListeners) fn();
+}
+
+function updateSubtopicReached(gp: number) {
+  for (const topic of ROADMAP) {
+    const reachedAt = TOPIC_REACHED_AT[topic.id] ?? 1;
+    const subs = topic.subtopics;
+    if (subs.length === 0) continue;
+
+    if (gp >= reachedAt - 0.002) {
+      const existing = _subtopicTimeoutsByTopic.get(topic.id);
+      if (existing) continue;
+      const timeouts: ReturnType<typeof setTimeout>[] = [];
+      subs.forEach((sub, i) => {
+        const delayMs = (SUBTOPIC_FUSE_DUR + i * SUBTOPIC_STAGGER) * 1000;
+        const id = setTimeout(() => {
+          _reachedSubtopicIds.add(sub.id);
+          _notifySubtopicReached();
+        }, delayMs);
+        timeouts.push(id);
+      });
+      _subtopicTimeoutsByTopic.set(topic.id, timeouts);
+    } else {
+      const timeouts = _subtopicTimeoutsByTopic.get(topic.id);
+      if (timeouts) {
+        timeouts.forEach(clearTimeout);
+        _subtopicTimeoutsByTopic.delete(topic.id);
+        subs.forEach((sub) => _reachedSubtopicIds.delete(sub.id));
+        _notifySubtopicReached();
+      }
+    }
+  }
+}
+
+function useSubtopicReached(subtopicId: string): boolean {
+  return useSyncExternalStore(
+    (cb) => { _subtopicListeners.add(cb); return () => { _subtopicListeners.delete(cb); }; },
+    () => _reachedSubtopicIds.has(subtopicId),
+    () => _reachedSubtopicIds.has(subtopicId),
+  );
+}
+
+function SubtopicReachedDriver() {
+  const gp = useSmoothProgress();
+  useLayoutEffect(() => updateSubtopicReached(gp), [gp]);
+  useEffect(() => () => {
+    _subtopicTimeoutsByTopic.forEach((ids) => ids.forEach(clearTimeout));
+    _subtopicTimeoutsByTopic.clear();
+    _reachedSubtopicIds.clear();
+    _notifySubtopicReached();
+  }, []);
+  return null;
+}
+
 /* ── custom node components ── */
 
-function TopicNode({ data }: { data: Record<string, unknown> }) {
+/** Плашка основной темы: изначально фон как у страницы и серый текст; как только фитиль доходит до этой темы (TOPIC_REACHED_AT) — плавно цвет темы и белый текст. */
+function TopicNode({ id, data }: { id: string; data: Record<string, unknown> }) {
   const color = data.color as string;
+  const gp = useSmoothProgress();
+  const reachedAt = TOPIC_REACHED_AT[id] ?? 0;
+  const reached = id === 'osnovy' ? gp > 0.01 : gp >= reachedAt - 0.002;
+
   return (
-    <div className={styles.topicNode} style={{ background: color }}>
+    <div
+      className={styles.topicNode}
+      style={
+        reached
+          ? { backgroundColor: color, color: '#fff' }
+          : { backgroundColor: 'var(--page-bg)', color: 'var(--page-text)' }
+      }
+    >
       <Handle type="target" position={Position.Top} id="top" className={styles.handle} />
       <span>{data.label as string}</span>
       <Handle type="source" position={Position.Bottom} id="bottom" className={styles.handle} />
@@ -218,11 +294,21 @@ function TopicNode({ data }: { data: Record<string, unknown> }) {
   );
 }
 
-function SubtopicNode({ data }: { data: Record<string, unknown> }) {
+/** Плашка подтемы: загорается только когда до неё доходит линия фитиля (0.55s + stagger после достижения родителя), до этого — фон как у страницы. */
+function SubtopicNode({ id, data }: { id: string; data: Record<string, unknown> }) {
   const color = data.color as string;
   const side = data.side as 'left' | 'right';
+  const reached = useSubtopicReached(id);
+
   return (
-    <div className={styles.subtopicNode} style={{ borderColor: color }}>
+    <div
+      className={styles.subtopicNode}
+      style={
+        reached
+          ? { borderColor: color, backgroundColor: color, color: '#fff' }
+          : { borderColor: 'var(--page-text)', backgroundColor: 'var(--page-bg)', color: 'var(--page-text)' }
+      }
+    >
       <Handle
         type="target"
         position={side === 'right' ? Position.Left : Position.Right}
@@ -434,7 +520,7 @@ function buildGraph(): { nodes: Node[]; edges: Edge[] } {
         id: sub.id,
         type: 'subtopicNode',
         position: { x: subtopicX, y: startY + i * SUBTOPIC_SPACING_Y },
-        data: { label: sub.title, color, side: layout.subtopicSide },
+        data: { label: sub.title, color, side: layout.subtopicSide, topicId: topic.id },
       });
 
       edges.push({
@@ -630,6 +716,7 @@ export function ReactFlowRoadmapPage() {
             style={{ background: 'transparent' }}
           >
             <SmoothProgressDriver />
+            <SubtopicReachedDriver />
           </ReactFlow>
         </div>
       </div>

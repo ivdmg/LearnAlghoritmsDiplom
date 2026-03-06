@@ -38,15 +38,19 @@
   color: #fff !important;
 }
 
-/* full-width background area below header */
+/* full-width background area below header; переменные для плашек тем (фон до достижения фитилем) */
 .pageBody {
   width: 100%;
   height: calc(100vh - 64px);
   background: #f0f4f8;
+  --page-bg: #f0f4f8;
+  --page-text: #64748b;
 }
 
 [data-theme='dark'] .pageBody {
   background: #0f172a;
+  --page-bg: #0f172a;
+  --page-text: #64748b;
 }
 
 /* centred, width-capped React Flow canvas */
@@ -58,19 +62,18 @@
   transition: opacity 0.18s ease;
 }
 
-/* ── Topic (main) node ── */
+/* ── Topic (main) node: до достижения фитилем — фон как у страницы, после — цвет темы ── */
 
 .topicNode {
   padding: 16px 40px;
   border-radius: 14px;
-  color: #fff;
   font-weight: 600;
   font-size: 17px;
   text-align: center;
   white-space: nowrap;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
   cursor: default;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
   user-select: none;
 }
 
@@ -79,19 +82,17 @@
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.28);
 }
 
-/* ── Subtopic node ── */
+/* ── Subtopic node: до достижения фитилем — фон как у страницы, после — цвет темы ── */
 
 .subtopicNode {
   padding: 10px 22px;
   border-radius: 10px;
   border: 2px solid;
-  background: rgba(255, 255, 255, 0.92);
   font-size: 14px;
   font-weight: 500;
-  color: #334155;
   white-space: nowrap;
   cursor: default;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
   user-select: none;
 }
 
@@ -100,10 +101,6 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
 }
 
-[data-theme='dark'] .subtopicNode {
-  background: rgba(30, 41, 59, 0.92);
-  color: #e2e8f0;
-}
 
 /* ── Hidden handles ── */
 

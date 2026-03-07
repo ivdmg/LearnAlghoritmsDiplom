@@ -320,24 +320,30 @@ function TopicNode({ id, data }: { id: string; data: Record<string, unknown> }) 
   return (
     <div
       className={styles.topicNode}
+      data-reached={reached}
       style={{
         ...(reached
           ? { backgroundColor: color, color: '#fff' }
-          : { backgroundColor: 'var(--page-bg)', color: 'var(--page-text)' }),
+          : { backgroundColor: 'transparent', color: 'var(--page-text)' }),
         pointerEvents: reached ? 'auto' : 'none',
         cursor: reached ? 'pointer' : 'default',
       }}
     >
-      <Handle type="target" position={Position.Top} id="top" className={styles.handle} />
-      <span>{data.label as string}</span>
-      <Handle type="source" position={Position.Bottom} id="bottom" className={styles.handle} />
-      <Handle type="source" position={Position.Right} id="right" className={styles.handle} />
-      <Handle type="source" position={Position.Left} id="left" className={styles.handle} />
       <div
-        className={styles.topicNodeOverlay}
+        className={styles.topicNodeBlur}
         style={{ opacity: reached ? 0 : 1 }}
         aria-hidden
       />
+      <div
+        className={styles.topicNodeContent}
+        style={{ filter: reached ? 'none' : 'blur(1.5px)' }}
+      >
+        <Handle type="target" position={Position.Top} id="top" className={styles.handle} />
+        <span>{data.label as string}</span>
+        <Handle type="source" position={Position.Bottom} id="bottom" className={styles.handle} />
+        <Handle type="source" position={Position.Right} id="right" className={styles.handle} />
+        <Handle type="source" position={Position.Left} id="left" className={styles.handle} />
+      </div>
     </div>
   );
 }
@@ -353,25 +359,31 @@ function SubtopicNode({ id, data }: { id: string; data: Record<string, unknown> 
   return (
     <div
       className={styles.subtopicNode}
+      data-reached={reached}
       style={{
         ...(reached
           ? { borderColor: color, backgroundColor: color, color: '#fff' }
-          : { borderColor: 'var(--page-text)', backgroundColor: 'var(--page-bg)', color: 'var(--page-text)' }),
+          : { borderColor: 'var(--page-text)', backgroundColor: 'transparent', color: 'var(--page-text)' }),
         pointerEvents: reached ? 'auto' : 'none',
         cursor: reached ? 'pointer' : 'default',
       }}
     >
-      <Handle
-        type="target"
-        position={side === 'right' ? Position.Left : Position.Right}
-        className={styles.handle}
-      />
-      <span>{data.label as string}</span>
       <div
-        className={styles.subtopicNodeOverlay}
+        className={styles.subtopicNodeBlur}
         style={{ opacity: reached ? 0 : 1 }}
         aria-hidden
       />
+      <div
+        className={styles.subtopicNodeContent}
+        style={{ filter: reached ? 'none' : 'blur(1.5px)' }}
+      >
+        <Handle
+          type="target"
+          position={side === 'right' ? Position.Left : Position.Right}
+          className={styles.handle}
+        />
+        <span>{data.label as string}</span>
+      </div>
     </div>
   );
 }

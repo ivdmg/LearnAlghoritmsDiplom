@@ -49,7 +49,7 @@
 }
 
 [data-theme='dark'] .pageBody {
-  background: #0f172a;
+  background: #050607;
   --page-bg: #0f172a;
   --page-text: #64748b;
   --plate-overlay-bg: rgba(255, 255, 255, 0.13);
@@ -68,6 +68,7 @@
 
 .topicNode {
   position: relative;
+  overflow: hidden;
   padding: 16px 40px;
   border-radius: 14px;
   font-weight: 600;
@@ -80,16 +81,30 @@
   user-select: none;
 }
 
-/* Размытый полупрозрачный слой поверх плашки; при активации плавно исчезает (opacity: 0) */
-.topicNodeOverlay {
+/* Отдельный слой blur под контентом: избегаем бага Chrome (transform + backdrop-filter на одном слое с текстом). */
+.topicNodeBlur {
   position: absolute;
   inset: 0;
+  z-index: 1;
   border-radius: inherit;
   background: var(--plate-overlay-bg);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(6px);
   pointer-events: none;
   transition: opacity 0.4s ease;
+  transform: translateZ(0);
+  isolation: isolate;
+}
+
+.topicNodeContent {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  transition: filter 0.4s ease;
+}
+
+.topicNode[data-reached='false'] .topicNodeContent {
+  filter: blur(1.5px);
 }
 
 .topicNode:hover {
@@ -101,6 +116,7 @@
 
 .subtopicNode {
   position: relative;
+  overflow: hidden;
   padding: 10px 22px;
   border-radius: 10px;
   font-size: 14px;
@@ -111,15 +127,29 @@
   user-select: none;
 }
 
-.subtopicNodeOverlay {
+.subtopicNodeBlur {
   position: absolute;
   inset: 0;
+  z-index: 1;
   border-radius: inherit;
   background: var(--plate-overlay-bg);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   pointer-events: none;
   transition: opacity 0.4s ease;
+  transform: translateZ(0);
+  isolation: isolate;
+}
+
+.subtopicNodeContent {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  transition: filter 0.4s ease;
+}
+
+.subtopicNode[data-reached='false'] .subtopicNodeContent {
+  filter: blur(1.5px);
 }
 
 .subtopicNode:hover {

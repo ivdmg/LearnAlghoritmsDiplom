@@ -1,10 +1,8 @@
 import { useRef, useLayoutEffect, useState, useCallback, useMemo } from 'react';
-import type { RoadmapTopic, RoadmapSubtopic } from '@/shared/config/roadmap-data';
+import type { RoadmapTopic, RoadmapNode } from '@/entities/roadmap';
 import styles from './roadmap.module.css';
 
-export type RoadmapNode =
-  | { type: 'topic'; topic: RoadmapTopic }
-  | { type: 'subtopic'; topic: RoadmapTopic; subtopic: RoadmapSubtopic };
+export type { RoadmapNode };
 
 interface RoadmapProps {
   topics: RoadmapTopic[];

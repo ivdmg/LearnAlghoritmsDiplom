@@ -1,7 +1,6 @@
 import { Drawer, Tabs } from 'antd';
-import type { RoadmapNode } from '@/widgets/roadmap/ui/roadmap';
-import { THEORIES } from '@/shared/config/roadmap-data';
-import { TASKS } from '@/shared/config/roadmap-data';
+import type { RoadmapNode } from '@/entities/roadmap';
+import { THEORIES, TASKS } from '@/entities/task';
 import { TheoryContent } from './theory-content';
 import { TaskList } from './task-list';
 import { SubtopicList } from './subtopic-list';

@@ -1,7 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { loadPyodide } from 'pyodide';
 
-export function usePyodide() {
+/** Pyodide runtime state */
+export interface PyodideState {
+  runPython: (code: string, testInput?: string) => Promise<string>;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function usePyodide(): PyodideState {
   const [pyodide, setPyodide] = useState<Awaited<ReturnType<typeof loadPyodide>> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +39,7 @@ sys.stdout = StringIO()
 
       try {
         pyodide.runPython(code);
-        if (testInput && testInput.trim()) {
+        if (testInput?.trim()) {
           pyodide.globals.set('_test_input', testInput);
           pyodide.runPython(`
 try:
@@ -47,8 +54,6 @@ except Exception as e:
         }
         const stdout = (pyodide.runPython('sys.stdout.getvalue()') as string) || '';
         return stdout.trim();
-      } catch (err) {
-        throw err;
       } finally {
         pyodide.runPython('sys.stdout = sys.__stdout__');
       }

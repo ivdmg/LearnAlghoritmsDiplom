@@ -1,5 +1,5 @@
 import { List } from 'antd';
-import type { RoadmapTopic } from '@/shared/config/roadmap-data';
+import type { RoadmapTopic } from '@/entities/roadmap';
 import styles from './task-list.module.css';
 
 interface SubtopicListProps {

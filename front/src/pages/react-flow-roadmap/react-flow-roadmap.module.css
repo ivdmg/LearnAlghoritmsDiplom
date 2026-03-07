@@ -104,7 +104,7 @@
 }
 
 .topicNode[data-reached='false'] .topicNodeContent {
-  filter: blur(1.5px);
+  filter: blur(3.5px);
 }
 
 .topicNode:hover {
@@ -149,7 +149,7 @@
 }
 
 .subtopicNode[data-reached='false'] .subtopicNodeContent {
-  filter: blur(1.5px);
+  filter: blur(3.5px);
 }
 
 .subtopicNode:hover {

@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { ROADMAP_TOPICS } from '@/shared/config/roadmap-data';
+import { ROADMAP_TOPICS } from '@/entities/task';
 import styles from './animation-page.module.css';
 
 const PATH_D =

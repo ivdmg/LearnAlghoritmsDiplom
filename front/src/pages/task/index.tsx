@@ -11,9 +11,9 @@ import { useMemo, useState, useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
-import { TASKS, getOrderedTaskIds } from '@/shared/config/roadmap-data';
+import { TASKS, getOrderedTaskIds } from '@/entities/task';
 import { ThemeToggle } from '@/widgets/theme-toggle/ui/theme-toggle';
-import { usePyodide } from './model/use-pyodide';
+import { usePyodide } from '@/features/run-python';
 import styles from './task-page.module.css';
 
 export function TaskPage() {

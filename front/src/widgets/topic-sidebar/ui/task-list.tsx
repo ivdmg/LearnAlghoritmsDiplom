@@ -1,6 +1,6 @@
 import { List, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import type { Task } from '@/shared/config/roadmap-data';
+import type { Task } from '@/entities/task';
 import styles from './task-list.module.css';
 
 interface TaskListProps {

@@ -47,18 +47,25 @@ export function useFlowViewport() {
         minY = Infinity;
       for (const n of allNodes) {
         const w = n.measured?.width ?? (n.type === 'topicNode' ? 250 : 400);
-        minX = Math.min(minX, n.position.x);
-        maxX = Math.max(maxX, n.position.x + w);
-        minY = Math.min(minY, n.position.y);
+        const h = n.measured?.height ?? (n.type === 'topicNode' ? 50 : 40);
+        const left = n.position.x - w / 2;
+        const right = n.position.x + w / 2;
+        const top = n.position.y - h / 2;
+        minX = Math.min(minX, left);
+        maxX = Math.max(maxX, right);
+        minY = Math.min(minY, top);
       }
 
       const cw = container.clientWidth;
       const ch = container.clientHeight;
       const padX = 20;
-      const graphWidth = maxX - minX;
+      // Center the "main column" (topics with x=0) in the container.
+      // The overall bounds can be asymmetric because subtopics alternate left/right.
+      const centerX = 0;
+      const halfWidth = Math.max(Math.abs(minX - centerX), Math.abs(maxX - centerX)) || 1;
+      const graphWidth = halfWidth * 2;
       const zoom = (cw - padX * 2) / graphWidth;
-      const graphCenterX = (minX + maxX) / 2;
-      const initialX = cw / 2 - graphCenterX * zoom;
+      const initialX = cw / 2 - centerX * zoom;
       const initialY = -minY * zoom + VIEWPORT_PAD_TOP;
 
       viewportXRef.current = initialX;

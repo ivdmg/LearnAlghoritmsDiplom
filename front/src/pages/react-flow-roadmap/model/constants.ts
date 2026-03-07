@@ -24,7 +24,7 @@ export const ROW_GAP = 500;
 export const SUBTOPIC_OFFSET_RIGHT = 400;
 export const SUBTOPIC_OFFSET_LEFT = -420;
 export const SUBTOPIC_SPACING_Y = 58;
-export const VIEWPORT_PAD_TOP = 30;
+export const VIEWPORT_PAD_TOP = 60;
 
 export const LAYOUT: TopicLayout[] = [
   { id: 'osnovy',      x: 0,    y: ROW_GAP * 0, subtopicSide: 'right' },

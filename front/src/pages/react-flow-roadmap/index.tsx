@@ -46,6 +46,7 @@ export function ReactFlowRoadmapPage() {
             edges={edges}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
+            nodeOrigin={[0.5, 0.5]}
             defaultEdgeOptions={{ type: 'default' }}
             onInit={onInit}
             onNodeClick={handleNodeClick}

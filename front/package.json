@@ -16,6 +16,7 @@
     "@uiw/react-codemirror": "^4.25.4",
     "@xyflow/react": "^12.10.1",
     "antd": "^6.3.0",
+    "framer-motion": "^12.35.1",
     "pyodide": "^0.29.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

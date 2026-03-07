@@ -29,8 +29,8 @@ export const ROADMAP: RoadmapTopic[] = [
       { id: 'st-sort-1', title: 'Пузырьковая, выбором, вставками', position: 'center', taskIds: [] },
       { id: 'st-sort-2', title: 'Быстрая сортировка (quicksort)', position: 'center', taskIds: [] },
       { id: 'st-sort-3', title: 'Сортировка слиянием (merge sort)', position: 'center', taskIds: [] },
-      { id: 'st-sort-4', title: 'Сортировка подсчётом, поразрядная (counting, radix)', position: 'center', taskIds: [] },
-      { id: 'st-sort-5', title: 'Heap sort', position: 'center', taskIds: [] },
+      { id: 'st-sort-4', title: 'Heap sort', position: 'center', taskIds: [] },
+      { id: 'st-sort-5', title: 'Сортировка подсчётом, поразрядная (counting, radix)', position: 'center', taskIds: [] },
     ],
   },
   {
@@ -39,8 +39,8 @@ export const ROADMAP: RoadmapTopic[] = [
     subtopics: [
       { id: 'st-pois-1', title: 'Линейный поиск', position: 'center', taskIds: [] },
       { id: 'st-pois-2', title: 'Бинарный поиск', position: 'center', taskIds: [] },
-      { id: 'st-pois-3', title: 'Поиск в отсортированных структурах (lower_bound, upper_bound)', position: 'center', taskIds: [] },
-      { id: 'st-pois-4', title: 'Двоичный поиск по ответу', position: 'center', taskIds: [] },
+      { id: 'st-pois-3', title: 'Двоичный поиск по ответу', position: 'center', taskIds: [] },
+      { id: 'st-pois-4', title: 'Поиск в отсортированных структурах (lower_bound, upper_bound)', position: 'center', taskIds: [] },
     ],
   },
   {

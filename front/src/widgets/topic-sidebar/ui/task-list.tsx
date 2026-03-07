@@ -2,6 +2,7 @@ import { List, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import type { Task } from '@/entities/task';
 import styles from './task-list.module.css';
+import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 
 interface TaskListProps {
   tasks: Task[];
@@ -24,9 +25,9 @@ export function TaskList({ tasks, onClose }: TaskListProps) {
           <List.Item>
             <div className={styles.taskItem}>
               <span className={styles.taskTitle}>{task.title}</span>
-              <Button type="primary" size="small" onClick={() => handleTaskClick(task)}>
+              <GlassButton onClick={() => handleTaskClick(task)}>
                 Решить
-              </Button>
+              </GlassButton>
             </div>
           </List.Item>
         )}

@@ -1,10 +1,10 @@
-import { Drawer, Tabs } from 'antd';
+import { useState, useEffect } from 'react';
 import type { RoadmapNode } from '@/entities/roadmap';
 import { THEORIES, TASKS } from '@/entities/task';
+import { GlassSidebar } from '@/shared/ui';
 import { TheoryContent } from './theory-content';
 import { TaskList } from './task-list';
 import { SubtopicList } from './subtopic-list';
-import styles from './topic-sidebar.module.css';
 
 interface TopicSidebarProps {
   open: boolean;
@@ -13,6 +13,14 @@ interface TopicSidebarProps {
 }
 
 export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
+  const [activeTab, setActiveTab] = useState<string>('theory');
+
+  // Сбрасываем активную вкладку при смене узла
+  useEffect(() => {
+    if (!node) return;
+    setActiveTab(node.type === 'topic' ? 'subtopics' : 'theory');
+  }, [node]);
+
   if (!node) return null;
 
   if (node.type === 'topic') {
@@ -38,17 +46,16 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
     ];
 
     return (
-      <Drawer
-        title={node.topic.title}
-        placement="right"
-        width="50%"
+      <GlassSidebar
         open={open}
+        title={node.topic.title}
+        tabs={tabItems.map((t) => ({ key: t.key, label: t.label }))}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
         onClose={onClose}
-        className={styles.drawer}
-        styles={{ body: { paddingTop: 0 } }}
       >
-        <Tabs items={tabItems} className={styles.tabs} />
-      </Drawer>
+        {tabItems.find((t) => t.key === activeTab)?.children ?? tabItems[0].children}
+      </GlassSidebar>
     );
   }
 
@@ -74,16 +81,15 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
   ];
 
   return (
-    <Drawer
-      title={`${topic.title}: ${subtopic.title}`}
-      placement="right"
-      width="50%"
+    <GlassSidebar
       open={open}
+      title={`${topic.title}: ${subtopic.title}`}
+      tabs={tabItems.map((t) => ({ key: t.key, label: t.label }))}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
       onClose={onClose}
-      className={styles.drawer}
-      styles={{ body: { paddingTop: 0 } }}
     >
-      <Tabs items={tabItems} className={styles.tabs} />
-    </Drawer>
+      {tabItems.find((t) => t.key === activeTab)?.children ?? tabItems[0].children}
+    </GlassSidebar>
   );
 }

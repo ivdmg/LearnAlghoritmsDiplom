@@ -7,7 +7,7 @@ interface GlassButtonProps {
   active?: boolean;
   layoutId?: string; // для скольжения
   variant?: "default" | "close";
-  className?: string; // теперь можно передавать кастомный класс
+  className?: string; // можно передавать кастомный класс
 }
 
 export function GlassButton({
@@ -24,7 +24,7 @@ export function GlassButton({
       onClick={onClick}
       layout
     >
-      {/* Фоновая подсветка, которая скользит к активной кнопке */}
+      {/* активный зелёный блок */}
       {active && layoutId && (
         <motion.div
           className={styles.activeHighlight}

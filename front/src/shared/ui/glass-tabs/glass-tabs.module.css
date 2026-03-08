@@ -1,0 +1,76 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  width: 100%; /* если нужно растягивать на ширину */
+  padding: 4px;
+  border-radius: 999px;
+
+  /* прозрачный фон для эффекта стекла */
+  background: rgba(14, 14, 14, 0.65);
+
+  /* стеклянная прозрачность + размытие фона */
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+
+  /* мягкие тени и контур */
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 4px 30px rgba(0, 0, 0, 0.25);
+}
+
+.tabWrapper {
+  position: relative;
+  padding: 2px 5px;
+  margin: 0 4px;
+}
+
+.tabWrapper:first-child {
+  margin-left: 0;
+}
+
+.tabWrapper:last-child {
+  margin-right: 0;
+}
+
+/* Стеклянная плашка, которая скользит между табами */
+.indicator {
+  position: absolute;
+  top: 2px; /* отступ сверху */
+  left: 5px; /* отступ слева */
+  width: 120px;
+  height: calc(100% - 4px); /* чтобы совпадало с внутренним паддингом .tabWrapper */
+  border-radius: 999px;
+  background: linear-gradient(
+    145deg,
+    rgba(60, 65, 85, 0.15),
+    rgba(45, 50, 70, 0.05)
+  );
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.08),
+    inset 3px 5px 2px -4.75px rgba(255, 255, 255, 0.08),
+    inset 1.25px 1.5px 0px rgba(0, 0, 0, 0.04),
+    inset 0px 4.75px 0.25px -2.5px rgba(255, 255, 255, 0.08),
+    inset 1px 1px 3px 3px rgba(245, 245, 245, 0.08),
+    inset 0px -3px 1px rgba(0, 0, 0, 0.04),
+    inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
+    inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
+  z-index: 0;
+}
+
+/* Тонкая настройка под табовые GlassButton */
+.tabButton {
+  width: 120px;
+  padding: 10px 25px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  gap: 11.35px;
+  box-shadow: none;
+  background: none;
+  border: none;
+  border-radius: 567.293px;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GlassButton } from "../glass-button/glass-button";
+import { GlassTabs } from "../glass-tabs/glass-tabs";
 import styles from "./glass-sidebar.module.css";
 
 export type GlassSidebarTabKey = string;
@@ -39,6 +40,11 @@ export function GlassSidebar({
     };
   }, [open]);
 
+  const tabItems = tabs.map((t) => ({
+    key: t.key,
+    label: t.label,
+  }));
+
   return (
     <AnimatePresence>
       {open && (
@@ -63,7 +69,6 @@ export function GlassSidebar({
               mass: 0.8,
             }}
           >
-            {/* HEADER */}
             <header className={styles.header}>
               <h2 className={styles.title}>{title}</h2>
 
@@ -76,35 +81,16 @@ export function GlassSidebar({
               </GlassButton>
             </header>
 
-            {/* TABS */}
-            {tabs.length > 0 && (
-              <div className={styles.tabs}>
-                {tabs.map((tab) => (
-                  <motion.div key={tab.key} className={styles.tabWrapper}>
-                    {tab.key === activeTab && (
-                      <motion.div
-                        layoutId="sidebar-tab-highlight"
-                        className={styles.tabHighlight}
-                        transition={{
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 30,
-                        }}
-                      />
-                    )}
-
-                    <GlassButton
-                      onClick={() => onTabChange(tab.key)}
-                      className={styles.tab}
-                    >
-                      {tab.label}
-                    </GlassButton>
-                  </motion.div>
-                ))}
+            {tabItems.length > 0 && (
+              <div className={styles.tabsRow}>
+                <GlassTabs
+                  items={tabItems}
+                  activeKey={activeTab}
+                  onChange={onTabChange}
+                />
               </div>
             )}
 
-            {/* CONTENT */}
             <div className={styles.content}>{children}</div>
           </motion.aside>
         </motion.div>

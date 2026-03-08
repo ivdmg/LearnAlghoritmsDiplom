@@ -1,17 +1,33 @@
 .button {
   position: relative;
-  padding: 7px 16px;
-  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px; /* оригинальные размеры */
+  border-radius: 999px; /* сохраняем круглую форму */
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #f9fafb;
-  border: none;
-  background: rgba(40, 45, 65, 0.041);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
   cursor: pointer;
-  z-index: 1;
   overflow: hidden;
+  z-index: 2;
+
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.08),
+    inset 3px 5px 2px -4.75px rgba(255, 255, 255, 0.08),
+    inset 1.25px 1.5px 0px rgba(0, 0, 0, 0.04),
+    inset 0px 4.75px 0.25px -2.5px rgba(255, 255, 255, 0.08),
+    inset 1px 1px 3px 3px rgba(245, 245, 245, 0.08),
+    inset 0px -3px 1px rgba(0, 0, 0, 0.04),
+    inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
+    inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
+  z-index: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .label {
@@ -19,26 +35,27 @@
   z-index: 2;
 }
 
-/* Фон активной кнопки */
+/* активная подсветка (зелёный блок) */
 .activeHighlight {
   position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: linear-gradient(
-    145deg,
-    rgba(60, 65, 85, 0.65),
-    rgba(60, 65, 85, 0.45)
-  );
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -5px; /* чуть ниже кнопки */
+  width: 50%; /* ширина подсветки относительно кнопки */
+  height: 4px;
+  border-radius: 6px;
+  background: rgba(0, 255, 0, 0.6);
   z-index: 1;
 }
 
-/* Кнопка закрытия */
+/* кнопка закрытия */
 .button.close {
-  border-radius: 10px;
+  border-radius: 50%;
   width: 34px;
   height: 34px;
   background: rgba(40, 45, 65, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
 }

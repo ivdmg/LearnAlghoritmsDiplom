@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { RoadmapNode } from '@/entities/roadmap';
 import { THEORIES, TASKS } from '@/entities/task';
-import { GlassSidebar } from '@/shared/ui';
+import { useArticleByTopic } from '@/entities/article';
+import { GlassSidebar, ContentRenderer } from '@/shared/ui';
 import { TheoryContent } from './theory-content';
 import { TaskList } from './task-list';
 import { SubtopicList } from './subtopic-list';
@@ -15,6 +16,14 @@ interface TopicSidebarProps {
 export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
   const [activeTab, setActiveTab] = useState<string>('theory');
 
+  const topicId = node?.topic.id;
+  const subtopicId = node?.type === 'subtopic' ? node.subtopic.id : undefined;
+  const {
+    article,
+    loading: articleLoading,
+    error: articleError,
+  } = useArticleByTopic(topicId, subtopicId);
+
   // Сбрасываем активную вкладку при смене узла
   useEffect(() => {
     if (!node) return;
@@ -27,6 +36,8 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
     const theoryContent = THEORIES[`theory-${node.topic.id}`] ?? `# ${node.topic.title}\n\nВыберите подтему для изучения.`;
     const tasks = TASKS.filter((t) => t.topicId === node.topic.id && !t.subtopicId);
 
+    const hasArticle = !articleLoading && !articleError && article && article.blocks.length > 0;
+
     const tabItems = [
       {
         key: 'subtopics',
@@ -36,7 +47,9 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
       {
         key: 'theory',
         label: 'Теория',
-        children: <TheoryContent content={theoryContent} />,
+        children: hasArticle && node.topic.id === 'osnovy'
+          ? <ContentRenderer blocks={article.blocks} />
+          : <TheoryContent content={theoryContent} />,
       },
       {
         key: 'tasks',
@@ -67,11 +80,15 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
     (t) => t.topicId === topic.id && (t.subtopicId === subtopic.id || !t.subtopicId)
   );
 
+  const hasArticle = !articleLoading && !articleError && article && article.blocks.length > 0;
+
   const tabItems = [
     {
       key: 'theory',
       label: 'Теория',
-      children: <TheoryContent content={theoryContent} />,
+      children: hasArticle && subtopic.id === 'st-osn-2'
+        ? <ContentRenderer blocks={article.blocks} />
+        : <TheoryContent content={theoryContent} />,
     },
     {
       key: 'tasks',

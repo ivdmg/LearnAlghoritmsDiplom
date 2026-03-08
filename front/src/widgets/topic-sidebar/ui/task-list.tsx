@@ -1,4 +1,3 @@
-import { List, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import type { Task } from '@/entities/task';
 import styles from './task-list.module.css';
@@ -19,19 +18,14 @@ export function TaskList({ tasks, onClose }: TaskListProps) {
 
   return (
     <div className={styles.container}>
-      <List
-        dataSource={tasks}
-        renderItem={(task) => (
-          <List.Item>
-            <div className={styles.taskItem}>
-              <span className={styles.taskTitle}>{task.title}</span>
-              <GlassButton onClick={() => handleTaskClick(task)}>
-                Решить
-              </GlassButton>
-            </div>
-          </List.Item>
-        )}
-      />
+      {tasks.map((task) => (
+        <div key={task.id} className={styles.taskItem}>
+          <span className={styles.taskTitle}>{task.title}</span>
+          <GlassButton onClick={() => handleTaskClick(task)}>
+            Решить
+          </GlassButton>
+        </div>
+      ))}
     </div>
   );
 }

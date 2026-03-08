@@ -1,0 +1,689 @@
+{
+  "articles": [
+    {
+      "id": "osnovy-intro",
+      "topicId": "osnovy",
+      "title": "Введение: алгоритмы и структуры данных",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Алгоритмы и структуры данных"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Алгоритм — это пошаговое описание решения задачи. Важно уметь оценивать время и память алгоритма, а также понимать, какие структуры данных помогают хранить и обрабатывать информацию эффективнее."
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "В этом модуле мы начнём с базовых структур: массивов, строк, хеш-таблиц, стека и очереди. На их основе строится большинство алгоритмов, которые вы встретите в задачах."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function sum(arr) {\n  let s = 0;\n  for (const x of arr) {\n    s += x;\n  }\n  return s;\n}"
+        },
+        {
+          "id": "link1",
+          "type": "link",
+          "text": "Подробнее про асимптотику",
+          "href": "#asymptotics",
+          "target": "_self"
+        },
+        {
+          "id": "h2-asymp",
+          "type": "heading",
+          "level": 2,
+          "text": "Асимптотическая сложность",
+          "style": {
+            "scrollMarginTop": "80px"
+          }
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Сложность алгоритма описывают через O-нотацию. Она показывает, как растёт время работы в зависимости от размера входа n."
+        },
+        {
+          "id": "anim1",
+          "type": "animation",
+          "html": "<div id=\"bar-container\"></div>",
+          "css": "#bar-container { display: flex; gap: 4px; padding: 12px; }\n.bar { width: 18px; background: linear-gradient(180deg,#22c55e,#16a34a); border-radius: 4px 4px 0 0; }",
+          "js": "const root = document.getElementById('bar-container');\nconst n = 12;\nfor (let i = 1; i <= n; i++) {\n  const el = document.createElement('div');\n  el.className = 'bar';\n  el.style.height = 6 + i * 6 + 'px';\n  el.style.opacity = String(0.2 + i / (n + 2));\n  root.appendChild(el);\n}\n",
+          "width": "100%",
+          "height": 180
+        }
+      ]
+    },
+    {
+      "id": "osnovy-complexity",
+      "topicId": "osnovy",
+      "subtopicId": "st-osn-1",
+      "title": "Сложность алгоритмов",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Сложность алгоритмов"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Сложность алгоритма показывает, сколько ресурсов требуется для его выполнения в зависимости от размера входных данных. Основные ресурсы — это время и память."
+        },
+        {
+          "id": "h2-time",
+          "type": "heading",
+          "level": 2,
+          "text": "Временная сложность"
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "Временная сложность описывает, как растёт время работы алгоритма с увеличением объёма входных данных n. Для оценки используют O-нотацию, которая показывает порядок роста."
+        },
+        {
+          "id": "anim-time",
+          "type": "animation",
+          "html": "<div id='bar-container'></div>",
+          "css": "#bar-container { display: flex; gap: 4px; padding: 12px; }\n.bar { width: 18px; background: linear-gradient(180deg,#22c55e,#16a34a); border-radius: 4px 4px 0 0; }",
+          "js": "const root = document.getElementById('bar-container');\nconst n = 12;\nfor (let i = 1; i <= n; i++) {\n  const el = document.createElement('div');\n  el.className = 'bar';\n  el.style.height = 6 + i * 6 + 'px';\n  el.style.opacity = String(0.2 + i / (n + 2));\n  root.appendChild(el);\n}",
+          "width": "100%",
+          "height": 180
+        },
+        {
+          "id": "h2-space",
+          "type": "heading",
+          "level": 2,
+          "text": "Память и пространственная сложность"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Пространственная сложность показывает, сколько памяти использует алгоритм. Например, при работе с массивами, рекурсией или дополнительными структурами данных."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function sumArray(arr) {\n  let sum = 0;\n  for (let i = 0; i < arr.length; i++) {\n    sum += arr[i];\n  }\n  return sum;\n}\n// Временная сложность O(n), память O(1)"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "Сложность алгоритмов удобно сравнивать с помощью следующих типичных O-нотаций:"
+        },
+        {
+          "id": "code2",
+          "type": "code",
+          "language": "text",
+          "editable": false,
+          "code": "O(1) — константное время\nO(log n) — логарифмическое время\nO(n) — линейное время\nO(n log n) — линейно-логарифмическое время\nO(n^2) — квадратичное время"
+        },
+        {
+          "id": "link1",
+          "type": "link",
+          "text": "Подробнее про O-нотацию",
+          "href": "https://ru.wikipedia.org/wiki/Асимптотический_анализ_алгоритмов",
+          "target": "_blank"
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "Понимание временной и пространственной сложности — основа для эффективного проектирования алгоритмов. Всегда старайтесь выбирать алгоритм с наименьшей сложностью для вашего объёма данных."
+        }
+      ]
+    },
+    {
+      "id": "osnovy-arrays-strings",
+      "topicId": "osnovy",
+      "subtopicId": "st-osn-2",
+      "title": "Массивы и строки — базовые операции и представление",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Массивы и строки"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Массив — это последовательность элементов фиксированной длины, к которым можно обратиться по индексу за O(1). Строка в большинстве языков реализована как массив символов (иногда — с неизменяемой длиной)."
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "При решении задач важно помнить различие между изменяемыми и неизменяемыми структурами. В Python и JavaScript строки неизменяемы, поэтому конкатенация в цикле может работать медленно."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "// Неудачный способ: конкатенация строки в цикле\nfunction joinSlow(parts) {\n  let result = '';\n  for (const part of parts) {\n    result += part; // каждый раз создаётся новая строка\n  }\n  return result;\n}\n\n// Лучше: используем массив + join\nfunction joinFast(parts) {\n  return parts.join('');\n}"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Частые операции: прохождение по массиву (итерация), поиск элемента, фильтрация, копирование подмассивов (срезы), разворот, сортировка. Большинство из них можно реализовать как по месту (in-place), так и создавая новый массив."
+        },
+        {
+          "id": "anim1",
+          "type": "animation",
+          "html": "<div id=\"array-demo\"></div>",
+          "css": "#array-demo { display: flex; gap: 6px; padding: 16px; }\n.cell { width: 36px; height: 36px; border-radius: 10px; display:flex; align-items:center; justify-content:center; font-size:14px; color:#e5e7eb; background: linear-gradient(135deg,#0ea5e9,#22c55e); box-shadow:0 8px 20px rgba(15,23,42,0.8); opacity:0.2; transform: translateY(6px); transition: all .35s ease; }\n.cell.active { opacity:1; transform: translateY(0); }",
+          "js": "const root = document.getElementById('array-demo');\nconst values = ['a','b','c','d','e'];\nvalues.forEach((v, idx) => {\n  const el = document.createElement('div');\n  el.className = 'cell';\n  el.textContent = v;\n  root.appendChild(el);\n  setTimeout(() => {\n    el.classList.add('active');\n  }, 200 + idx * 220);\n});\n",
+          "width": "100%",
+          "height": 160
+        }
+      ]
+    },
+    {
+      "id": "osnovy-array-ops",
+      "topicId": "osnovy",
+      "subtopicId": "st-osn-3",
+      "title": "Базовые операции с массивами",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Базовые операции с массивами"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Массив — это последовательная структура данных, которая позволяет хранить элементы одного типа. В этом модуле мы разберём основные операции: поиск, вставку, удаление и срезы."
+        },
+        {
+          "id": "h2-search",
+          "type": "heading",
+          "level": 2,
+          "text": "Поиск элемента"
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "Простейший способ — линейный поиск: проходим массив и сравниваем элементы с нужным значением."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function linearSearch(arr, target) {\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === target) return i;\n  }\n  return -1;\n}\n// O(n) — линейное время"
+        },
+        {
+          "id": "anim-search",
+          "type": "animation",
+          "html": "<div id='search-container'></div>",
+          "css": "#search-container { display: flex; gap: 6px; padding: 12px; }\n.bar { width: 30px; height: 30px; background: #3b82f6; display: flex; align-items: center; justify-content: center; color: white; border-radius: 4px; }",
+          "js": "const arr = [3,7,1,9,5]; const target = 9;\nconst container = document.getElementById('search-container');\narr.forEach((x,i)=>{\n  const div=document.createElement('div');\n  div.className='bar';\n  div.textContent=x;\n  container.appendChild(div);\n});\nlet idx=0;\nconst interval=setInterval(()=>{\n  if(idx>=arr.length) return clearInterval(interval);\n  container.children[idx].style.background='#f59e0b';\n  if(arr[idx]===target) container.children[idx].style.background='#22c55e';\n  idx++;\n},600);",
+          "width": "100%",
+          "height": 80
+        },
+        {
+          "id": "h2-insert",
+          "type": "heading",
+          "level": 2,
+          "text": "Вставка элемента"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Чтобы вставить элемент в массив, можно использовать `push` для конца массива или `splice` для произвольной позиции."
+        },
+        {
+          "id": "code2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "let arr = [1,2,4,5];\narr.splice(2,0,3); // вставляем 3 на индекс 2\nconsole.log(arr); // [1,2,3,4,5]"
+        },
+        {
+          "id": "h2-delete",
+          "type": "heading",
+          "level": 2,
+          "text": "Удаление элемента"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "Удалять элемент можно с конца (`pop`), с начала (`shift`) или из середины (`splice`)."
+        },
+        {
+          "id": "code3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "let arr = [1,2,3,4,5];\narr.splice(2,1); // удаляем элемент на индексе 2\nconsole.log(arr); // [1,2,4,5]"
+        },
+        {
+          "id": "h2-slice",
+          "type": "heading",
+          "level": 2,
+          "text": "Срезы"
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "Срезы позволяют получить часть массива, не изменяя исходный массив, с помощью метода `slice(start, end)`."
+        },
+        {
+          "id": "code4",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "let arr = [1,2,3,4,5];\nlet sub = arr.slice(1,4);\nconsole.log(sub); // [2,3,4]\nconsole.log(arr); // [1,2,3,4,5] — исходный массив не изменился"
+        },
+        {
+          "id": "link1",
+          "type": "link",
+          "text": "Подробнее про методы массивов в JavaScript",
+          "href": "https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array",
+          "target": "_blank"
+        },
+        {
+          "id": "p6",
+          "type": "paragraph",
+          "text": "Понимание этих базовых операций позволит эффективно работать с массивами, строить алгоритмы сортировки, поиска и обработки данных."
+        }
+      ]
+    },
+    {
+      "id": "osnovy-hashtable",
+      "topicId": "osnovy",
+      "subtopicId": "st-osn-4",
+      "title": "Хэш-таблицы и словари",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Хэш-таблицы и словари"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Хэш-таблица — структура данных, которая позволяет быстро хранить и искать пары «ключ-значение». В JavaScript такие структуры реализуются как объекты `{}` или `Map`."
+        },
+        {
+          "id": "h2-hashconcept",
+          "type": "heading",
+          "level": 2,
+          "text": "Как работает хэш-таблица"
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "Каждый ключ преобразуется в индекс с помощью хэш-функции. Этот индекс указывает на ячейку в массиве, где хранится значение. При коллизиях (два ключа получили один индекс) используется метод цепочек или открытой адресации."
+        },
+        {
+          "id": "anim-hash",
+          "type": "animation",
+          "html": "<div id='hash-container'></div>",
+          "css": "#hash-container { display: flex; gap: 6px; margin: 12px 0; }\n.cell { width: 60px; height: 40px; background: #3b82f6; border-radius: 4px; color: white; display: flex; justify-content: center; align-items: center; font-size: 14px; }",
+          "js": "const keys = ['A','B','C','D','E'];\nconst container = document.getElementById('hash-container');\nkeys.forEach((k,i)=>{\n  const div = document.createElement('div');\n  div.className='cell';\n  div.textContent=k;\n  container.appendChild(div);\n});",
+          "width": "100%",
+          "height": 60
+        },
+        {
+          "id": "h2-jsmap",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример на JavaScript"
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "// Используем Map\nconst map = new Map();\nmap.set('apple', 5);\nmap.set('banana', 10);\nconsole.log(map.get('apple')); // 5\nconsole.log(map.has('banana')); // true\nmap.delete('apple');"
+        },
+        {
+          "id": "h2-object",
+          "type": "heading",
+          "level": 2,
+          "text": "Использование объекта как словаря"
+        },
+        {
+          "id": "code2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "const obj = {};\nobj['apple'] = 5;\nobj['banana'] = 10;\nconsole.log(obj['apple']); // 5\ndelete obj['apple'];"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Время доступа к элементу в хэш-таблице в среднем O(1), что делает её одной из самых быстрых структур для поиска и вставки. В худшем случае (много коллизий) сложность может быть O(n)."
+        },
+        {
+          "id": "link1",
+          "type": "link",
+          "text": "Подробнее про хэш-таблицы",
+          "href": "https://ru.wikipedia.org/wiki/Хеш-таблица",
+          "target": "_blank"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "Хэш-таблицы и словари используются повсеместно: кэширование, подсчёт частот элементов, быстрый поиск, реализации сетов и мапов."
+        }
+      ]
+    },
+    {
+      "id": "osnovy-stack-queue",
+      "topicId": "osnovy",
+      "subtopicId": "st-osn-5",
+      "title": "Стек и очередь",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Стек и очередь"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Стек и очередь — базовые структуры данных, которые управляют порядком обработки элементов. Стек работает по принципу LIFO (последний пришёл — первый ушёл), а очередь — FIFO (первый пришёл — первый ушёл)."
+        },
+        {
+          "id": "h2-stack",
+          "type": "heading",
+          "level": 2,
+          "text": "Стек (LIFO)"
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "В стеке операции `push` добавляют элемент на верх, а `pop` удаляют верхний элемент. Используется, например, для обхода графов, рекурсии и отмены действий."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "class Stack {\n  constructor() {\n    this.items = [];\n  }\n  push(x) { this.items.push(x); }\n  pop() { return this.items.pop(); }\n  peek() { return this.items[this.items.length - 1]; }\n  isEmpty() { return this.items.length === 0; }\n}"
+        },
+        {
+          "id": "anim-stack",
+          "type": "animation",
+          "html": "<div id='stack-container'></div>",
+          "css": "#stack-container { display: flex; flex-direction: column-reverse; gap: 6px; width: 100px; }\n.box { background: #3b82f6; color: white; text-align: center; padding: 8px 0; border-radius: 4px; }",
+          "js": "const container = document.getElementById('stack-container');\nlet count = 1;\nconst interval = setInterval(() => {\n  if(count>5) return clearInterval(interval);\n  const div = document.createElement('div');\n  div.className = 'box';\n  div.textContent = 'Item ' + count;\n  container.appendChild(div);\n  count++;\n}, 600);",
+          "width": "120px",
+          "height": 180
+        },
+        {
+          "id": "h2-queue",
+          "type": "heading",
+          "level": 2,
+          "text": "Очередь (FIFO)"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Очередь добавляет элементы в конец (`enqueue`) и извлекает из начала (`dequeue`). Используется, например, для управления задачами, потоков данных и обхода графа BFS."
+        },
+        {
+          "id": "code2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "class Queue {\n  constructor() {\n    this.items = [];\n  }\n  enqueue(x) { this.items.push(x); }\n  dequeue() { return this.items.shift(); }\n  peek() { return this.items[0]; }\n  isEmpty() { return this.items.length === 0; }\n}"
+        },
+        {
+          "id": "anim-queue",
+          "type": "animation",
+          "html": "<div id='queue-container'></div>",
+          "css": "#queue-container { display: flex; gap: 6px; }\n.box { background: #f59e0b; color: white; text-align: center; padding: 8px 0; border-radius: 4px; width: 60px; }",
+          "js": "const container = document.getElementById('queue-container');\nlet count = 1;\nconst interval = setInterval(()=>{\n  if(count>5) return clearInterval(interval);\n  const div = document.createElement('div');\n  div.className='box';\n  div.textContent='Item '+count;\n  container.appendChild(div);\n  count++;\n}, 600);",
+          "width": "100%",
+          "height": 100
+        },
+        {
+          "id": "link1",
+          "type": "link",
+          "text": "Подробнее про стек и очередь",
+          "href": "https://ru.wikipedia.org/wiki/Стек_(структура_данных)",
+          "target": "_blank"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "Понимание стека и очереди — основа для изучения более сложных структур данных и алгоритмов, таких как BFS, DFS, Undo/Redo в приложениях и рекурсивные алгоритмы."
+        }
+      ]
+    },
+    {
+      "id": "rekursiya-intro",
+      "topicId": "rekursiya",
+      "title": "Рекурсия: введение",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Рекурсия"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Рекурсия — это метод решения задачи, при котором функция вызывает сама себя. Рекурсивный подход позволяет выразительно решать задачи, которые естественно разбиваются на подзадачи."
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "В рекурсии важно иметь условие выхода, иначе функция будет вызываться бесконечно."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function factorial(n) {\n  if (n <= 1) return 1;\n  return n * factorial(n - 1);\n}\nconsole.log(factorial(5)); // 120"
+        },
+        {
+          "id": "anim1",
+          "type": "animation",
+          "html": "<div id='fact-stack'></div>",
+          "css": "#fact-stack { display:flex; flex-direction:column; gap:4px; } .frame { padding:8px; background:#3b82f6; color:white; border-radius:4px; }",
+          "js": "const container=document.getElementById('fact-stack'); for(let i=5;i>=1;i--){ const div=document.createElement('div'); div.className='frame'; div.textContent='factorial('+i+')'; container.appendChild(div); }",
+          "width": "100%",
+          "height": 180
+        },
+        {
+          "id": "link1",
+          "type": "link",
+          "text": "Подробнее про рекурсию",
+          "href": "https://ru.wikipedia.org/wiki/Рекурсия_(программирование)",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "rekursiya-basic-examples",
+      "topicId": "rekursiya",
+      "subtopicId": "st-rek-1",
+      "title": "Базовые примеры рекурсии",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Базовые примеры рекурсии"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Рассмотрим простые примеры рекурсивных функций: факториал, сумма элементов массива и вычисление степени числа."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "// Сумма массива\nfunction sum(arr){\n  if(arr.length===0) return 0;\n  return arr[0]+sum(arr.slice(1));\n}\nconsole.log(sum([1,2,3,4])); // 10"
+        },
+        {
+          "id": "code2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "// Степень числа\nfunction pow(x,n){\n  if(n===0) return 1;\n  return x*pow(x,n-1);\n}\nconsole.log(pow(2,3)); // 8"
+        }
+      ]
+    },
+    {
+      "id": "rekursiya-sequences",
+      "topicId": "rekursiya",
+      "subtopicId": "st-rek-2",
+      "title": "Рекурсивные последовательности",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Рекурсивные последовательности"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Рекурсия удобно используется для вычисления последовательностей, таких как числа Фибоначчи."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function fibonacci(n){\n  if(n<=1) return n;\n  return fibonacci(n-1)+fibonacci(n-2);\n}\nconsole.log(fibonacci(6)); // 8"
+        },
+        {
+          "id": "anim1",
+          "type": "animation",
+          "html": "<div id='fib-tree'></div>",
+          "css": "#fib-tree { display:flex; flex-wrap:wrap; gap:4px; } .node { padding:4px 6px; background:#8b5cf6; color:white; border-radius:4px; }",
+          "js": "const n=6; const container=document.getElementById('fib-tree'); for(let i=0;i<=n;i++){ const div=document.createElement('div'); div.className='node'; div.textContent='fib('+i+')'; container.appendChild(div); }",
+          "width": "100%",
+          "height": 120
+        }
+      ]
+    },
+    {
+      "id": "rekursiya-sequences",
+      "topicId": "rekursiya",
+      "subtopicId": "st-rek-2",
+      "title": "Рекурсивные последовательности",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Рекурсивные последовательности"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Рекурсия удобно используется для вычисления последовательностей, таких как числа Фибоначчи."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function fibonacci(n){\n  if(n<=1) return n;\n  return fibonacci(n-1)+fibonacci(n-2);\n}\nconsole.log(fibonacci(6)); // 8"
+        },
+        {
+          "id": "anim1",
+          "type": "animation",
+          "html": "<div id='fib-tree'></div>",
+          "css": "#fib-tree { display:flex; flex-wrap:wrap; gap:4px; } .node { padding:4px 6px; background:#8b5cf6; color:white; border-radius:4px; }",
+          "js": "const n=6; const container=document.getElementById('fib-tree'); for(let i=0;i<=n;i++){ const div=document.createElement('div'); div.className='node'; div.textContent='fib('+i+')'; container.appendChild(div); }",
+          "width": "100%",
+          "height": 120
+        }
+      ]
+    },
+    {
+      "id": "rekursiya-tail",
+      "topicId": "rekursiya",
+      "subtopicId": "st-rek-3",
+      "title": "Хвостовая рекурсия",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Хвостовая рекурсия"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Хвостовая рекурсия — это рекурсия, где вызов функции является последней операцией. Это позволяет оптимизировать стек вызовов в некоторых языках."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function factorialTail(n, acc=1){\n  if(n<=1) return acc;\n  return factorialTail(n-1, acc*n);\n}\nconsole.log(factorialTail(5)); // 120"
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "Использование аккумулятора `acc` позволяет рекурсивной функции быть хвостовой, избегая увеличения глубины стека."
+        }
+      ]
+    },
+    {
+      "id": "rekursiya-divide-conquer",
+      "topicId": "rekursiya",
+      "subtopicId": "st-rek-4",
+      "title": "Divide and Conquer",
+      "blocks": [
+        {
+          "id": "h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Divide and Conquer"
+        },
+        {
+          "id": "p1",
+          "type": "paragraph",
+          "text": "Принцип 'разделяй и властвуй' заключается в разбиении задачи на подзадачи, решении их рекурсивно и объединении результатов."
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "Примеры: быстрая сортировка (quicksort) и сортировка слиянием (merge sort)."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "// Merge sort\nfunction mergeSort(arr){\n  if(arr.length<=1) return arr;\n  const mid=Math.floor(arr.length/2);\n  const left=mergeSort(arr.slice(0,mid));\n  const right=mergeSort(arr.slice(mid));\n  const result=[];\n  while(left.length && right.length){\n    result.push(left[0]<right[0]?left.shift():right.shift());\n  }\n  return result.concat(left,right);\n}\nconsole.log(mergeSort([5,3,8,1])); // [1,3,5,8]"
+        },
+        {
+          "id": "anim1",
+          "type": "animation",
+          "html": "<div id='merge-anim'></div>",
+          "css": "#merge-anim { display:flex; gap:6px; } .block { padding:6px; background:#3b82f6; color:white; border-radius:4px; }",
+          "js": "const arr=[5,3,8,1]; const container=document.getElementById('merge-anim'); arr.forEach(x=>{ const div=document.createElement('div'); div.className='block'; div.textContent=x; container.appendChild(div); });",
+          "width": "100%",
+          "height": 60
+        }
+      ]
+    }
+  ]
+}

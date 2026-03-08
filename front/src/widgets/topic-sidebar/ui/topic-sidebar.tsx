@@ -47,7 +47,7 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
       {
         key: 'theory',
         label: 'Теория',
-        children: hasArticle && node.topic.id === 'osnovy'
+        children: hasArticle
           ? <ContentRenderer blocks={article.blocks} />
           : <TheoryContent content={theoryContent} />,
       },
@@ -86,7 +86,7 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
     {
       key: 'theory',
       label: 'Теория',
-      children: hasArticle && subtopic.id === 'st-osn-2'
+      children: hasArticle
         ? <ContentRenderer blocks={article.blocks} />
         : <TheoryContent content={theoryContent} />,
     },

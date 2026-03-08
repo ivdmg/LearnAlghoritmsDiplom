@@ -30,7 +30,7 @@ export function useArticleByTopic(topicId?: string, subtopicId?: string): UseArt
         setError(null);
 
         const params = new URLSearchParams();
-        params.set('topicId', topicId);
+        params.set('topicId', topicId as string);
         if (subtopicId) {
           params.set('subtopicId', subtopicId);
         }

@@ -18,13 +18,12 @@ interface ContentRendererProps {
 function Heading({ block }: { block: HeadingBlock }) {
   const commonProps = {
     id: block.id,
-    className: `${styles.heading} ${
-      block.level === 1
+    className: `${styles.heading} ${block.level === 1
         ? styles.h1
         : block.level === 2
-        ? styles.h2
-        : styles.h3
-    } ${block.className ?? ""}`,
+          ? styles.h2
+          : styles.h3
+      } ${block.className ?? ""}`,
     style: block.style,
   };
 
@@ -82,10 +81,13 @@ function CodeBlockView({ block }: { block: CodeBlock }) {
       >
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre
-            className={`${styles.codeBlock} ${className} ${
-              block.className ?? ""
-            }`}
-            style={{ ...style, ...block.style }}
+            className={`${styles.codeBlock} ${className} ${block.className ?? ""}`}
+            style={{
+              ...style,
+              ...block.style,
+              //цвет фона блока менять тут
+              background: "rgba(255, 255, 255, 0.05)"
+            }}
           >
             {tokens.map((line, i) => {
               const lineProps = getLineProps({ line });

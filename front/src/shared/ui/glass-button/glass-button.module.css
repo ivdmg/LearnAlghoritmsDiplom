@@ -17,17 +17,15 @@
   z-index: 2;
 
   box-shadow:
-    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.08),
-    inset 3px 5px 2px -4.75px rgba(255, 255, 255, 0.08),
-    inset 1.25px 1.5px 0px rgba(0, 0, 0, 0.04),
-    inset 0px 4.75px 0.25px -2.5px rgba(255, 255, 255, 0.08),
-    inset 1px 1px 3px 3px rgba(245, 245, 245, 0.08),
-    inset 0px -3px 1px rgba(0, 0, 0, 0.04),
-    inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
-    inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.04),
+    inset 3px 5px 2px -4.75px rgba(255, 255, 255, 0.04),
+    inset 1.25px 1.5px 0px rgba(0, 0, 0, 0.02),
+    inset 0px 4.75px 0.25px -2.5px rgba(255, 255, 255, 0.04),
+    inset 1px 1px 3px 3px rgba(245, 245, 245, 0.04),
+    inset 0px -3px 1px rgba(0, 0, 0, 0.02),
+    inset 2.5px -2px 3px rgba(200, 200, 200, 0.02),
+    inset 0px -3px 3px 1px rgba(255, 255, 255, 0.01);
   z-index: 0;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .label {

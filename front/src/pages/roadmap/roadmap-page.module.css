@@ -1,39 +1,6 @@
 .layout {
   min-height: 100vh;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  background: var(--header-bg, #001529);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.headerRight {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.animationBtn {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.animationBtn:hover {
-  color: #fff;
-}
-
-[data-theme='dark'] .header {
-  background: #141414;
-}
-
-.logo {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: white;
-  letter-spacing: -0.5px;
+  background: radial-gradient(circle at top, #020617, #020617 55%, #020617 100%);
 }
 
 .content {

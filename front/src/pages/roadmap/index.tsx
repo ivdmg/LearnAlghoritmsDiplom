@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Layout } from 'antd';
 import { Roadmap } from '@/widgets/roadmap/ui/roadmap';
 import type { RoadmapNode } from '@/entities/roadmap';
 import { TopicSidebar } from '@/widgets/topic-sidebar/ui/topic-sidebar';
@@ -21,16 +20,16 @@ export function RoadmapPage() {
   };
 
   return (
-    <Layout className={styles.layout}>
+    <div className={styles.layout}>
       <AppHeader variant="main" />
-      <Layout.Content className={styles.content}>
+      <div className={styles.content}>
         <Roadmap topics={ROADMAP} onNodeClick={handleNodeClick} />
-      </Layout.Content>
+      </div>
       <TopicSidebar
         open={sidebarOpen}
         node={selectedNode}
         onClose={handleSidebarClose}
       />
-    </Layout>
+    </div>
   );
 }

@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Layout } from 'antd';
 import type { Node } from '@xyflow/react';
 import type { RoadmapNode } from '@/entities/roadmap';
 import { AppHeader } from '@/widgets/app-header';
@@ -32,7 +31,7 @@ export function ReactFlowRoadmapPage() {
   }, []);
 
   return (
-    <Layout className={styles.layout}>
+    <div className={styles.page}>
       <AppHeader variant="back" title="AlgoLearn — Roadmap" backTo="/" />
 
       <div className={styles.pageBody}>
@@ -73,6 +72,6 @@ export function ReactFlowRoadmapPage() {
         node={selectedNode}
         onClose={() => setSidebarOpen(false)}
       />
-    </Layout>
+    </div>
   );
 }

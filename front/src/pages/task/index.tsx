@@ -1,19 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Layout, Collapse, Alert, Tag } from 'antd';
-import {
-  LeftOutlined,
-  RightOutlined,
-  HomeOutlined,
-  ThunderboltOutlined,
-  CheckCircleFilled,
-} from '@ant-design/icons';
+import { LeftOutlined, RightOutlined, HomeOutlined, ThunderboltOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { useMemo, useState, useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import { TASKS, getOrderedTaskIds } from '@/entities/task';
-import { ThemeToggle } from '@/widgets/theme-toggle/ui/theme-toggle';
 import { usePyodide } from '@/features/run-python';
+import { GlassTopbar } from '@/shared/ui';
+import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import styles from './task-page.module.css';
 
 export function TaskPage() {
@@ -81,93 +75,89 @@ export function TaskPage() {
 
   if (!task) {
     return (
-      <Layout className={styles.layout}>
+      <div className={styles.layout}>
         <div className={styles.error}>Задача не найдена</div>
-        <Button onClick={() => navigate('/')}>На главную</Button>
-      </Layout>
+        <GlassButton onClick={() => navigate('/')}>На главную</GlassButton>
+      </div>
     );
   }
 
   const hintItems = task.hints.slice(0, 2).map((h, i) => ({
     key: String(i),
-    label: `Подсказка ${i + 1}`,
-    children: <p>{h}</p>,
+    title: `Подсказка ${i + 1}`,
+    text: h,
   }));
 
   return (
-    <Layout className={styles.layout}>
-      <Layout.Header className={styles.header}>
-        <div className={styles.headerLeft}>
-          <Button icon={<HomeOutlined />} onClick={handleBack}>
-            Roadmap
-          </Button>
-          <Button
-            icon={<LeftOutlined />}
-            disabled={!prevTask}
-            onClick={handlePrev}
-          >
-            Предыдущая
-          </Button>
-          <Button
-            icon={<RightOutlined />}
-            disabled={!nextTask}
-            onClick={handleNext}
-          >
-            Следующая
-          </Button>
-        </div>
-        <span className={styles.taskTitle}>{task.title}</span>
-        <div className={styles.headerRight}>
-          <Button
-            type="link"
-            icon={<ThunderboltOutlined />}
-            onClick={() => navigate('/animation')}
-            className={styles.animationBtn}
-          >
-            Animation
-          </Button>
-          <ThemeToggle />
-        </div>
-      </Layout.Header>
+    <div className={styles.layout}>
+      <header className={styles.headerShell}>
+        <GlassTopbar
+          left={
+            <div className={styles.headerLeft}>
+              <GlassButton onClick={handleBack}>
+                <HomeOutlined />
+                <span>Roadmap</span>
+              </GlassButton>
+              <GlassButton onClick={handlePrev} className={styles.navButton} >
+                <LeftOutlined />
+                <span>Предыдущая</span>
+              </GlassButton>
+              <GlassButton onClick={handleNext} className={styles.navButton}>
+                <RightOutlined />
+                <span>Следующая</span>
+              </GlassButton>
+            </div>
+          }
+          center={<span className={styles.taskTitle}>{task.title}</span>}
+          right={
+            <div className={styles.headerRight}>
+              <GlassButton onClick={() => navigate('/animation')}>
+                <ThunderboltOutlined />
+                <span>Animation</span>
+              </GlassButton>
+            </div>
+          }
+        />
+      </header>
 
       <div className={styles.mainLayout}>
         <div className={styles.leftPanel}>
           <div className={styles.panelContent}>
-            <h2>Условие</h2>
-            <p>{task.description}</p>
-            <h3>Ожидаемый вывод</h3>
-            <p>{task.expectedOutput}</p>
-            <h3>Подсказки</h3>
-            <Collapse items={hintItems} />
-            <Alert
-              message="Формат кода"
-              description="Напишите функцию с именем solution и нужными аргументами. Pyodide вызовет её и вернёт результат. Пример: def solution(a: int, b: int) -> int: return a + b"
-              type="info"
-              showIcon
-              style={{ marginTop: 16 }}
-            />
+            <h2 className={styles.sectionTitle}>Условие</h2>
+            <p className={styles.text}>{task.description}</p>
+            <h3 className={styles.sectionSubtitle}>Ожидаемый вывод</h3>
+            <p className={styles.text}>{task.expectedOutput}</p>
+            <h3 className={styles.sectionSubtitle}>Подсказки</h3>
+            <div className={styles.hints}>
+              {hintItems.map((hint) => (
+                <details key={hint.key} className={styles.hintItem}>
+                  <summary>{hint.title}</summary>
+                  <p>{hint.text}</p>
+                </details>
+              ))}
+            </div>
+            <div className={styles.infoBox}>
+              <div className={styles.infoTitle}>Формат кода</div>
+              <p className={styles.infoText}>
+                Напишите функцию с именем <code>solution</code> и нужными аргументами. Pyodide
+                вызовет её и вернёт результат. Пример:{' '}
+                <code>def solution(a: int, b: int) -&gt; int: return a + b</code>
+              </p>
+            </div>
           </div>
         </div>
         <div className={styles.rightPanel}>
           <div className={styles.panelContent}>
             <div className={styles.editorHeader}>
-              <h3>Код (Python)</h3>
-              {isLoading && (
-                <Alert
-                  message="Загрузка Python (Pyodide)..."
-                  type="info"
-                  showIcon
-                  style={{ marginBottom: 12 }}
-                />
-              )}
-              <Button
-                type="primary"
-                onClick={handleRun}
-                loading={isRunning || isLoading}
-                disabled={isLoading}
-              >
-                Запустить
-              </Button>
+              <h3 className={styles.sectionSubtitle}>Код (Python)</h3>
+              <div className={styles.editorHeaderRight}>
+                {isLoading && (
+                  <span className={styles.statusPill}>Загрузка Python (Pyodide)...</span>
+                )}
+                <GlassButton onClick={handleRun} >
+                  <span>{isRunning || isLoading ? 'Выполнение...' : 'Запустить'}</span>
+                </GlassButton>
+              </div>
             </div>
             <CodeMirror
               value={code || initCode}
@@ -180,17 +170,13 @@ export function TaskPage() {
               }}
             />
             <div className={styles.outputHeader}>
-              <h3 style={{ margin: 0 }}>Вывод</h3>
-              {isSuccess && (
-                <Tag color="success" icon={<CheckCircleFilled />}>
-                  Успешно
-                </Tag>
-              )}
+              <h3 className={styles.sectionSubtitle}>Вывод</h3>
+              {isSuccess && <span className={styles.successPill}><CheckCircleFilled /> Успешно</span>}
             </div>
             <pre className={styles.output}>{output || '(нажмите Запустить)'}</pre>
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 }

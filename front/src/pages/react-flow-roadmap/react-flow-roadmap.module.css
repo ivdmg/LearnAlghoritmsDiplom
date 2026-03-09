@@ -1,47 +1,13 @@
-.layout {
+.page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  background: #001529;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme='dark'] .header {
-  background: #141414;
-}
-
-.headerLeft {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.logo {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: white;
-  letter-spacing: -0.5px;
-}
-
-.backBtn {
-  color: rgba(255, 255, 255, 0.85) !important;
-}
-
-.backBtn:hover {
-  color: #fff !important;
-}
-
 /* full-width background area below header; переменные для плашек тем (фон до достижения фитилем) */
 .pageBody {
   width: 100%;
-  height: calc(100vh - 64px);
+  height: 100vh;
   background: #f0f4f8;
   --page-bg: #f0f4f8;
   --page-text: #64748b;

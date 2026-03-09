@@ -1,7 +1,8 @@
-import { Button, Layout } from 'antd';
 import { ArrowLeftOutlined, ThunderboltOutlined, NodeIndexOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { ThemeToggle } from '@/widgets/theme-toggle/ui/theme-toggle';
+import { GlassTopbar } from '@/shared/ui';
+import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import styles from './app-header.module.css';
 
 export type AppHeaderVariant = 'main' | 'back';
@@ -23,45 +24,42 @@ export function AppHeader(props: AppHeaderProps) {
 
   if (props.variant === 'main') {
     return (
-      <Layout.Header className={styles.header}>
-        <span className={styles.logo}>AlgoLearn</span>
-        <div className={styles.headerRight}>
-          <Button
-            type="link"
-            icon={<ThunderboltOutlined />}
-            onClick={() => navigate('/animation')}
-            className={styles.navBtn}
-          >
-            Animation
-          </Button>
-          <Button
-            type="link"
-            icon={<NodeIndexOutlined />}
-            onClick={() => navigate('/react-flow')}
-            className={styles.navBtn}
-          >
-            React Flow
-          </Button>
-          <ThemeToggle />
-        </div>
-      </Layout.Header>
+      <header className={styles.headerShell}>
+        <GlassTopbar
+          left={<span className={styles.logo}>AlgoLearn</span>}
+          center={null}
+          right={
+            <div className={styles.headerRight}>
+              <GlassButton onClick={() => navigate('/animation')}>
+                <ThunderboltOutlined />
+                <span>Animation</span>
+              </GlassButton>
+              <GlassButton onClick={() => navigate('/react-flow')}>
+                <NodeIndexOutlined />
+                <span>React Flow</span>
+              </GlassButton>
+              <ThemeToggle />
+            </div>
+          }
+        />
+      </header>
     );
   }
 
   return (
-    <Layout.Header className={styles.header}>
-      <div className={styles.headerLeft}>
-        <Button
-          type="link"
-          icon={<ArrowLeftOutlined />}
-          onClick={() => navigate(props.backTo ?? '/')}
-          className={styles.backBtn}
-        >
-          Назад
-        </Button>
-        <span className={styles.title}>{props.title}</span>
-      </div>
-      <ThemeToggle />
-    </Layout.Header>
+    <header className={styles.headerShell}>
+      <GlassTopbar
+        left={
+          <div className={styles.headerLeft}>
+            <GlassButton onClick={() => navigate(props.backTo ?? '/')}>
+              <ArrowLeftOutlined />
+              <span>Назад</span>
+            </GlassButton>
+          </div>
+        }
+        center={<span className={styles.title}>{props.title}</span>}
+        right={<ThemeToggle />}
+      />
+    </header>
   );
 }

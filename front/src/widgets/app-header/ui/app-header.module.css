@@ -1,14 +1,6 @@
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  background: var(--header-bg, #001529);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme='dark'] .header {
-  background: #141414;
+.headerShell {
+  height: 0;
+  padding: 0;
 }
 
 .headerLeft {
@@ -26,28 +18,12 @@
 .logo {
   font-size: 1.25rem;
   font-weight: 700;
-  color: white;
+  color: #e5e7eb;
   letter-spacing: -0.5px;
 }
 
 .title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: white;
-}
-
-.navBtn {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.navBtn:hover {
-  color: #fff;
-}
-
-.backBtn {
-  color: rgba(255, 255, 255, 0.85) !important;
-}
-
-.backBtn:hover {
-  color: #fff !important;
+  color: #e5e7eb;
 }

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { LeftOutlined, RightOutlined, HomeOutlined, ThunderboltOutlined, CheckCircleFilled } from '@ant-design/icons';
+import { LeftOutlined, RightOutlined, HomeOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { useMemo, useState, useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
@@ -93,28 +93,12 @@ export function TaskPage() {
       <header className={styles.headerShell}>
         <GlassTopbar
           left={
-            <div className={styles.headerLeft}>
-              <GlassButton onClick={handleBack}>
-                <HomeOutlined />
-                <span>Roadmap</span>
-              </GlassButton>
-              <GlassButton onClick={handlePrev} className={styles.navButton} >
-                <LeftOutlined />
-                <span>Предыдущая</span>
-              </GlassButton>
-              <GlassButton onClick={handleNext} className={styles.navButton}>
-                <RightOutlined />
-                <span>Следующая</span>
-              </GlassButton>
-            </div>
+            <span className={styles.logo}>AlgoLearn</span>
           }
           center={<span className={styles.taskTitle}>{task.title}</span>}
           right={
             <div className={styles.headerRight}>
-              <GlassButton onClick={() => navigate('/animation')}>
-                <ThunderboltOutlined />
-                <span>Animation</span>
-              </GlassButton>
+              {/* тут можно добавить глобальные кнопки/переключатели при необходимости */}
             </div>
           }
         />
@@ -123,7 +107,23 @@ export function TaskPage() {
       <div className={styles.mainLayout}>
         <div className={styles.leftPanel}>
           <div className={styles.panelContent}>
-            <h2 className={styles.sectionTitle}>Условие</h2>
+            <div className={styles.leftTopRow}>
+              <h2 className={styles.sectionTitle}>Условие</h2>
+              <div className={styles.leftNavButtons}>
+                <GlassButton onClick={handleBack}>
+                  <HomeOutlined />
+                  <span>Домой</span>
+                </GlassButton>
+                <GlassButton onClick={handlePrev} className={styles.navButton}>
+                  <LeftOutlined />
+                  <span>Предыдущая</span>
+                </GlassButton>
+                <GlassButton onClick={handleNext} className={styles.navButton}>
+                  <RightOutlined />
+                  <span>Следующая</span>
+                </GlassButton>
+              </div>
+            </div>
             <p className={styles.text}>{task.description}</p>
             <h3 className={styles.sectionSubtitle}>Ожидаемый вывод</h3>
             <p className={styles.text}>{task.expectedOutput}</p>
@@ -147,33 +147,42 @@ export function TaskPage() {
           </div>
         </div>
         <div className={styles.rightPanel}>
-          <div className={styles.panelContent}>
-            <div className={styles.editorHeader}>
-              <h3 className={styles.sectionSubtitle}>Код (Python)</h3>
-              <div className={styles.editorHeaderRight}>
-                {isLoading && (
-                  <span className={styles.statusPill}>Загрузка Python (Pyodide)...</span>
-                )}
-                <GlassButton onClick={handleRun} >
-                  <span>{isRunning || isLoading ? 'Выполнение...' : 'Запустить'}</span>
-                </GlassButton>
+          <div className={styles.rightColumn}>
+            <div className={styles.panelContent}>
+              <div className={styles.editorHeader}>
+                <h3 className={styles.sectionSubtitle}>Код (Python)</h3>
+                <div className={styles.editorHeaderRight}>
+                  {isLoading && (
+                    <span className={styles.statusPill}>Загрузка Python (Pyodide)...</span>
+                  )}
+                  <GlassButton onClick={handleRun}>
+                    <span>{isRunning || isLoading ? 'Выполнение...' : 'Запустить'}</span>
+                  </GlassButton>
+                </div>
               </div>
+              <CodeMirror
+                value={code || initCode}
+                height="300px"
+                extensions={[python()]}
+                onChange={(v) => setCode(v)}
+                theme={themeMode === 'dark' ? 'dark' : 'light'}
+                basicSetup={{
+                  lineNumbers: true,
+                }}
+              />
             </div>
-            <CodeMirror
-              value={code || initCode}
-              height="300px"
-              extensions={[python()]}
-              onChange={(v) => setCode(v)}
-              theme={themeMode === 'dark' ? 'dark' : 'light'}
-              basicSetup={{
-                lineNumbers: true,
-              }}
-            />
-            <div className={styles.outputHeader}>
-              <h3 className={styles.sectionSubtitle}>Вывод</h3>
-              {isSuccess && <span className={styles.successPill}><CheckCircleFilled /> Успешно</span>}
+
+            <div className={styles.panelContent}>
+              <div className={styles.outputHeader}>
+                <h3 className={styles.sectionSubtitle}>Вывод</h3>
+                {isSuccess && (
+                  <span className={styles.successPill}>
+                    <CheckCircleFilled /> Успешно
+                  </span>
+                )}
+              </div>
+              <pre className={styles.output}>{output || '(нажмите Запустить)'}</pre>
             </div>
-            <pre className={styles.output}>{output || '(нажмите Запустить)'}</pre>
           </div>
         </div>
       </div>

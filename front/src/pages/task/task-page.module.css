@@ -1,7 +1,6 @@
 .layout {
   min-height: 100vh;
-  background: #050607;
-
+  background: #050607; /* как тёмный фон React Flow в dark-теме */
   display: flex;
   flex-direction: column;
 }
@@ -53,12 +52,14 @@
 
 .rightPanel {
   margin-right: 20px;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .panelContent {
   flex: 1;
   overflow-y: auto;
-
+   margin-top: 16px;
   padding: 20px 22px;
   border-radius: 35px;
   background: rgba(255, 255, 255, 0.05);
@@ -73,6 +74,20 @@
   -webkit-backdrop-filter: blur(22px) saturate(150%);
 
   color: #e5e7eb;
+}
+
+.leftTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.leftNavButtons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .sectionTitle {

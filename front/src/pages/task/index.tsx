@@ -6,7 +6,7 @@ import { python } from '@codemirror/lang-python';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import { TASKS, getOrderedTaskIds } from '@/entities/task';
 import { usePyodide } from '@/features/run-python';
-import { GlassTopbar } from '@/shared/ui';
+import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import styles from './task-page.module.css';
 
@@ -93,6 +93,7 @@ export function TaskPage() {
   if (!task) {
     return (
       <div className={styles.layout}>
+        <AppHeader />
         <div className={styles.error}>Задача не найдена</div>
         <GlassButton onClick={() => navigate('/')}>На главную</GlassButton>
       </div>
@@ -108,19 +109,7 @@ export function TaskPage() {
   return (
     <div ref={layoutRef} className={styles.layout}>
       <div className={styles.cursorGlow} aria-hidden />
-      <header className={styles.headerShell}>
-        <GlassTopbar
-          left={
-            <span className={styles.logo}>AlgoLearn</span>
-          }
-          center={<span className={styles.taskTitle}>{task.title}</span>}
-          right={
-            <div className={styles.headerRight}>
-              {/* тут можно добавить глобальные кнопки/переключатели при необходимости */}
-            </div>
-          }
-        />
-      </header>
+      <AppHeader />
 
       <div className={styles.mainLayout}>
         <div className={styles.leftPanel}>

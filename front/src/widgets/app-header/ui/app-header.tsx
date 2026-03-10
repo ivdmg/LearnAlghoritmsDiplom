@@ -1,60 +1,69 @@
-import { ArrowLeftOutlined, ThunderboltOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { ThunderboltOutlined } from '@ant-design/icons';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ThemeToggle } from '@/widgets/theme-toggle/ui/theme-toggle';
 import { GlassTopbar } from '@/shared/ui';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
+import { TASKS } from '@/entities/task';
 import styles from './app-header.module.css';
 
-export type AppHeaderVariant = 'main' | 'back';
-
-interface AppHeaderMainProps {
-  variant: 'main';
-}
-
-interface AppHeaderBackProps {
-  variant: 'back';
-  title: string;
-  backTo?: string;
-}
-
-export type AppHeaderProps = AppHeaderMainProps | AppHeaderBackProps;
-
-export function AppHeader(props: AppHeaderProps) {
+export function AppHeader() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { taskId } = useParams<{ taskId?: string }>();
 
-  if (props.variant === 'main') {
-    return (
-      <header className={styles.headerShell}>
-        <GlassTopbar
-          left={<span className={styles.logo}>AlgoLearn</span>}
-          center={null}
-          right={
-            <div className={styles.headerRight}>
-              <GlassButton onClick={() => navigate('/animation')}>
-                <ThunderboltOutlined />
-                <span>Animation</span>
-              </GlassButton>
-              <ThemeToggle />
-            </div>
-          }
-        />
-      </header>
-    );
+  const isRoadmap = location.pathname === '/';
+  const isTasks = location.pathname.startsWith('/task');
+
+  const activeTab = isTasks ? 'tasks' : 'roadmap';
+
+  const currentTaskTitle =
+    isTasks && taskId ? TASKS.find((t) => t.id === taskId)?.title ?? 'Задачи' : null;
+
+  let centerTitle: string;
+  if (isRoadmap) {
+    centerTitle = 'AlgoLearn — Roadmap';
+  } else if (isTasks) {
+    centerTitle = currentTaskTitle ?? 'Задачи';
+  } else if (location.pathname.startsWith('/animation')) {
+    centerTitle = 'Анимация фитиля';
+  } else {
+    centerTitle = 'AlgoLearn';
   }
 
   return (
     <header className={styles.headerShell}>
       <GlassTopbar
         left={
-          <div className={styles.headerLeft}>
-            <GlassButton onClick={() => navigate(props.backTo ?? '/')}>
-              <ArrowLeftOutlined />
-              <span>Назад</span>
+          <div className={styles.navTabs}>
+            <GlassButton
+              active={activeTab === 'roadmap'}
+              layoutId="header-tab-highlight"
+              onClick={() => navigate('/')}
+            >
+              Roadmap
+            </GlassButton>
+            <GlassButton
+              active={activeTab === 'tasks'}
+              layoutId="header-tab-highlight"
+              onClick={() => {
+                const firstTaskId = TASKS[0]?.id;
+                if (firstTaskId) navigate(`/task/${firstTaskId}`);
+              }}
+            >
+              Tasks
             </GlassButton>
           </div>
         }
-        center={<span className={styles.title}>{props.title}</span>}
-        right={<ThemeToggle />}
+        center={<span className={styles.title}>{centerTitle}</span>}
+        right={
+          <div className={styles.headerRight}>
+            <GlassButton onClick={() => navigate('/animation')}>
+              <ThunderboltOutlined />
+              <span>Animation</span>
+            </GlassButton>
+            <ThemeToggle />
+          </div>
+        }
       />
     </header>
   );

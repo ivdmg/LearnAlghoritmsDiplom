@@ -1,8 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
 import { ROADMAP_TOPICS } from '@/entities/task';
+import { AppHeader } from '@/widgets/app-header';
 import styles from './animation-page.module.css';
 
 const PATH_D =
@@ -21,7 +19,6 @@ export interface MarkerPosition {
 }
 
 export function AnimationPage() {
-  const navigate = useNavigate();
   const pathRef = useRef<SVGPathElement>(null);
   const burnRef = useRef<SVGPathElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -98,13 +95,7 @@ export function AnimationPage() {
 
   return (
     <div className={styles.wrapper}>
-      <Button
-        className={styles.backButton}
-        icon={<ArrowLeftOutlined />}
-        onClick={() => navigate('/')}
-      >
-        Назад
-      </Button>
+      <AppHeader />
       <div className={styles.title}>Плавный скролл с фитилем</div>
       <div className={styles.scrollSpace} style={{ height: PAGE_HEIGHT }} />
       <div className={styles.wrap}>

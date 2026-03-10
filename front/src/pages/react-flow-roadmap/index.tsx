@@ -32,7 +32,7 @@ export function ReactFlowRoadmapPage() {
 
   return (
     <div className={styles.page}>
-      <AppHeader variant="back" title="AlgoLearn — Roadmap" backTo="/" />
+      <AppHeader />
 
       <div className={styles.pageBody}>
         <div

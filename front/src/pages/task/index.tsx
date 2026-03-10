@@ -169,6 +169,7 @@ export function TaskPage() {
                 basicSetup={{
                   lineNumbers: true,
                 }}
+                className="cm-transparent"
               />
             </div>
 

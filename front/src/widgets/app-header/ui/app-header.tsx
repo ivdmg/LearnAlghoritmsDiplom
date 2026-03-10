@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined, ThunderboltOutlined, NodeIndexOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { ThemeToggle } from '@/widgets/theme-toggle/ui/theme-toggle';
 import { GlassTopbar } from '@/shared/ui';
@@ -33,10 +33,6 @@ export function AppHeader(props: AppHeaderProps) {
               <GlassButton onClick={() => navigate('/animation')}>
                 <ThunderboltOutlined />
                 <span>Animation</span>
-              </GlassButton>
-              <GlassButton onClick={() => navigate('/react-flow')}>
-                <NodeIndexOutlined />
-                <span>React Flow</span>
               </GlassButton>
               <ThemeToggle />
             </div>

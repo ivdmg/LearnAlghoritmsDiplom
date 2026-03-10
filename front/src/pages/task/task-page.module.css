@@ -3,8 +3,30 @@
   background: #050607;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
+.cursorGlow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(
+      circle at var(--task-glow-x, 50%) var(--task-glow-y, 30%),
+      rgba(213, 232, 255, 0.35) 0%,
+      rgba(139, 148, 160, 0.25) 1%,
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at calc(var(--task-glow-x, 50%) + 120px)
+        calc(var(--task-glow-y, 30%) + 160px),
+      rgba(52, 211, 153, 0.22) 0%,
+      rgba(52, 211, 153, 0.15) 1%,
+      transparent 40%
+    );
+}
 /* ---------- HEADER ---------- */
 
 .headerShell {
@@ -70,12 +92,12 @@
   border-radius: 32px;
   color: #e5e7eb;
 
-  background:
+  /* background:
     linear-gradient(180deg, rgba(102,102,102,0.2) 0%, rgba(102,102,102,0) 32.69%),
     linear-gradient(180deg, rgba(102,102,102,0) 50%, rgba(102,102,102,0.4) 100%),
     linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1)),
     linear-gradient(0deg, rgba(29,29,29,0.3), rgba(29,29,29,0.3)),
-    rgba(29,29,29,0.1);
+    rgba(29,29,29,0.1); */
 
   background-blend-mode:
     plus-lighter,
@@ -131,6 +153,8 @@
   font-size: 14px;
   line-height: 1.6;
   color: #e5e7eb;
+  position: relative;
+  z-index: 1;
 }
 
 /* ---------- EDITOR ---------- */

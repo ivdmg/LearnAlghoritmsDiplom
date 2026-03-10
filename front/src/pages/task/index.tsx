@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { LeftOutlined, RightOutlined, HomeOutlined, CheckCircleFilled } from '@ant-design/icons';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
@@ -19,6 +19,7 @@ export function TaskPage() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const { runPython, isLoading } = usePyodide();
+  const layoutRef = useRef<HTMLDivElement | null>(null);
   const themeMode = useAppSelector((state) => state.theme.mode);
 
   const task = useMemo(() => TASKS.find((t) => t.id === taskId), [taskId]);
@@ -73,6 +74,22 @@ export function TaskPage() {
     navigate('/');
   };
 
+  useEffect(() => {
+    const el = layoutRef.current;
+    if (!el) return;
+
+    const handleMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      el.style.setProperty('--task-glow-x', `${x}%`);
+      el.style.setProperty('--task-glow-y', `${y}%`);
+    };
+
+    window.addEventListener('pointermove', handleMove);
+    return () => window.removeEventListener('pointermove', handleMove);
+  }, []);
+
   if (!task) {
     return (
       <div className={styles.layout}>
@@ -89,7 +106,8 @@ export function TaskPage() {
   }));
 
   return (
-    <div className={styles.layout}>
+    <div ref={layoutRef} className={styles.layout}>
+      <div className={styles.cursorGlow} aria-hidden />
       <header className={styles.headerShell}>
         <GlassTopbar
           left={

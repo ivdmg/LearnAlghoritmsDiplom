@@ -23,10 +23,10 @@
 
 /* centred, width-capped React Flow canvas */
 .flowContainer {
-  max-width: 1200px;
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
+  max-width: 1440px;
+  width: 90vw;
+  height: 100vh; /* отнимаем высоту хедера */
+  margin: 60px auto 0;       /* безопасный отступ сверху */
   transition: opacity 0.18s ease;
 }
 

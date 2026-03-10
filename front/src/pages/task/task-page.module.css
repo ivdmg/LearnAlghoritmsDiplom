@@ -15,15 +15,15 @@
   background:
     radial-gradient(
       circle at var(--task-glow-x, 50%) var(--task-glow-y, 30%),
-      rgba(213, 232, 255, 0.35) 0%,
-      rgba(139, 148, 160, 0.25) 1%,
+      rgba(213, 232, 255, 0.05) 0%,
+      rgba(139, 148, 160, 0.05) 1%,
       transparent 35%
     ),
     radial-gradient(
       circle at calc(var(--task-glow-x, 50%) + 120px)
         calc(var(--task-glow-y, 30%) + 160px),
-      rgba(52, 211, 153, 0.22) 0%,
-      rgba(52, 211, 153, 0.15) 1%,
+      rgba(52, 211, 153, 0.07) 0%,
+      rgba(52, 211, 153, 0.07) 1%,
       transparent 40%
     );
 }
@@ -59,6 +59,7 @@
 
 .mainLayout {
   display: flex;
+  justify-content: center;
   flex: 1;
   gap: 16px;
   min-height: 0;
@@ -73,10 +74,12 @@
 }
 
 .leftPanel {
+  flex: 0 0 45%;
   margin-left: 20px;
 }
 
 .rightPanel {
+  flex: 0 0 45%;
   margin-right: 20px;
   flex-direction: column;
   gap: 16px;
@@ -98,6 +101,7 @@
     linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1)),
     linear-gradient(0deg, rgba(29,29,29,0.3), rgba(29,29,29,0.3)),
     rgba(29,29,29,0.1); */
+    background: rgba(255, 255, 255, 0.05);
 
   background-blend-mode:
     plus-lighter,
@@ -201,6 +205,21 @@
   -webkit-backdrop-filter: blur(14px);
 
   border: 1px solid rgba(148,163,184,0.25);
+}
+
+/* ---------- CODEMIRROR OVERRIDES (transparent background) ---------- */
+
+:global(.cm-transparent .cm-editor) {
+  background-color: transparent !important;
+}
+
+:global(.cm-transparent .cm-scroller) {
+  background-color: transparent !important;
+}
+
+:global(.cm-transparent .cm-gutters) {
+  background-color: transparent !important;
+  border-right: none !important;
 }
 
 /* ---------- ERROR ---------- */

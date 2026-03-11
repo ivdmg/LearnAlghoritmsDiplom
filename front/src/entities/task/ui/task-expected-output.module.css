@@ -10,13 +10,24 @@
   color: #e5e7eb;
 }
 
-.codeBlock {
-  background: rgba(15, 23, 42, 0.85) !important;
-  box-shadow:
-    0 18px 40px rgba(15, 23, 42, 0.85),
-    0 0 0 1px rgba(148, 163, 184, 0.5);
+/* контейнер кода ожидаемого вывода */
+.codeWrapper {
+  position: relative;
 }
-.codeWrapper{
-  background: red;
+
+.codeBlock {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 13px;
+  border-radius: 16px;
+  padding: 16px 18px;
+  overflow-x: auto;
+}
+
+/* убираем фон с токенов темы prism */
+.codeBlock > div,
+.codeBlock span {
+  background: none !important;
+  background-color: transparent !important;
 }
 

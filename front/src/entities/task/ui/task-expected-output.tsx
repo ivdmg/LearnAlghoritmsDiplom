@@ -1,6 +1,5 @@
 import React from 'react';
 import { Highlight, themes } from 'prism-react-renderer';
-import codeStyles from '@/shared/ui/content/content-renderer.module.css';
 import styles from './task-expected-output.module.css';
 
 interface TaskExpectedOutputProps {
@@ -23,12 +22,12 @@ export const TaskExpectedOutput: React.FC<TaskExpectedOutputProps> = ({
       {description && <p className={styles.text}>{description}</p>}
 
       {code && (
-        <div className={codeStyles.codeWrapper}>
+        <div className={styles.codeWrapper}>
           <Highlight theme={themes.nightOwl} code={code.trimEnd()} language={language as any}>
             {({ className, style, tokens, getLineProps, getTokenProps }) => (
               <pre
-                className={`${codeStyles.codeBlock} ${className} ${styles.codeBlock}`}
-                style={style}
+                className={`${styles.codeBlock} ${className}`}
+                style={{ ...style, background: 'none', backgroundColor: 'transparent', backdropFilter: 'blur(14px)' }}
               >
                 {tokens.map((line, i) => {
                   const lineProps = getLineProps({ line });

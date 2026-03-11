@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { LeftOutlined, RightOutlined, HomeOutlined, CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
+import { LeftOutlined, RightOutlined, HomeOutlined, CheckCircleFilled, CloseCircleFilled, DownOutlined } from '@ant-design/icons';
 import { useMemo, useState, useEffect, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
@@ -79,19 +79,15 @@ export function TaskPage() {
   };
 
   useEffect(() => {
-    const el = layoutRef.current;
-    if (!el) return;
-
     const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      el.style.setProperty('--task-glow-x', `${x}%`);
-      el.style.setProperty('--task-glow-y', `${y}%`);
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      document.documentElement.style.setProperty('--task-glow-x', `${x}%`);
+      document.documentElement.style.setProperty('--task-glow-y', `${y}%`);
     };
 
-    window.addEventListener('pointermove', handleMove);
-    return () => window.removeEventListener('pointermove', handleMove);
+    window.addEventListener('mousemove', handleMove);
+    return () => window.removeEventListener('mousemove', handleMove);
   }, []);
 
   if (!task && !taskLoading) {
@@ -104,6 +100,16 @@ export function TaskPage() {
     );
   }
 
+  const testCasesPreview =
+    task?.testCases && task.testCases.length > 0
+      ? task.testCases
+          .map(
+            (tc, index) =>
+              `# Тест ${index + 1}\n# Вход: ${tc.input}\n# Ожидается: ${tc.expected}`,
+          )
+          .join('\n\n')
+      : undefined;
+
   return (
     <div ref={layoutRef} className={styles.layout}>
       <div className={styles.cursorGlow} aria-hidden />
@@ -113,35 +119,37 @@ export function TaskPage() {
         <div className={styles.leftPanel}>
           <div className={styles.panelContent}>
             <div className={styles.leftTopRow}>
-              <h2 className={styles.sectionTitle}>Условие</h2>
               <div className={styles.leftNavButtons}>
-                <GlassButton onClick={handleBack}>
+                <GlassButton onClick={handleBack} className={styles.iconButton}>
                   <HomeOutlined />
-                  <span>Домой</span>
                 </GlassButton>
-                <GlassButton onClick={handlePrev} className={styles.navButton}>
+                <GlassButton onClick={handlePrev} className={`${styles.navButton} ${styles.iconButton}`}>
                   <LeftOutlined />
-                  <span>Предыдущая</span>
                 </GlassButton>
-                <GlassButton onClick={handleNext} className={styles.navButton}>
+                <GlassButton onClick={handleNext} className={`${styles.navButton} ${styles.iconButton}`}>
                   <RightOutlined />
-                  <span>Следующая</span>
                 </GlassButton>
               </div>
             </div>
+            <h2 className={styles.sectionTitle}>Условие</h2>
             <p className={styles.text}>{task?.description}</p>
             <h3 className={styles.sectionSubtitle}>Ожидаемый вывод</h3>
             <TaskExpectedOutput
               description={task?.expectedOutput}
-              code={task?.expectedOutputCode}
-              language={task?.expectedOutputLanguage}
+              code={testCasesPreview}
+              language="python"
             />
             <h3 className={styles.sectionSubtitle}>Подсказки</h3>
             {/* пока берём первые две подсказки, как и раньше */}
             <div className={styles.hints}>
               {task?.hints.slice(0, 2).map((text, index) => (
                 <details key={index} className={styles.hintItem}>
-                  <summary>{`Подсказка ${index + 1}`}</summary>
+                  <summary>
+                    <span className={styles.hintTitle}>{`Подсказка ${index + 1}`}</span>
+                    <span className={styles.hintChevron}>
+                      <DownOutlined />
+                    </span>
+                  </summary>
                   <p>{text}</p>
                 </details>
               ))}

@@ -685,5 +685,47 @@
         }
       ]
     }
+  ],
+  "tasks": [
+    {
+      "id": "task-1",
+      "topicId": "osnovy",
+      "subtopicId": "st-osn-1",
+      "title": "Сумма двух чисел",
+      "description": "Напишите функцию, которая принимает два числа и возвращает их сумму.",
+      "expectedOutput": "Функция должна вернуть сумму двух аргументов.",
+      "expectedOutputCode": "5",
+      "expectedOutputLanguage": "text",
+      "hints": [
+        "Просто сложите аргументы a и b.",
+        "Используйте оператор + и верните результат."
+      ],
+      "solutionTemplate": "def solution(a: int, b: int) -> int:\n    # Ваш код здесь\n    pass",
+      "formatInfo": "Реализуйте функцию solution(a: int, b: int) -> int, которая возвращает сумму a и b.",
+      "testCases": [
+        { "input": "2, 3", "expected": "5" },
+        { "input": "-1, 1", "expected": "0" }
+      ]
+    },
+    {
+      "id": "task-2",
+      "topicId": "osnovy",
+      "subtopicId": "st-osn-2",
+      "title": "Сумма элементов массива",
+      "description": "Дан массив чисел. Верните сумму всех элементов.",
+      "expectedOutput": "Функция должна вернуть сумму элементов списка.",
+      "expectedOutputCode": "6",
+      "expectedOutputLanguage": "text",
+      "hints": [
+        "Пройдитесь по списку циклом for и аккумулируйте сумму.",
+        "Либо используйте встроенную функцию sum(nums)."
+      ],
+      "solutionTemplate": "def solution(nums: list[int]) -> int:\n    # Ваш код здесь\n    pass",
+      "formatInfo": "Реализуйте функцию solution(nums: list[int]) -> int, которая возвращает сумму элементов списка nums.",
+      "testCases": [
+        { "input": "[1, 2, 3]", "expected": "6" },
+        { "input": "[]", "expected": "0" }
+      ]
+    }
   ]
 }

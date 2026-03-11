@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import type { Node } from '@xyflow/react';
@@ -14,11 +14,21 @@ import { edgeTypes } from './ui/edge-types';
 import { useFlowViewport } from './hooks/use-flow-viewport';
 import styles from './react-flow-roadmap.module.css';
 
+let graphHydratedOnce = false;
+
 export function ReactFlowRoadmapPage() {
   const { nodes, edges } = useMemo(buildGraph, []);
   const { containerRef, onInit, graphExtent, ready } = useFlowViewport();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<RoadmapNode | null>(null);
+  const [hydrated, setHydrated] = useState(graphHydratedOnce);
+
+  useEffect(() => {
+    if (ready && !hydrated) {
+      graphHydratedOnce = true;
+      setHydrated(true);
+    }
+  }, [ready]);
 
   const handleNodeClick = useCallback((_: unknown, node: Node) => {
     const gp = getSmoothProgress();
@@ -39,7 +49,7 @@ export function ReactFlowRoadmapPage() {
           className={styles.flowContainer}
           ref={containerRef}
         >
-          {!ready && (
+          {!hydrated && (
             <div className={styles.flowSkeleton}>
               <div className={styles.flowSkeletonBar} />
               <div className={styles.flowSkeletonDots}>

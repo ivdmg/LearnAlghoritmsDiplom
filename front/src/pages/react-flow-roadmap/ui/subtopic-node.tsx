@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { useSubtopicReached } from '../model/subtopic-reached';
 import styles from '../react-flow-roadmap.module.css';
@@ -8,7 +9,7 @@ interface SubtopicNodeProps {
 }
 
 /** Плашка подтемы: «Основы» всегда активны, остальные — когда до них доходит линия */
-export function SubtopicNode({ id, data }: SubtopicNodeProps) {
+function SubtopicNodeComponent({ id, data }: SubtopicNodeProps) {
   const color = data.color as string;
   const side = data.side as 'left' | 'right';
   const topicId = data.topicId as string | undefined;
@@ -46,3 +47,5 @@ export function SubtopicNode({ id, data }: SubtopicNodeProps) {
     </div>
   );
 }
+
+export const SubtopicNode = memo(SubtopicNodeComponent);

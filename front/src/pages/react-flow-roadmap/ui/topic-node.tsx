@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { TOPIC_REACHED_AT } from '../model/constants';
 import { useSmoothProgress } from '../model/smooth-progress';
@@ -9,7 +10,7 @@ interface TopicNodeProps {
 }
 
 /** Плашка темы: «Основы» всегда активна, остальные — после достижения фитилём */
-export function TopicNode({ id, data }: TopicNodeProps) {
+function TopicNodeComponent({ id, data }: TopicNodeProps) {
   const color = data.color as string;
   const gp = useSmoothProgress();
   const reachedAt = TOPIC_REACHED_AT[id] ?? 0;
@@ -45,3 +46,5 @@ export function TopicNode({ id, data }: TopicNodeProps) {
     </div>
   );
 }
+
+export const TopicNode = memo(TopicNodeComponent);

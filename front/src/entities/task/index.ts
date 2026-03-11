@@ -4,3 +4,4 @@
  */
 export { TASKS, THEORIES, getOrderedTaskIds, ROADMAP_TOPICS } from './model/data';
 export type { Task } from './model/types';
+export { useTaskById } from './model/use-task-by-id';

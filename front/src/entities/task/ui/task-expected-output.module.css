@@ -1,0 +1,22 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #e5e7eb;
+}
+
+.codeBlock {
+  background: rgba(15, 23, 42, 0.85) !important;
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.85),
+    0 0 0 1px rgba(148, 163, 184, 0.5);
+}
+.codeWrapper{
+  background: red;
+}
+

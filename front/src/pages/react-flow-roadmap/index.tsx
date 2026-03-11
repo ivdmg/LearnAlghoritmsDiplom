@@ -38,32 +38,47 @@ export function ReactFlowRoadmapPage() {
         <div
           className={styles.flowContainer}
           ref={containerRef}
-          style={{ opacity: ready ? 1 : 0 }}
         >
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            nodeOrigin={[0.5, 0.5]}
-            defaultEdgeOptions={{ type: 'default' }}
-            onInit={onInit}
-            onNodeClick={handleNodeClick}
-            translateExtent={graphExtent}
-            panOnScroll={false}
-            panOnDrag={false}
-            zoomOnScroll={false}
-            zoomOnPinch={false}
-            zoomOnDoubleClick={false}
-            nodesDraggable={false}
-            nodesConnectable={false}
-            elementsSelectable={false}
-            proOptions={{ hideAttribution: true }}
-            style={{ background: 'transparent' }}
+          {!ready && (
+            <div className={styles.flowSkeleton}>
+              <div className={styles.flowSkeletonBar} />
+              <div className={styles.flowSkeletonDots}>
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+          )}
+          <div
+            className={styles.flowInner}
+            style={{ opacity: ready ? 1 : 0 }}
           >
-            <SmoothProgressDriver />
-            <SubtopicReachedDriver />
-          </ReactFlow>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              nodeOrigin={[0.5, 0.5]}
+              defaultEdgeOptions={{ type: 'default' }}
+              onInit={onInit}
+              onNodeClick={handleNodeClick}
+              translateExtent={graphExtent}
+              onlyRenderVisibleElements
+              panOnScroll={false}
+              panOnDrag={false}
+              zoomOnScroll={false}
+              zoomOnPinch={false}
+              zoomOnDoubleClick={false}
+              nodesDraggable={false}
+              nodesConnectable={false}
+              elementsSelectable={false}
+              proOptions={{ hideAttribution: true }}
+              style={{ background: 'transparent' }}
+            >
+              <SmoothProgressDriver />
+              <SubtopicReachedDriver />
+            </ReactFlow>
+          </div>
         </div>
       </div>
 

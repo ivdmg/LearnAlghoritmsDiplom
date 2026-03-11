@@ -30,17 +30,10 @@ export function useFlowViewport() {
 
   const onInit = useCallback((instance: ReactFlowInstance) => {
     flowInstanceRef.current = instance;
-    let attempts = 0;
     const adjust = () => {
       const allNodes = instance.getNodes();
       const container = containerRef.current;
       if (!allNodes.length || !container) return;
-
-      if (!allNodes.some((n) => n.measured?.width) && attempts < 10) {
-        attempts++;
-        setTimeout(adjust, 50);
-        return;
-      }
 
       let minX = Infinity,
         maxX = -Infinity,

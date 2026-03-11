@@ -11,7 +11,11 @@ import {
   fuseRange,
 } from './constants';
 
+let cachedGraph: { nodes: Node[]; edges: Edge[] } | null = null;
+
 export function buildGraph(): { nodes: Node[]; edges: Edge[] } {
+  if (cachedGraph) return cachedGraph;
+
   const nodes: Node[] = [];
   const edges: Edge[] = [];
 
@@ -68,5 +72,6 @@ export function buildGraph(): { nodes: Node[]; edges: Edge[] } {
     });
   }
 
-  return { nodes, edges };
+  cachedGraph = { nodes, edges };
+  return cachedGraph;
 }

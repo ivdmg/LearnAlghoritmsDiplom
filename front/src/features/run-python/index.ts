@@ -2,5 +2,5 @@
  * Feature: Run Python (Pyodide)
  * Public API.
  */
-export { usePyodide } from './model/use-pyodide';
+export { usePyodide, preloadPyodide } from './model/use-pyodide';
 export type { PyodideState } from './model/use-pyodide';

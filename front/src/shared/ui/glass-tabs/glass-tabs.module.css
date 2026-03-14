@@ -38,10 +38,10 @@
 /* Стеклянная плашка, которая скользит между табами */
 .indicator {
   position: absolute;
-  top: 2px; /* отступ сверху */
-  left: 5px; /* отступ слева */
-  width: 120px;
-  height: calc(100% - 4px); /* чтобы совпадало с внутренним паддингом .tabWrapper */
+  top: 2px;
+  bottom: 2px;
+  left: 5px;
+  right: 5px;
   border-radius: 999px;
   
   /* background: linear-gradient(
@@ -77,5 +77,12 @@
   border-radius: 567.293px;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+.iconTabButton {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
 }
 

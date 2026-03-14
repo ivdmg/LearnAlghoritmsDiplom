@@ -8,7 +8,10 @@ export type GlassSidebarTabKey = string;
 
 interface GlassSidebarTab {
   key: GlassSidebarTabKey;
-  label: string;
+  label?: string;
+  icon?: React.ReactNode;
+  disabled?: boolean;
+  variant?: "default" | "icon";
 }
 
 interface GlassSidebarProps {
@@ -43,6 +46,9 @@ export function GlassSidebar({
   const tabItems = tabs.map((t) => ({
     key: t.key,
     label: t.label,
+    icon: t.icon,
+    disabled: t.disabled,
+    variant: t.variant,
   }));
 
   return (

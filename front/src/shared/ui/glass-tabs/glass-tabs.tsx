@@ -4,7 +4,11 @@ import styles from "./glass-tabs.module.css";
 
 export interface GlassTabsItem {
   key: string;
-  label: string;
+  label?: string;
+  icon?: React.ReactNode;
+  disabled?: boolean;
+  /** Вариант отображения: обычная плашка или компактная круглая иконка */
+  variant?: "default" | "icon";
 }
 
 interface GlassTabsProps {
@@ -19,6 +23,8 @@ export function GlassTabs({ items, activeKey, onChange }: GlassTabsProps) {
       <div className={styles.root}>
         {items.map((item) => {
           const isActive = item.key === activeKey;
+          const isIcon = item.variant === "icon";
+          const content = item.icon ?? item.label;
 
           return (
             <div key={item.key} className={styles.tabWrapper}>
@@ -35,10 +41,13 @@ export function GlassTabs({ items, activeKey, onChange }: GlassTabsProps) {
               )}
 
               <GlassButton
-                onClick={() => onChange(item.key)}
-                className={styles.tabButton}
+                onClick={item.disabled ? undefined : () => onChange(item.key)}
+                className={
+                  isIcon ? styles.iconTabButton : styles.tabButton
+                }
+                disabled={item.disabled}
               >
-                {item.label}
+                {content}
               </GlassButton>
             </div>
           );

@@ -38,6 +38,35 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
 
   if (!node) return null;
 
+  // Общая последовательность для навигации по теме: [основная тема, ...подтемы]
+  const topicForSequence = node.type === 'topic' ? node.topic : node.topic;
+  const subtopicsForSequence = topicForSequence.subtopics;
+  const navSequence: (string | undefined)[] = [
+    undefined,
+    ...subtopicsForSequence.map((s) => s.id),
+  ];
+  const currentIndex = navSequence.findIndex((id) => id === effectiveSubtopicId);
+  const safeCurrentIndex = currentIndex === -1 ? 0 : currentIndex;
+  const hasPrev = safeCurrentIndex > 0;
+  const hasNext = safeCurrentIndex < navSequence.length - 1;
+
+  const goToIndex = (index: number) => {
+    const clamped = Math.min(Math.max(index, 0), navSequence.length - 1);
+    const targetId = navSequence[clamped];
+    setSelectedSubtopicId(targetId);
+    setActiveTab('theory');
+  };
+
+  const handlePrev = () => {
+    if (!hasPrev) return;
+    goToIndex(safeCurrentIndex - 1);
+  };
+
+  const handleNext = () => {
+    if (!hasNext) return;
+    goToIndex(safeCurrentIndex + 1);
+  };
+
   if (node.type === 'topic') {
     const theoryContent = THEORIES[`theory-${node.topic.id}`] ?? `# ${node.topic.title}\n\nВыберите подтему для изучения.`;
     const tasks = effectiveSubtopicId
@@ -54,6 +83,12 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
       : node.topic.title;
 
     const tabItems = [
+      {
+        key: 'prev',
+        icon: '←',
+        variant: 'icon' as const,
+        children: null,
+      },
       {
         key: 'theory',
         label: 'Теория',
@@ -81,15 +116,39 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
           />
         ),
       },
+      {
+        key: 'next',
+        icon: '→',
+        variant: 'icon' as const,
+        children: null,
+      },
     ];
+
+    const handleTabChange = (key: string) => {
+      if (key === 'prev') {
+        handlePrev();
+        return;
+      }
+      if (key === 'next') {
+        handleNext();
+        return;
+      }
+      setActiveTab(key);
+    };
 
     return (
       <GlassSidebar
         open={open}
         title={sidebarTitle}
-        tabs={tabItems.map((t) => ({ key: t.key, label: t.label }))}
+        tabs={tabItems.map((t) => ({
+          key: t.key,
+          label: t.label,
+          icon: (t as any).icon,
+          disabled: t.key === 'prev' ? !hasPrev : t.key === 'next' ? !hasNext : undefined,
+          variant: (t as any).variant,
+        }))}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         onClose={onClose}
       >
         {tabItems.find((t) => t.key === activeTab)?.children ?? tabItems[0].children}
@@ -115,6 +174,12 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
   const sidebarTitle = activeSubtopic ? `${topic.title}: ${activeSubtopic.title}` : topic.title;
 
   const tabItems = [
+    {
+      key: 'prev',
+      icon: '←',
+      variant: 'icon' as const,
+      children: null,
+    },
     {
       key: 'theory',
       label: 'Теория',
@@ -142,15 +207,39 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
         />
       ),
     },
+    {
+      key: 'next',
+      icon: '→',
+      variant: 'icon' as const,
+      children: null,
+    },
   ];
+
+  const handleTabChange = (key: string) => {
+    if (key === 'prev') {
+      handlePrev();
+      return;
+    }
+    if (key === 'next') {
+      handleNext();
+      return;
+    }
+    setActiveTab(key);
+  };
 
   return (
     <GlassSidebar
       open={open}
       title={sidebarTitle}
-      tabs={tabItems.map((t) => ({ key: t.key, label: t.label }))}
+      tabs={tabItems.map((t) => ({
+        key: t.key,
+        label: t.label,
+        icon: (t as any).icon,
+        disabled: t.key === 'prev' ? !hasPrev : t.key === 'next' ? !hasNext : undefined,
+        variant: (t as any).variant,
+      }))}
       activeTab={activeTab}
-      onTabChange={setActiveTab}
+      onTabChange={handleTabChange}
       onClose={onClose}
     >
       {tabItems.find((t) => t.key === activeTab)?.children ?? tabItems[0].children}

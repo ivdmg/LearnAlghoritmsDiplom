@@ -8,6 +8,7 @@ interface GlassButtonProps {
   layoutId?: string; // для скольжения
   variant?: "default" | "close";
   className?: string; // можно передавать кастомный класс
+  disabled?: boolean;
 }
 
 export function GlassButton({
@@ -17,11 +18,13 @@ export function GlassButton({
   layoutId,
   variant = "default",
   className = "",
+  disabled = false,
 }: GlassButtonProps) {
   return (
     <motion.button
       className={`${styles.button} ${variant === "close" ? styles.close : ""} ${className}`}
       onClick={onClick}
+      disabled={disabled}
       layout
     >
       {/* активный зелёный блок */}

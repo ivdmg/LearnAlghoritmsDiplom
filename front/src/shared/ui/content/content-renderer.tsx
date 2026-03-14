@@ -110,6 +110,7 @@ function CodeBlockView({ block }: { block: CodeBlock }) {
 
 function AnimationBlockView({ block }: { block: AnimationBlock }) {
   const [playId, setPlayId] = useState(0);
+  const showPlayButton = block.showPlayButton ?? true;
 
   // Всегда полный документ (HTML+CSS+JS), чтобы при открытии статьи контент
   // сразу отображался: в блоках он создаётся скриптом, без JS блок пустой.
@@ -133,13 +134,15 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
 
   return (
     <div className={styles.animationWrapper}>
-      <button
-        type="button"
-        className={styles.animationPlayButton}
-        onClick={() => setPlayId((id) => id + 1)}
-      >
-        <span className={styles.animationPlayIcon} />
-      </button>
+      {showPlayButton && (
+        <button
+          type="button"
+          className={styles.animationPlayButton}
+          onClick={() => setPlayId((id) => id + 1)}
+        >
+          <span className={styles.animationPlayIcon} />
+        </button>
+      )}
       <iframe
         key={playId}
         className={`${styles.animationFrame} ${block.className ?? ""}`}

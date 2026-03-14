@@ -47,6 +47,8 @@ export interface AnimationBlock extends BaseContentBlock {
   js?: string;
   width?: string | number;
   height?: string | number;
+  /** Нужна ли кнопка запуска/перезапуска анимации */
+  showPlayButton?: boolean;
 }
 
 export type ContentBlock =

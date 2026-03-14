@@ -28,6 +28,11 @@
   z-index: 0;
 }
 
+.button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 .label {
   position: relative;
   z-index: 2;

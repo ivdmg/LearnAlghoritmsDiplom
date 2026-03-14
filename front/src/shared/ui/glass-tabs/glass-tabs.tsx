@@ -18,10 +18,13 @@ interface GlassTabsProps {
 }
 
 export function GlassTabs({ items, activeKey, onChange }: GlassTabsProps) {
+  const mainItems = items.filter((item) => item.variant !== "icon");
+  const iconItems = items.filter((item) => item.variant === "icon");
+
   return (
     <LayoutGroup>
       <div className={styles.root}>
-        {items.map((item) => {
+        {mainItems.map((item) => {
           const isActive = item.key === activeKey;
           const isIcon = item.variant === "icon";
           const content = item.icon ?? item.label;
@@ -45,6 +48,35 @@ export function GlassTabs({ items, activeKey, onChange }: GlassTabsProps) {
                 className={
                   isIcon ? styles.iconTabButton : styles.tabButton
                 }
+                disabled={item.disabled}
+              >
+                {content}
+              </GlassButton>
+            </div>
+          );
+        })}
+        {iconItems.length > 0 && <div className={styles.spacer} />}
+        {iconItems.map((item) => {
+          const isActive = item.key === activeKey;
+          const content = item.icon ?? item.label;
+
+          return (
+            <div key={item.key} className={styles.tabWrapper}>
+              {isActive && (
+                <motion.div
+                  className={styles.indicator}
+                  layoutId="glass-tabs-indicator"
+                  transition={{
+                    type: "spring",
+                    stiffness: 320,
+                    damping: 32,
+                  }}
+                />
+              )}
+
+              <GlassButton
+                onClick={item.disabled ? undefined : () => onChange(item.key)}
+                className={styles.iconTabButton}
                 disabled={item.disabled}
               >
                 {content}

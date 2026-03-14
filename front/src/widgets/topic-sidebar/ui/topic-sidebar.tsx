@@ -15,11 +15,28 @@ interface TopicSidebarProps {
 
 export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
   const [activeTab, setActiveTab] = useState<string>('theory');
-  const [selectedSubtopicId, setSelectedSubtopicId] = useState<string | undefined>(undefined);
+  const [navIndex, setNavIndex] = useState<number | null>(null);
+
+  const subtopicIdFromNode = node?.type === 'subtopic' ? node.subtopic.id : undefined;
+  // Общая последовательность для навигации по теме: [основная тема, ...подтемы]
+  const topicForSequence = node?.topic;
+  const subtopicsForSequence = topicForSequence?.subtopics ?? [];
+  const totalEntries = 1 + subtopicsForSequence.length;
+
+  let currentIndex: number;
+  if (navIndex !== null) {
+    currentIndex = Math.min(Math.max(navIndex, 0), totalEntries - 1);
+  } else if (!node || node.type === 'topic') {
+    currentIndex = 0;
+  } else {
+    const initial = subtopicsForSequence.findIndex((s) => s.id === subtopicIdFromNode);
+    currentIndex = initial === -1 ? 0 : 1 + initial;
+  }
+
+  const effectiveSubtopicId =
+    currentIndex === 0 ? undefined : subtopicsForSequence[currentIndex - 1]?.id;
 
   const topicId = node?.topic.id;
-  const subtopicIdFromNode = node?.type === 'subtopic' ? node.subtopic.id : undefined;
-  const effectiveSubtopicId = selectedSubtopicId ?? subtopicIdFromNode;
   const {
     article,
     loading: articleLoading,
@@ -31,40 +48,28 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
     if (!node) return;
     // При открытии любой темы/подтемы всегда начинаем с теории
     setActiveTab('theory');
-    // При смене узла сбрасываем внутренний выбор подтемы,
-    // чтобы не тащить subtopic между топиками.
-    setSelectedSubtopicId(undefined);
+    // При смене узла сбрасываем внутренний выбор индекса навигации.
+    setNavIndex(null);
   }, [node]);
 
   if (!node) return null;
-
-  // Общая последовательность для навигации по теме: [основная тема, ...подтемы]
-  const topicForSequence = node.type === 'topic' ? node.topic : node.topic;
-  const subtopicsForSequence = topicForSequence.subtopics;
-  const navSequence: (string | undefined)[] = [
-    undefined,
-    ...subtopicsForSequence.map((s) => s.id),
-  ];
-  const currentIndex = navSequence.findIndex((id) => id === effectiveSubtopicId);
-  const safeCurrentIndex = currentIndex === -1 ? 0 : currentIndex;
-  const hasPrev = safeCurrentIndex > 0;
-  const hasNext = safeCurrentIndex < navSequence.length - 1;
+  const hasPrev = currentIndex > 0;
+  const hasNext = currentIndex < totalEntries - 1;
 
   const goToIndex = (index: number) => {
-    const clamped = Math.min(Math.max(index, 0), navSequence.length - 1);
-    const targetId = navSequence[clamped];
-    setSelectedSubtopicId(targetId);
+    const clamped = Math.min(Math.max(index, 0), totalEntries - 1);
+    setNavIndex(clamped);
     setActiveTab('theory');
   };
 
   const handlePrev = () => {
     if (!hasPrev) return;
-    goToIndex(safeCurrentIndex - 1);
+    goToIndex(currentIndex - 1);
   };
 
   const handleNext = () => {
     if (!hasNext) return;
-    goToIndex(safeCurrentIndex + 1);
+    goToIndex(currentIndex + 1);
   };
 
   if (node.type === 'topic') {
@@ -83,12 +88,6 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
       : node.topic.title;
 
     const tabItems = [
-      {
-        key: 'prev',
-        icon: '←',
-        variant: 'icon' as const,
-        children: null,
-      },
       {
         key: 'theory',
         label: 'Теория',
@@ -109,12 +108,21 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
             topic={node.topic}
             activeSubtopicId={effectiveSubtopicId}
             onSelectSubtopic={(id) => {
-              setSelectedSubtopicId(id);
-              setActiveTab('theory');
+              const idx = subtopicsForSequence.findIndex((s) => s.id === id);
+              if (idx !== -1) {
+                setNavIndex(1 + idx);
+                setActiveTab('theory');
+              }
             }}
             onClose={onClose}
           />
         ),
+      },
+      {
+        key: 'prev',
+        icon: '←',
+        variant: 'icon' as const,
+        children: null,
       },
       {
         key: 'next',
@@ -170,16 +178,12 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
 
   const hasArticle = !articleLoading && !articleError && article && article.blocks.length > 0;
   const activeSubtopic =
-    (effectiveSubtopicId && topic.subtopics.find((s) => s.id === effectiveSubtopicId)) || subtopic;
+    currentIndex === 0
+      ? undefined
+      : topic.subtopics.find((s) => s.id === effectiveSubtopicId) || subtopic;
   const sidebarTitle = activeSubtopic ? `${topic.title}: ${activeSubtopic.title}` : topic.title;
 
   const tabItems = [
-    {
-      key: 'prev',
-      icon: '←',
-      variant: 'icon' as const,
-      children: null,
-    },
     {
       key: 'theory',
       label: 'Теория',
@@ -200,12 +204,21 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
           topic={topic}
           activeSubtopicId={effectiveSubtopicId ?? subtopic.id}
           onSelectSubtopic={(id) => {
-            setSelectedSubtopicId(id);
-            setActiveTab('theory');
+            const idx = subtopicsForSequence.findIndex((s) => s.id === id);
+            if (idx !== -1) {
+              setNavIndex(1 + idx);
+              setActiveTab('theory');
+            }
           }}
           onClose={onClose}
         />
       ),
+    },
+    {
+      key: 'prev',
+      icon: '←',
+      variant: 'icon' as const,
+      children: null,
     },
     {
       key: 'next',

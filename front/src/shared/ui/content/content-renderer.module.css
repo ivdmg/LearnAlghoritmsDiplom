@@ -88,3 +88,42 @@
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
 }
+
+.animationWrapper {
+  position: relative;
+  border-radius: 16px;
+}
+
+.animationPlayButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(15, 23, 42, 0.7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+}
+
+.animationPlayButton:hover {
+  background: rgba(37, 99, 235, 0.8);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.75);
+  transform: translateY(-1px);
+}
+
+.animationPlayIcon {
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid #e5e7eb;
+}

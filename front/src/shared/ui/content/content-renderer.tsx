@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type {
   ContentBlock,
   HeadingBlock,
@@ -108,7 +109,11 @@ function CodeBlockView({ block }: { block: CodeBlock }) {
 }
 
 function AnimationBlockView({ block }: { block: AnimationBlock }) {
-  const srcDoc = `
+  const [playId, setPlayId] = useState(0);
+
+  // Всегда полный документ (HTML+CSS+JS), чтобы при открытии статьи контент
+  // сразу отображался: в блоках он создаётся скриптом, без JS блок пустой.
+  const fullSrcDoc = `
 <!DOCTYPE html>
 <html>
   <head>
@@ -127,16 +132,26 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
 </html>`;
 
   return (
-    <iframe
-      className={`${styles.animationFrame} ${block.className ?? ""}`}
-      style={block.style}
-      srcDoc={srcDoc}
-      width={block.width ?? "100%"}
-      height={block.height ?? 220}
-      sandbox="allow-scripts"
-      loading="lazy"
-      title={block.id}
-    />
+    <div className={styles.animationWrapper}>
+      <button
+        type="button"
+        className={styles.animationPlayButton}
+        onClick={() => setPlayId((id) => id + 1)}
+      >
+        <span className={styles.animationPlayIcon} />
+      </button>
+      <iframe
+        key={playId}
+        className={`${styles.animationFrame} ${block.className ?? ""}`}
+        style={block.style}
+        srcDoc={fullSrcDoc}
+        width={block.width ?? "100%"}
+        height={block.height ?? 220}
+        sandbox="allow-scripts"
+        loading="lazy"
+        title={block.id}
+      />
+    </div>
   );
 }
 

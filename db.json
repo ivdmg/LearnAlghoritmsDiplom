@@ -95,7 +95,8 @@
           "css": "#bar-container { display: flex; gap: 4px; padding: 12px; }\n.bar { width: 18px; background: linear-gradient(180deg,#22c55e,#16a34a); border-radius: 4px 4px 0 0; }",
           "js": "const root = document.getElementById('bar-container');\nconst n = 12;\nfor (let i = 1; i <= n; i++) {\n  const el = document.createElement('div');\n  el.className = 'bar';\n  el.style.height = 6 + i * 6 + 'px';\n  el.style.opacity = String(0.2 + i / (n + 2));\n  root.appendChild(el);\n}",
           "width": "100%",
-          "height": 180
+          "height": 180,
+          "showPlayButton": false
         },
         {
           "id": "h2-space",
@@ -333,7 +334,8 @@
           "css": "#hash-container { display: flex; gap: 6px; margin: 12px 0; }\n.cell { width: 60px; height: 40px; background: #3b82f6; border-radius: 4px; color: white; display: flex; justify-content: center; align-items: center; font-size: 14px; }",
           "js": "const keys = ['A','B','C','D','E'];\nconst container = document.getElementById('hash-container');\nkeys.forEach((k,i)=>{\n  const div = document.createElement('div');\n  div.className='cell';\n  div.textContent=k;\n  container.appendChild(div);\n});",
           "width": "100%",
-          "height": 60
+          "height": 60,
+          "showPlayButton": false
         },
         {
           "id": "h2-jsmap",

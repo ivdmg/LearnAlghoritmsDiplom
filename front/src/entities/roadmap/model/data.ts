@@ -5,9 +5,9 @@ export const ROADMAP: RoadmapTopic[] = [
     id: 'osnovy',
     title: 'Основы',
     subtopics: [
-      { id: 'st-osn-1', title: 'Сложность алгоритмов (O-нотация, время и память)', position: 'center', taskIds: [] },
+      { id: 'st-osn-1', title: 'Сложность алгоритмов', position: 'center', taskIds: [] },
       { id: 'st-osn-2', title: 'Массивы и строки', position: 'center', taskIds: [] },
-      { id: 'st-osn-3', title: 'Базовые операции с массивами (поиск, вставка, удаление, срезы)', position: 'center', taskIds: [] },
+      { id: 'st-osn-3', title: 'Базовые операции с массивами', position: 'center', taskIds: [] },
       { id: 'st-osn-4', title: 'Хэш-таблицы / словари', position: 'center', taskIds: [] },
       { id: 'st-osn-5', title: 'Стек и очередь', position: 'center', taskIds: [] },
     ],

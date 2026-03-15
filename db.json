@@ -3,60 +3,158 @@
     {
       "id": "osnovy-intro",
       "topicId": "osnovy",
-      "title": "Введение: алгоритмы и структуры данных",
+      "title": "Основы алгоритмов и структур данных",
       "blocks": [
         {
           "id": "h1",
           "type": "heading",
           "level": 1,
-          "text": "Алгоритмы и структуры данных"
+          "text": "Основы алгоритмов и структур данных"
         },
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Алгоритм — это пошаговое описание решения задачи. Важно уметь оценивать время и память алгоритма, а также понимать, какие структуры данных помогают хранить и обрабатывать информацию эффективнее."
+          "text": "Алгоритмы и структуры данных — фундамент программирования. Любая программа, от простого калькулятора до поисковой системы, внутри состоит из алгоритмов, которые обрабатывают данные. Чтобы писать быстрые и масштабируемые программы, важно понимать, как данные хранятся и как над ними выполняются операции."
         },
         {
           "id": "p2",
           "type": "paragraph",
-          "text": "В этом модуле мы начнём с базовых структур: массивов, строк, хеш-таблиц, стека и очереди. На их основе строится большинство алгоритмов, которые вы встретите в задачах."
+          "text": "Алгоритм — это точная последовательность шагов, которая преобразует входные данные в результат. В программировании алгоритмы реализуются через код: циклы, условия, функции и структуры данных. Один и тот же результат можно получить разными алгоритмами, но они могут сильно отличаться по скорости и потреблению памяти."
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Структуры данных отвечают за то, как информация хранится в памяти и как к ней осуществляется доступ. Например, массив позволяет быстро получать элемент по индексу, стек удобен для работы с вложенными операциями, а хеш-таблица позволяет очень быстро находить значения по ключу."
+        },
+        {
+          "id": "h2-why",
+          "type": "heading",
+          "level": 2,
+          "text": "Почему это важно"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "В небольших программах разница между алгоритмами может быть незаметна. Но когда данных становится много — тысячи, миллионы или миллиарды элементов — эффективность алгоритма становится критически важной. Неправильный выбор структуры данных может сделать программу медленной или даже непригодной для использования."
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "Например, если нужно часто искать элементы по значению, простой перебор массива может быть слишком медленным. В этом случае лучше использовать структуру данных, которая оптимизирована для поиска. Понимание таких различий — ключевой навык разработчика."
+        },
+        {
+          "id": "h2-example",
+          "type": "heading",
+          "level": 2,
+          "text": "Простой пример алгоритма"
+        },
+        {
+          "id": "p6",
+          "type": "paragraph",
+          "text": "Рассмотрим простой алгоритм: поиск максимального числа в массиве. Идея алгоритма состоит в том, чтобы пройти по всем элементам массива и запомнить наибольший из них."
         },
         {
           "id": "code1",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "function sum(arr) {\n  let s = 0;\n  for (const x of arr) {\n    s += x;\n  }\n  return s;\n}"
+          "code": "function max(arr) {\n  let m = arr[0];\n  for (const x of arr) {\n    if (x > m) {\n      m = x;\n    }\n  }\n  return m;\n}"
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "Этот алгоритм последовательно проверяет каждый элемент массива. Даже если максимальное значение находится в начале, алгоритм всё равно пройдёт по всем элементам. Это важная идея: иногда алгоритму приходится проверять все данные, чтобы гарантировать правильный результат."
+        },
+        {
+          "id": "h2-visual-array",
+          "type": "heading",
+          "level": 2,
+          "text": "Как выглядит массив"
+        },
+        {
+          "id": "p8",
+          "type": "paragraph",
+          "text": "Массив — одна из самых базовых структур данных. Он представляет собой упорядоченную последовательность элементов, где каждый элемент имеет индекс. Индекс позволяет быстро получить доступ к нужному элементу."
+        },
+        {
+          "id": "anim-array",
+          "type": "animation",
+          "html": "<svg id=\"array-svg\" width=\"100%\" height=\"120\" viewBox=\"0 0 520 120\"></svg>",
+          "css": "#array-svg text { font-family: monospace; font-size: 14px; }\n.cell { fill: #1f2937; stroke: #4b5563; }\n.index { fill: #9ca3af; }\n.value { fill: #22c55e; }",
+          "js": "const svg = document.getElementById('array-svg');\nconst values = [4,8,1,7,3,9];\nvalues.forEach((v,i)=>{\n  const x = 20 + i*70;\n  const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');\n  rect.setAttribute('x',x);\n  rect.setAttribute('y',40);\n  rect.setAttribute('width',60);\n  rect.setAttribute('height',40);\n  rect.setAttribute('class','cell');\n  svg.appendChild(rect);\n\n  const val = document.createElementNS('http://www.w3.org/2000/svg','text');\n  val.setAttribute('x',x+30);\n  val.setAttribute('y',65);\n  val.setAttribute('text-anchor','middle');\n  val.setAttribute('class','value');\n  val.textContent = v;\n  svg.appendChild(val);\n\n  const idx = document.createElementNS('http://www.w3.org/2000/svg','text');\n  idx.setAttribute('x',x+30);\n  idx.setAttribute('y',100);\n  idx.setAttribute('text-anchor','middle');\n  idx.setAttribute('class','index');\n  idx.textContent = i;\n  svg.appendChild(idx);\n});",
+          "width": "100%",
+          "height": 120
+        },
+        {
+          "id": "p9",
+          "type": "paragraph",
+          "text": "В массиве каждый элемент имеет индекс: 0, 1, 2, 3 и так далее. Благодаря этому можно мгновенно получить любой элемент, если известен его индекс. Это делает массив очень удобным для хранения последовательных данных."
+        },
+        {
+          "id": "h2-loop",
+          "type": "heading",
+          "level": 2,
+          "text": "Алгоритмы часто используют циклы"
+        },
+        {
+          "id": "p10",
+          "type": "paragraph",
+          "text": "Большинство алгоритмов работают с коллекциями данных: массивами, строками или списками. Чтобы обработать каждый элемент, обычно используют циклы. Цикл позволяет повторять одни и те же действия для каждого элемента."
+        },
+        {
+          "id": "code2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "const arr = [3, 5, 7, 2];\n\nfor (let i = 0; i < arr.length; i++) {\n  console.log(i, arr[i]);\n}"
+        },
+        {
+          "id": "p11",
+          "type": "paragraph",
+          "text": "Этот цикл проходит по всем элементам массива. Переменная i — это индекс текущего элемента. Сначала алгоритм работает с элементом 0, затем 1, затем 2 и так далее."
+        },
+        {
+          "id": "h2-visual-loop",
+          "type": "heading",
+          "level": 2,
+          "text": "Визуализация прохода по массиву"
+        },
+        {
+          "id": "anim2",
+          "type": "animation",
+          "html": "<div id=\"loop-container\"></div>",
+          "css": "#loop-container { display:flex; gap:6px; padding:12px; }\n.loop-cell { width:40px; height:40px; background:#1f2937; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#e5e7eb; font-family:monospace; }\n.active { background:#22c55e; color:#022c22; }",
+          "js": "const root = document.getElementById('loop-container');\nconst values=[3,5,7,2,6];\nconst nodes=[];\nvalues.forEach(v=>{\n const el=document.createElement('div');\n el.className='loop-cell';\n el.textContent=v;\n root.appendChild(el);\n nodes.push(el);\n});\nlet i=0;\nsetInterval(()=>{\n nodes.forEach(n=>n.classList.remove('active'));\n nodes[i].classList.add('active');\n i=(i+1)%nodes.length;\n},800);",
+          "width": "100%",
+          "height": 80
+        },
+        {
+          "id": "p12",
+          "type": "paragraph",
+          "text": "Во многих алгоритмах элементы обрабатываются последовательно. Это называется линейным проходом по массиву. Такие алгоритмы часто используются для поиска, подсчёта или фильтрации данных."
+        },
+        {
+          "id": "h2-next",
+          "type": "heading",
+          "level": 2,
+          "text": "Что дальше"
+        },
+        {
+          "id": "p13",
+          "type": "paragraph",
+          "text": "В следующих разделах мы подробно разберём основные структуры данных и идеи, которые используются почти во всех алгоритмах. Вы узнаете, как измеряется сложность алгоритмов, почему одни алгоритмы быстрее других и как выбирать правильную структуру данных для задачи."
+        },
+        {
+          "id": "p14",
+          "type": "paragraph",
+          "text": "Мы начнём с оценки сложности алгоритмов — времени и памяти. Затем рассмотрим массивы и строки, научимся выполнять базовые операции над массивами, познакомимся с хеш-таблицами и разберём такие структуры, как стек и очередь."
         },
         {
           "id": "link1",
           "type": "link",
-          "text": "Подробнее про асимптотику",
-          "href": "#asymptotics",
+          "text": "Перейти к теме: сложность алгоритмов",
+          "href": "#algorithm-complexity",
           "target": "_self"
-        },
-        {
-          "id": "h2-asymp",
-          "type": "heading",
-          "level": 2,
-          "text": "Асимптотическая сложность",
-          "style": {
-            "scrollMarginTop": "80px"
-          }
-        },
-        {
-          "id": "p3",
-          "type": "paragraph",
-          "text": "Сложность алгоритма описывают через O-нотацию. Она показывает, как растёт время работы в зависимости от размера входа n."
-        },
-        {
-          "id": "anim1",
-          "type": "animation",
-          "html": "<div id=\"bar-container\"></div>",
-          "css": "#bar-container { display: flex; gap: 4px; padding: 12px; }\n.bar { width: 18px; background: linear-gradient(180deg,#22c55e,#16a34a); border-radius: 4px 4px 0 0; }",
-          "js": "const root = document.getElementById('bar-container');\nconst n = 12;\nfor (let i = 1; i <= n; i++) {\n  const el = document.createElement('div');\n  el.className = 'bar';\n  el.style.height = 6 + i * 6 + 'px';\n  el.style.opacity = String(0.2 + i / (n + 2));\n  root.appendChild(el);\n}\n",
-          "width": "100%",
-          "height": 180
         }
       ]
     },
@@ -75,7 +173,28 @@
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Сложность алгоритма показывает, сколько ресурсов требуется для его выполнения в зависимости от размера входных данных. Основные ресурсы — это время и память."
+          "text": "Когда мы пишем алгоритм, важно понимать не только то, что он работает правильно, но и насколько эффективно он работает. Один алгоритм может выполнять задачу за доли секунды, а другой — за минуты или даже часы при большом объёме данных. Сложность алгоритма помогает оценить, сколько ресурсов потребуется для выполнения алгоритма."
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "Основные ресурсы, которые интересуют разработчиков — это время выполнения и объём используемой памяти. Эти характеристики называются временной и пространственной сложностью алгоритма. Они показывают, как изменяется потребление ресурсов при увеличении размера входных данных."
+        },
+        {
+          "id": "h2-intuition",
+          "type": "heading",
+          "level": 2,
+          "text": "Почему сложность важна"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Представьте, что вам нужно найти число в списке. Если список маленький — например, 10 элементов — можно просто проверить каждый элемент. Но если список содержит миллионы элементов, такой подход может оказаться слишком медленным."
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "Сложность алгоритма позволяет заранее понять, как алгоритм будет вести себя при росте данных. Это помогает выбирать правильные структуры данных и проектировать системы, которые смогут масштабироваться."
         },
         {
           "id": "h2-time",
@@ -84,49 +203,154 @@
           "text": "Временная сложность"
         },
         {
-          "id": "p2",
+          "id": "p5",
           "type": "paragraph",
-          "text": "Временная сложность описывает, как растёт время работы алгоритма с увеличением объёма входных данных n. Для оценки используют O-нотацию, которая показывает порядок роста."
+          "text": "Временная сложность показывает, как растёт время выполнения алгоритма при увеличении размера входных данных n. Вместо точного измерения времени используют математическую модель — асимптотическую оценку. Она описывает скорость роста времени работы."
         },
         {
-          "id": "anim-time",
-          "type": "animation",
-          "html": "<div id='bar-container'></div>",
-          "css": "#bar-container { display: flex; gap: 4px; padding: 12px; }\n.bar { width: 18px; background: linear-gradient(180deg,#22c55e,#16a34a); border-radius: 4px 4px 0 0; }",
-          "js": "const root = document.getElementById('bar-container');\nconst n = 12;\nfor (let i = 1; i <= n; i++) {\n  const el = document.createElement('div');\n  el.className = 'bar';\n  el.style.height = 6 + i * 6 + 'px';\n  el.style.opacity = String(0.2 + i / (n + 2));\n  root.appendChild(el);\n}",
-          "width": "100%",
-          "height": 180,
-          "showPlayButton": false
+          "id": "p6",
+          "type": "paragraph",
+          "text": "Для описания роста времени используется O-нотация (Big O). Она показывает порядок роста функции времени работы алгоритма. Например, алгоритм с O(n) выполняет количество операций пропорционально размеру входных данных."
         },
         {
-          "id": "h2-space",
+          "id": "h3-example-linear",
           "type": "heading",
-          "level": 2,
-          "text": "Память и пространственная сложность"
+          "level": 3,
+          "text": "Пример линейного алгоритма"
         },
         {
-          "id": "p3",
+          "id": "p7",
           "type": "paragraph",
-          "text": "Пространственная сложность показывает, сколько памяти использует алгоритм. Например, при работе с массивами, рекурсией или дополнительными структурами данных."
+          "text": "Рассмотрим алгоритм поиска элемента в массиве. Мы последовательно проверяем каждый элемент, пока не найдём нужный."
         },
         {
           "id": "code1",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "function sumArray(arr) {\n  let sum = 0;\n  for (let i = 0; i < arr.length; i++) {\n    sum += arr[i];\n  }\n  return sum;\n}\n// Временная сложность O(n), память O(1)"
+          "code": "function find(arr, target) {\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === target) {\n      return i;\n    }\n  }\n  return -1;\n}"
         },
         {
-          "id": "p4",
+          "id": "p8",
           "type": "paragraph",
-          "text": "Сложность алгоритмов удобно сравнивать с помощью следующих типичных O-нотаций:"
+          "text": "В худшем случае алгоритм проверит каждый элемент массива. Если в массиве n элементов, то будет выполнено до n проверок. Поэтому временная сложность такого алгоритма — O(n)."
+        },
+        {
+          "id": "anim-time",
+          "type": "animation",
+          "html": "<div id='time-bars'></div>",
+          "css": "#time-bars{display:flex;gap:6px;padding:12px;} .bar{width:20px;background:linear-gradient(180deg,#60a5fa,#2563eb);border-radius:4px 4px 0 0;}",
+          "js": "const root=document.getElementById('time-bars');const n=14;for(let i=1;i<=n;i++){const el=document.createElement('div');el.className='bar';el.style.height=8+i*7+'px';el.style.opacity=String(0.3+i/(n+2));root.appendChild(el);}",
+          "width": "100%",
+          "height": 180,
+          "showPlayButton": false
+        },
+        {
+          "id": "p9",
+          "type": "paragraph",
+          "text": "На визуализации видно, что по мере роста размера данных увеличивается и количество операций. Это характерно для алгоритмов с линейной сложностью."
+        },
+        {
+          "id": "h2-constant",
+          "type": "heading",
+          "level": 2,
+          "text": "Константная сложность O(1)"
+        },
+        {
+          "id": "p10",
+          "type": "paragraph",
+          "text": "Иногда операция выполняется за одинаковое время независимо от размера входных данных. Например, доступ к элементу массива по индексу."
         },
         {
           "id": "code2",
           "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "const arr = [5, 8, 2, 9];\n\nconst value = arr[2]; // доступ по индексу\nconsole.log(value);"
+        },
+        {
+          "id": "p11",
+          "type": "paragraph",
+          "text": "Даже если массив содержит миллион элементов, операция получения arr[2] выполняется мгновенно. Поэтому такая операция имеет сложность O(1)."
+        },
+        {
+          "id": "h2-space",
+          "type": "heading",
+          "level": 2,
+          "text": "Пространственная сложность"
+        },
+        {
+          "id": "p12",
+          "type": "paragraph",
+          "text": "Помимо времени выполнения важно учитывать, сколько памяти использует алгоритм. Пространственная сложность показывает, сколько дополнительной памяти требуется алгоритму для работы."
+        },
+        {
+          "id": "p13",
+          "type": "paragraph",
+          "text": "Некоторые алгоритмы используют только несколько переменных, а другие создают дополнительные массивы или структуры данных. Чем больше таких структур, тем больше памяти потребуется."
+        },
+        {
+          "id": "code3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function sumArray(arr) {\n  let sum = 0;\n\n  for (let i = 0; i < arr.length; i++) {\n    sum += arr[i];\n  }\n\n  return sum;\n}\n\n// Временная сложность: O(n)\n// Пространственная сложность: O(1)"
+        },
+        {
+          "id": "p14",
+          "type": "paragraph",
+          "text": "В этом алгоритме используется только одна дополнительная переменная sum. Поэтому потребление памяти не зависит от размера массива."
+        },
+        {
+          "id": "h2-common",
+          "type": "heading",
+          "level": 2,
+          "text": "Часто встречающиеся оценки сложности"
+        },
+        {
+          "id": "p15",
+          "type": "paragraph",
+          "text": "В анализе алгоритмов есть несколько типов сложности, которые встречаются особенно часто. Понимание их поведения помогает быстро оценивать эффективность алгоритма."
+        },
+        {
+          "id": "code4",
+          "type": "code",
           "language": "text",
           "editable": false,
-          "code": "O(1) — константное время\nO(log n) — логарифмическое время\nO(n) — линейное время\nO(n log n) — линейно-логарифмическое время\nO(n^2) — квадратичное время"
+          "code": "O(1)      — константное время\nO(log n)  — логарифмическое время\nO(n)      — линейное время\nO(n log n)— линейно-логарифмическое время\nO(n^2)    — квадратичное время"
+        },
+        {
+          "id": "p16",
+          "type": "paragraph",
+          "text": "Алгоритмы со сложностью O(n log n) часто используются в сортировках. Квадратичные алгоритмы O(n^2) обычно возникают при вложенных циклах."
+        },
+        {
+          "id": "code5",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "for (let i = 0; i < n; i++) {\n  for (let j = 0; j < n; j++) {\n    console.log(i, j);\n  }\n}\n\n// Такой алгоритм имеет сложность O(n^2)"
+        },
+        {
+          "id": "p17",
+          "type": "paragraph",
+          "text": "Здесь внешний цикл выполняется n раз, и для каждого шага запускается внутренний цикл, который тоже выполняется n раз. В результате общее количество операций пропорционально n × n."
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p18",
+          "type": "paragraph",
+          "text": "Сложность алгоритма — один из ключевых инструментов для анализа эффективности программ. Она помогает сравнивать разные решения одной задачи и выбирать наиболее подходящее."
+        },
+        {
+          "id": "p19",
+          "type": "paragraph",
+          "text": "В следующих разделах мы подробнее рассмотрим структуры данных, которые часто используются вместе с эффективными алгоритмами: массивы, строки, хеш-таблицы, стек и очередь."
         },
         {
           "id": "link1",
@@ -134,11 +358,6 @@
           "text": "Подробнее про O-нотацию",
           "href": "https://ru.wikipedia.org/wiki/Асимптотический_анализ_алгоритмов",
           "target": "_blank"
-        },
-        {
-          "id": "p5",
-          "type": "paragraph",
-          "text": "Понимание временной и пространственной сложности — основа для эффективного проектирования алгоритмов. Всегда старайтесь выбирать алгоритм с наименьшей сложностью для вашего объёма данных."
         }
       ]
     },
@@ -157,33 +376,182 @@
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Массив — это последовательность элементов фиксированной длины, к которым можно обратиться по индексу за O(1). Строка в большинстве языков реализована как массив символов (иногда — с неизменяемой длиной)."
+          "text": "Массивы и строки — одни из самых базовых и часто используемых структур данных. Они используются практически во всех программах: для хранения списков чисел, обработки текста, работы с файлами, сетевыми запросами и многого другого."
         },
         {
           "id": "p2",
           "type": "paragraph",
-          "text": "При решении задач важно помнить различие между изменяемыми и неизменяемыми структурами. В Python и JavaScript строки неизменяемы, поэтому конкатенация в цикле может работать медленно."
+          "text": "Массив — это упорядоченная коллекция элементов, где каждый элемент имеет индекс. Индекс позволяет быстро получить доступ к элементу. В большинстве языков программирования доступ к элементу массива по индексу выполняется за константное время O(1)."
+        },
+        {
+          "id": "h2-array-memory",
+          "type": "heading",
+          "level": 2,
+          "text": "Как массив хранится в памяти"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Главная особенность массива заключается в том, что его элементы располагаются в памяти подряд. Благодаря этому компьютер может быстро вычислить адрес нужного элемента, если известен его индекс."
+        },
+        {
+          "id": "anim-memory",
+          "type": "animation",
+          "html": "<svg id=\"array-memory-svg\" width=\"100%\" height=\"130\" viewBox=\"0 0 520 130\"></svg>",
+          "css": "#array-memory-svg text{font-family:monospace;font-size:13px;} .mem-cell{fill:#0f172a;stroke:#334155;} .mem-index{fill:#94a3b8;} .mem-value{fill:#22c55e;}",
+          "js": "const svg=document.getElementById('array-memory-svg'); const values=[10,14,7,3,8,21]; values.forEach((v,i)=>{ const x=20+i*70; const rect=document.createElementNS('http://www.w3.org/2000/svg','rect'); rect.setAttribute('x',x); rect.setAttribute('y',40); rect.setAttribute('width',60); rect.setAttribute('height',40); rect.setAttribute('class','mem-cell'); svg.appendChild(rect); const val=document.createElementNS('http://www.w3.org/2000/svg','text'); val.setAttribute('x',x+30); val.setAttribute('y',65); val.setAttribute('text-anchor','middle'); val.setAttribute('class','mem-value'); val.textContent=v; svg.appendChild(val); const idx=document.createElementNS('http://www.w3.org/2000/svg','text'); idx.setAttribute('x',x+30); idx.setAttribute('y',100); idx.setAttribute('text-anchor','middle'); idx.setAttribute('class','mem-index'); idx.textContent=i; svg.appendChild(idx); });",
+          "width": "100%",
+          "height": 130
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "Каждая ячейка массива имеет индекс: 0, 1, 2, 3 и так далее. Когда программа обращается к arr[3], система сразу вычисляет адрес нужного элемента и возвращает его значение."
+        },
+        {
+          "id": "h2-iteration",
+          "type": "heading",
+          "level": 2,
+          "text": "Итерация по массиву"
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "Одна из самых распространённых операций — это проход по массиву. Алгоритм последовательно обрабатывает каждый элемент. Такой проход часто используется для поиска, подсчёта, фильтрации или преобразования данных."
         },
         {
           "id": "code1",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "// Неудачный способ: конкатенация строки в цикле\nfunction joinSlow(parts) {\n  let result = '';\n  for (const part of parts) {\n    result += part; // каждый раз создаётся новая строка\n  }\n  return result;\n}\n\n// Лучше: используем массив + join\nfunction joinFast(parts) {\n  return parts.join('');\n}"
+          "code": "const numbers = [4, 7, 1, 9, 3];\n\nlet sum = 0;\nfor (let i = 0; i < numbers.length; i++) {\n  sum += numbers[i];\n}\n\nconsole.log(sum);"
         },
         {
-          "id": "p3",
+          "id": "p6",
           "type": "paragraph",
-          "text": "Частые операции: прохождение по массиву (итерация), поиск элемента, фильтрация, копирование подмассивов (срезы), разворот, сортировка. Большинство из них можно реализовать как по месту (in-place), так и создавая новый массив."
+          "text": "Этот алгоритм проходит по каждому элементу массива и суммирует значения. Если массив содержит n элементов, алгоритм выполнит n шагов."
         },
         {
-          "id": "anim1",
+          "id": "anim-iteration",
           "type": "animation",
-          "html": "<div id=\"array-demo\"></div>",
-          "css": "#array-demo { display: flex; gap: 6px; padding: 16px; }\n.cell { width: 36px; height: 36px; border-radius: 10px; display:flex; align-items:center; justify-content:center; font-size:14px; color:#e5e7eb; background: linear-gradient(135deg,#0ea5e9,#22c55e); box-shadow:0 8px 20px rgba(15,23,42,0.8); opacity:0.2; transform: translateY(6px); transition: all .35s ease; }\n.cell.active { opacity:1; transform: translateY(0); }",
-          "js": "const root = document.getElementById('array-demo');\nconst values = ['a','b','c','d','e'];\nvalues.forEach((v, idx) => {\n  const el = document.createElement('div');\n  el.className = 'cell';\n  el.textContent = v;\n  root.appendChild(el);\n  setTimeout(() => {\n    el.classList.add('active');\n  }, 200 + idx * 220);\n});\n",
+          "html": "<div id=\"array-iter\"></div>",
+          "css": "#array-iter{display:flex;gap:8px;padding:12px;} .cell{width:42px;height:42px;background:#1e293b;border-radius:8px;color:#e5e7eb;display:flex;align-items:center;justify-content:center;font-family:monospace;} .active{background:#22c55e;color:#052e16;}",
+          "js": "const root=document.getElementById('array-iter'); const values=[4,7,1,9,3]; const nodes=[]; values.forEach(v=>{ const el=document.createElement('div'); el.className='cell'; el.textContent=v; root.appendChild(el); nodes.push(el); }); let i=0; setInterval(()=>{ nodes.forEach(n=>n.classList.remove('active')); nodes[i].classList.add('active'); i=(i+1)%nodes.length; },900);",
           "width": "100%",
-          "height": 160
+          "height": 100
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "На визуализации показано, как алгоритм последовательно обрабатывает элементы массива. Это называется линейным проходом."
+        },
+        {
+          "id": "h2-common-operations",
+          "type": "heading",
+          "level": 2,
+          "text": "Частые операции с массивами"
+        },
+        {
+          "id": "p8",
+          "type": "paragraph",
+          "text": "При работе с массивами чаще всего выполняются несколько базовых операций: добавление элементов, удаление элементов, поиск значения, фильтрация, копирование и сортировка."
+        },
+        {
+          "id": "code2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "const arr = [1, 2, 3];\n\narr.push(4);     // добавить элемент в конец\narr.pop();       // удалить последний элемент\narr.includes(2); // проверить наличие элемента\narr.slice(0,2);  // получить подмассив"
+        },
+        {
+          "id": "p9",
+          "type": "paragraph",
+          "text": "Разные операции имеют разную сложность. Например, доступ по индексу выполняется за O(1), а поиск элемента обычно требует пройти по всему массиву — это O(n)."
+        },
+        {
+          "id": "h2-strings",
+          "type": "heading",
+          "level": 2,
+          "text": "Строки"
+        },
+        {
+          "id": "p10",
+          "type": "paragraph",
+          "text": "Строка — это последовательность символов. В большинстве языков программирования строка реализована как массив символов. Однако часто строки являются неизменяемыми (immutable). Это означает, что при изменении строки создаётся новая строка."
+        },
+        {
+          "id": "p11",
+          "type": "paragraph",
+          "text": "Неизменяемость строк помогает избежать ошибок, но иногда может приводить к дополнительным затратам памяти и времени."
+        },
+        {
+          "id": "code3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "let text = \"hello\";\n\ntext = text + \" world\"; // создаётся новая строка\n\nconsole.log(text);"
+        },
+        {
+          "id": "h2-string-loop",
+          "type": "heading",
+          "level": 2,
+          "text": "Итерация по строке"
+        },
+        {
+          "id": "p12",
+          "type": "paragraph",
+          "text": "Поскольку строка является последовательностью символов, по ней можно проходить так же, как и по массиву."
+        },
+        {
+          "id": "code4",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "const text = \"algorithm\";\n\nfor (let i = 0; i < text.length; i++) {\n  console.log(text[i]);\n}"
+        },
+        {
+          "id": "p13",
+          "type": "paragraph",
+          "text": "Такие алгоритмы используются при анализе текста, поиске подстрок, проверке палиндромов и многих других задачах."
+        },
+        {
+          "id": "h2-strings-performance",
+          "type": "heading",
+          "level": 2,
+          "text": "Конкатенация строк"
+        },
+        {
+          "id": "p14",
+          "type": "paragraph",
+          "text": "Поскольку строки часто неизменяемы, при объединении строк внутри цикла может происходить создание большого количества промежуточных строк. Это может существенно замедлить программу."
+        },
+        {
+          "id": "code5",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "// Медленный способ\nfunction joinSlow(parts) {\n  let result = '';\n  for (const part of parts) {\n    result += part;\n  }\n  return result;\n}\n\n// Более эффективный способ\nfunction joinFast(parts) {\n  return parts.join('');\n}"
+        },
+        {
+          "id": "p15",
+          "type": "paragraph",
+          "text": "Во втором случае элементы сначала собираются в массиве, а затем объединяются в одну строку. Это позволяет избежать создания множества промежуточных строк."
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p16",
+          "type": "paragraph",
+          "text": "Массивы и строки — фундаментальные структуры данных. Они используются в большинстве алгоритмов и задач. Понимание того, как они устроены и какие операции выполняются эффективно, является важной частью алгоритмического мышления."
+        },
+        {
+          "id": "p17",
+          "type": "paragraph",
+          "text": "В следующих разделах мы подробнее рассмотрим операции над массивами, а также структуры данных, которые помогают ускорять поиск и обработку информации."
         }
       ]
     },
@@ -202,7 +570,12 @@
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Массив — это последовательная структура данных, которая позволяет хранить элементы одного типа. В этом модуле мы разберём основные операции: поиск, вставку, удаление и срезы."
+          "text": "Массив — одна из самых простых и одновременно самых важных структур данных. Он используется практически во всех алгоритмах: от обработки данных до реализации сложных структур, таких как хеш-таблицы, кучи и графы. Чтобы уверенно работать с алгоритмами, важно понимать основные операции над массивами."
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "В этом разделе мы рассмотрим несколько ключевых операций: поиск элемента, вставку, удаление, а также получение части массива (срезы). Эти операции лежат в основе множества алгоритмов."
         },
         {
           "id": "h2-search",
@@ -211,25 +584,35 @@
           "text": "Поиск элемента"
         },
         {
-          "id": "p2",
+          "id": "p3",
           "type": "paragraph",
-          "text": "Простейший способ — линейный поиск: проходим массив и сравниваем элементы с нужным значением."
+          "text": "Самый простой способ найти элемент в массиве — линейный поиск. Алгоритм проходит по массиву слева направо и сравнивает каждый элемент с искомым значением."
         },
         {
           "id": "code1",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "function linearSearch(arr, target) {\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === target) return i;\n  }\n  return -1;\n}\n// O(n) — линейное время"
+          "code": "function linearSearch(arr, target) {\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === target) {\n      return i;\n    }\n  }\n  return -1;\n}\n\n// Временная сложность: O(n)"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "В худшем случае алгоритм проверяет каждый элемент массива. Поэтому время выполнения растёт пропорционально размеру массива."
         },
         {
           "id": "anim-search",
           "type": "animation",
-          "html": "<div id='search-container'></div>",
-          "css": "#search-container { display: flex; gap: 6px; padding: 12px; }\n.bar { width: 30px; height: 30px; background: #3b82f6; display: flex; align-items: center; justify-content: center; color: white; border-radius: 4px; }",
-          "js": "const arr = [3,7,1,9,5]; const target = 9;\nconst container = document.getElementById('search-container');\narr.forEach((x,i)=>{\n  const div=document.createElement('div');\n  div.className='bar';\n  div.textContent=x;\n  container.appendChild(div);\n});\nlet idx=0;\nconst interval=setInterval(()=>{\n  if(idx>=arr.length) return clearInterval(interval);\n  container.children[idx].style.background='#f59e0b';\n  if(arr[idx]===target) container.children[idx].style.background='#22c55e';\n  idx++;\n},600);",
+          "html": "<div id=\"search-demo\"></div>",
+          "css": "#search-demo{display:flex;gap:6px;padding:12px;} .cell{width:34px;height:34px;background:#1e293b;color:white;display:flex;align-items:center;justify-content:center;border-radius:6px;font-family:monospace;} .check{background:#f59e0b;} .found{background:#22c55e;}",
+          "js": "const arr=[3,7,1,9,5]; const target=9; const root=document.getElementById('search-demo'); const nodes=[]; arr.forEach(v=>{ const el=document.createElement('div'); el.className='cell'; el.textContent=v; root.appendChild(el); nodes.push(el);}); let i=0; const timer=setInterval(()=>{ if(i>=arr.length){clearInterval(timer);return;} nodes[i].classList.add('check'); if(arr[i]===target){ nodes[i].classList.remove('check'); nodes[i].classList.add('found'); clearInterval(timer);} i++; },700);",
           "width": "100%",
-          "height": 80
+          "height": 90
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "На визуализации алгоритм проверяет элементы массива один за другим, пока не найдёт нужное значение."
         },
         {
           "id": "h2-insert",
@@ -238,16 +621,30 @@
           "text": "Вставка элемента"
         },
         {
-          "id": "p3",
+          "id": "p6",
           "type": "paragraph",
-          "text": "Чтобы вставить элемент в массив, можно использовать `push` для конца массива или `splice` для произвольной позиции."
+          "text": "Вставка элемента зависит от того, куда именно нужно добавить значение. Добавление в конец массива обычно выполняется быстро, а вставка в середину требует сдвига элементов."
         },
         {
           "id": "code2",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "let arr = [1,2,4,5];\narr.splice(2,0,3); // вставляем 3 на индекс 2\nconsole.log(arr); // [1,2,3,4,5]"
+          "code": "let arr = [1, 2, 4, 5];\n\n// вставка элемента на позицию\narr.splice(2, 0, 3);\n\nconsole.log(arr); // [1,2,3,4,5]"
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "Когда элемент вставляется в середину массива, все последующие элементы должны сдвинуться на одну позицию вправо. Поэтому такая операция имеет сложность O(n)."
+        },
+        {
+          "id": "anim-insert",
+          "type": "animation",
+          "html": "<div id=\"insert-demo\"></div>",
+          "css": "#insert-demo{display:flex;gap:6px;padding:12px;} .cell{width:36px;height:36px;border-radius:6px;background:#1e293b;color:white;display:flex;align-items:center;justify-content:center;font-family:monospace;} .new{background:#22c55e;}",
+          "js": "const root=document.getElementById('insert-demo'); let arr=[1,2,4,5]; function render(){ root.innerHTML=''; arr.forEach(v=>{ const el=document.createElement('div'); el.className='cell'; el.textContent=v; root.appendChild(el);}); } render(); setTimeout(()=>{ arr.splice(2,0,3); render(); root.children[2].classList.add('new'); },1200);",
+          "width": "100%",
+          "height": 90
         },
         {
           "id": "h2-delete",
@@ -256,34 +653,83 @@
           "text": "Удаление элемента"
         },
         {
-          "id": "p4",
+          "id": "p8",
           "type": "paragraph",
-          "text": "Удалять элемент можно с конца (`pop`), с начала (`shift`) или из середины (`splice`)."
+          "text": "Удаление элементов из массива также может происходить в разных местах. Удаление последнего элемента выполняется быстро, а удаление из середины требует сдвига оставшихся элементов."
         },
         {
           "id": "code3",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "let arr = [1,2,3,4,5];\narr.splice(2,1); // удаляем элемент на индексе 2\nconsole.log(arr); // [1,2,4,5]"
+          "code": "let arr = [1,2,3,4,5];\n\narr.splice(2,1); // удаляем элемент на индексе 2\n\nconsole.log(arr); // [1,2,4,5]"
+        },
+        {
+          "id": "p9",
+          "type": "paragraph",
+          "text": "После удаления элемента все элементы справа сдвигаются на одну позицию влево."
         },
         {
           "id": "h2-slice",
           "type": "heading",
           "level": 2,
-          "text": "Срезы"
+          "text": "Срезы массива"
         },
         {
-          "id": "p5",
+          "id": "p10",
           "type": "paragraph",
-          "text": "Срезы позволяют получить часть массива, не изменяя исходный массив, с помощью метода `slice(start, end)`."
+          "text": "Иногда необходимо получить только часть массива. Для этого используется операция среза. Она возвращает новый массив, содержащий элементы из указанного диапазона."
         },
         {
           "id": "code4",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "let arr = [1,2,3,4,5];\nlet sub = arr.slice(1,4);\nconsole.log(sub); // [2,3,4]\nconsole.log(arr); // [1,2,3,4,5] — исходный массив не изменился"
+          "code": "let arr = [1,2,3,4,5];\n\nlet sub = arr.slice(1,4);\n\nconsole.log(sub); // [2,3,4]\nconsole.log(arr); // исходный массив не изменился"
+        },
+        {
+          "id": "p11",
+          "type": "paragraph",
+          "text": "Метод slice не изменяет исходный массив. Он создаёт новый массив с выбранными элементами."
+        },
+        {
+          "id": "h2-iteration",
+          "type": "heading",
+          "level": 2,
+          "text": "Проход по массиву"
+        },
+        {
+          "id": "p12",
+          "type": "paragraph",
+          "text": "Ещё одна фундаментальная операция — итерация. Большинство алгоритмов проходит по массиву и выполняет действия над каждым элементом."
+        },
+        {
+          "id": "code5",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "const arr = [2,4,6,8];\n\nfor (let i = 0; i < arr.length; i++) {\n  console.log(arr[i]);\n}"
+        },
+        {
+          "id": "p13",
+          "type": "paragraph",
+          "text": "Такие проходы используются для подсчёта, поиска, фильтрации и преобразования данных."
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p14",
+          "type": "paragraph",
+          "text": "Базовые операции с массивами — это фундамент для понимания алгоритмов. Линейный поиск, вставка, удаление и срезы используются во множестве задач."
+        },
+        {
+          "id": "p15",
+          "type": "paragraph",
+          "text": "Освоив эти операции, вы сможете легче понимать более сложные алгоритмы, такие как сортировки, поиск подстрок и обработка больших наборов данных."
         },
         {
           "id": "link1",
@@ -291,11 +737,6 @@
           "text": "Подробнее про методы массивов в JavaScript",
           "href": "https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array",
           "target": "_blank"
-        },
-        {
-          "id": "p6",
-          "type": "paragraph",
-          "text": "Понимание этих базовых операций позволит эффективно работать с массивами, строить алгоритмы сортировки, поиска и обработки данных."
         }
       ]
     },
@@ -314,7 +755,12 @@
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Хэш-таблица — структура данных, которая позволяет быстро хранить и искать пары «ключ-значение». В JavaScript такие структуры реализуются как объекты `{}` или `Map`."
+          "text": "Хэш-таблица — это структура данных, предназначенная для хранения пар «ключ–значение». Она позволяет очень быстро находить, добавлять и удалять элементы. В большинстве случаев такие операции выполняются за O(1), то есть за постоянное время."
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "Идея хэш-таблицы заключается в том, что каждый ключ преобразуется в индекс массива с помощью специальной функции — хэш-функции. По этому индексу и хранится значение. Благодаря этому поиск элемента не требует полного перебора всех данных."
         },
         {
           "id": "h2-hashconcept",
@@ -323,32 +769,80 @@
           "text": "Как работает хэш-таблица"
         },
         {
-          "id": "p2",
+          "id": "p3",
           "type": "paragraph",
-          "text": "Каждый ключ преобразуется в индекс с помощью хэш-функции. Этот индекс указывает на ячейку в массиве, где хранится значение. При коллизиях (два ключа получили один индекс) используется метод цепочек или открытой адресации."
+          "text": "В основе хэш-таблицы лежит массив. Когда мы добавляем пару «ключ–значение», ключ сначала проходит через хэш-функцию. Эта функция преобразует ключ (например строку) в число — индекс массива."
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "После этого значение сохраняется в ячейке массива с этим индексом. Когда мы хотим получить значение по ключу, выполняется тот же процесс: ключ снова проходит через хэш-функцию, и мы сразу узнаём нужную ячейку."
         },
         {
           "id": "anim-hash",
           "type": "animation",
-          "html": "<div id='hash-container'></div>",
-          "css": "#hash-container { display: flex; gap: 6px; margin: 12px 0; }\n.cell { width: 60px; height: 40px; background: #3b82f6; border-radius: 4px; color: white; display: flex; justify-content: center; align-items: center; font-size: 14px; }",
-          "js": "const keys = ['A','B','C','D','E'];\nconst container = document.getElementById('hash-container');\nkeys.forEach((k,i)=>{\n  const div = document.createElement('div');\n  div.className='cell';\n  div.textContent=k;\n  container.appendChild(div);\n});",
+          "html": "<div id='hash-demo'></div>",
+          "css": "#hash-demo{display:flex;gap:10px;padding:12px;} .bucket{width:60px;height:40px;background:#1e293b;color:#e5e7eb;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:monospace;} .active{background:#22c55e;color:#052e16;}",
+          "js": "const keys=['apple','banana','cat','dog']; const root=document.getElementById('hash-demo'); const buckets=[]; for(let i=0;i<6;i++){ const el=document.createElement('div'); el.className='bucket'; el.textContent=i; root.appendChild(el); buckets.push(el);} let i=0; const timer=setInterval(()=>{ if(i>=keys.length){clearInterval(timer);return;} const index=keys[i].length % buckets.length; buckets[index].classList.add('active'); buckets[index].textContent=index+': '+keys[i]; i++; },900);",
           "width": "100%",
-          "height": 60,
+          "height": 90,
           "showPlayButton": false
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "В этой демонстрации ключ преобразуется в индекс массива. В реальных хэш-таблицах используются более сложные хэш-функции, которые равномерно распределяют данные по массиву."
+        },
+        {
+          "id": "h2-collision",
+          "type": "heading",
+          "level": 2,
+          "text": "Коллизии"
+        },
+        {
+          "id": "p6",
+          "type": "paragraph",
+          "text": "Иногда разные ключи могут давать одинаковый индекс. Такая ситуация называется коллизией. Поскольку два элемента не могут храниться в одной и той же ячейке массива напрямую, используются специальные методы разрешения коллизий."
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "Один из популярных способов — метод цепочек. В этом случае в каждой ячейке массива хранится список элементов. Если несколько ключей имеют одинаковый индекс, они добавляются в этот список."
+        },
+        {
+          "id": "code1",
+          "type": "code",
+          "language": "text",
+          "editable": false,
+          "code": "index 3 -> [ ('cat', 1), ('dog', 5), ('car', 7) ]"
+        },
+        {
+          "id": "p8",
+          "type": "paragraph",
+          "text": "Другой подход — открытая адресация. В этом случае при коллизии алгоритм ищет следующую свободную ячейку в массиве."
         },
         {
           "id": "h2-jsmap",
           "type": "heading",
           "level": 2,
-          "text": "Пример на JavaScript"
+          "text": "Пример использования Map в JavaScript"
         },
         {
-          "id": "code1",
+          "id": "p9",
+          "type": "paragraph",
+          "text": "В JavaScript есть встроенная структура Map, которая реализует хэш-таблицу. Она позволяет хранить пары ключ–значение и предоставляет удобные методы для работы."
+        },
+        {
+          "id": "code2",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "// Используем Map\nconst map = new Map();\nmap.set('apple', 5);\nmap.set('banana', 10);\nconsole.log(map.get('apple')); // 5\nconsole.log(map.has('banana')); // true\nmap.delete('apple');"
+          "code": "const map = new Map();\n\nmap.set('apple', 5);\nmap.set('banana', 10);\nmap.set('orange', 7);\n\nconsole.log(map.get('apple')); // 5\nconsole.log(map.has('banana')); // true\n\nmap.delete('apple');"
+        },
+        {
+          "id": "p10",
+          "type": "paragraph",
+          "text": "Метод set добавляет элемент, get возвращает значение по ключу, has проверяет существование ключа, а delete удаляет элемент."
         },
         {
           "id": "h2-object",
@@ -357,16 +851,67 @@
           "text": "Использование объекта как словаря"
         },
         {
-          "id": "code2",
+          "id": "p11",
+          "type": "paragraph",
+          "text": "Также в JavaScript можно использовать обычные объекты как словари. В этом случае строки используются как ключи."
+        },
+        {
+          "id": "code3",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "const obj = {};\nobj['apple'] = 5;\nobj['banana'] = 10;\nconsole.log(obj['apple']); // 5\ndelete obj['apple'];"
+          "code": "const counts = {};\n\ncounts['apple'] = 1;\ncounts['banana'] = 2;\n\nconsole.log(counts['apple']); // 1\n\ncounts['banana'] += 1;\n\ndelete counts['apple'];"
         },
         {
-          "id": "p3",
+          "id": "p12",
           "type": "paragraph",
-          "text": "Время доступа к элементу в хэш-таблице в среднем O(1), что делает её одной из самых быстрых структур для поиска и вставки. В худшем случае (много коллизий) сложность может быть O(n)."
+          "text": "Такой подход часто используется для подсчёта частоты элементов или быстрого поиска по ключу."
+        },
+        {
+          "id": "h2-usecases",
+          "type": "heading",
+          "level": 2,
+          "text": "Где используются хэш-таблицы"
+        },
+        {
+          "id": "p13",
+          "type": "paragraph",
+          "text": "Хэш-таблицы используются очень широко. Они лежат в основе множества алгоритмов и систем."
+        },
+        {
+          "id": "code4",
+          "type": "code",
+          "language": "text",
+          "editable": false,
+          "code": "Примеры использования:\n\n• подсчёт частоты элементов\n• кэширование данных\n• быстрый поиск по ключу\n• реализация множеств (Set)\n• индексация данных"
+        },
+        {
+          "id": "p14",
+          "type": "paragraph",
+          "text": "Например, задача подсчёта частоты слов в тексте практически всегда решается с помощью хэш-таблицы."
+        },
+        {
+          "id": "code5",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function wordCount(words) {\n  const map = {};\n\n  for (const w of words) {\n    if (!map[w]) {\n      map[w] = 0;\n    }\n\n    map[w]++;\n  }\n\n  return map;\n}"
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p15",
+          "type": "paragraph",
+          "text": "Хэш-таблица — одна из самых полезных структур данных. Она позволяет хранить данные в виде пар ключ–значение и обеспечивает очень быстрый доступ к элементам."
+        },
+        {
+          "id": "p16",
+          "type": "paragraph",
+          "text": "Понимание принципов работы хэш-таблиц важно для решения многих алгоритмических задач: поиска, подсчёта частот, кэширования и обработки больших объёмов данных."
         },
         {
           "id": "link1",
@@ -374,11 +919,6 @@
           "text": "Подробнее про хэш-таблицы",
           "href": "https://ru.wikipedia.org/wiki/Хеш-таблица",
           "target": "_blank"
-        },
-        {
-          "id": "p4",
-          "type": "paragraph",
-          "text": "Хэш-таблицы и словари используются повсеместно: кэширование, подсчёт частот элементов, быстрый поиск, реализации сетов и мапов."
         }
       ]
     },
@@ -397,7 +937,12 @@
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Стек и очередь — базовые структуры данных, которые управляют порядком обработки элементов. Стек работает по принципу LIFO (последний пришёл — первый ушёл), а очередь — FIFO (первый пришёл — первый ушёл)."
+          "text": "Стек и очередь — две базовые структуры данных, которые определяют порядок обработки элементов. Они часто используются в алгоритмах, системах обработки задач, компиляторах и интерфейсах приложений."
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "Главное отличие между ними — порядок извлечения элементов. Стек работает по принципу LIFO (Last In, First Out — последний пришёл, первый ушёл). Очередь работает по принципу FIFO (First In, First Out — первый пришёл, первый ушёл)."
         },
         {
           "id": "h2-stack",
@@ -406,25 +951,63 @@
           "text": "Стек (LIFO)"
         },
         {
-          "id": "p2",
+          "id": "p3",
           "type": "paragraph",
-          "text": "В стеке операции `push` добавляют элемент на верх, а `pop` удаляют верхний элемент. Используется, например, для обхода графов, рекурсии и отмены действий."
+          "text": "Стек можно представить как стопку книг. Новая книга кладётся сверху, и снять можно только верхнюю книгу. Поэтому последний добавленный элемент извлекается первым."
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "Основные операции стека — это push (добавить элемент на вершину) и pop (удалить верхний элемент). Также часто используется операция peek, которая позволяет посмотреть верхний элемент без удаления."
         },
         {
           "id": "code1",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "class Stack {\n  constructor() {\n    this.items = [];\n  }\n  push(x) { this.items.push(x); }\n  pop() { return this.items.pop(); }\n  peek() { return this.items[this.items.length - 1]; }\n  isEmpty() { return this.items.length === 0; }\n}"
+          "code": "class Stack {\n  constructor() {\n    this.items = [];\n  }\n\n  push(x) {\n    this.items.push(x);\n  }\n\n  pop() {\n    return this.items.pop();\n  }\n\n  peek() {\n    return this.items[this.items.length - 1];\n  }\n\n  isEmpty() {\n    return this.items.length === 0;\n  }\n}"
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "В JavaScript стек часто реализуют с помощью обычного массива, используя методы push и pop."
         },
         {
           "id": "anim-stack",
           "type": "animation",
-          "html": "<div id='stack-container'></div>",
-          "css": "#stack-container { display: flex; flex-direction: column-reverse; gap: 6px; width: 100px; }\n.box { background: #3b82f6; color: white; text-align: center; padding: 8px 0; border-radius: 4px; }",
-          "js": "const container = document.getElementById('stack-container');\nlet count = 1;\nconst interval = setInterval(() => {\n  if(count>5) return clearInterval(interval);\n  const div = document.createElement('div');\n  div.className = 'box';\n  div.textContent = 'Item ' + count;\n  container.appendChild(div);\n  count++;\n}, 600);",
-          "width": "120px",
-          "height": 180
+          "html": "<div id='stack-demo'></div>",
+          "css": "#stack-demo{display:flex;flex-direction:column-reverse;gap:6px;width:120px;padding:10px;} .box{background:#2563eb;color:white;text-align:center;padding:8px;border-radius:6px;font-family:monospace;}",
+          "js": "const root=document.getElementById('stack-demo'); let count=1; const timer=setInterval(()=>{ if(count>5){clearInterval(timer);return;} const el=document.createElement('div'); el.className='box'; el.textContent='Item '+count; root.appendChild(el); count++; },700);",
+          "width": "140px",
+          "height": 200
+        },
+        {
+          "id": "p6",
+          "type": "paragraph",
+          "text": "На визуализации новые элементы добавляются на вершину стека. Последний добавленный элемент находится сверху."
+        },
+        {
+          "id": "h2-stack-use",
+          "type": "heading",
+          "level": 2,
+          "text": "Где используется стек"
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "Стек используется во многих алгоритмах и системах. Например, при работе рекурсивных функций используется стек вызовов. Каждый вызов функции помещается в стек, а после завершения удаляется."
+        },
+        {
+          "id": "code2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function factorial(n) {\n  if (n === 0) return 1;\n  return n * factorial(n - 1);\n}"
+        },
+        {
+          "id": "p8",
+          "type": "paragraph",
+          "text": "При выполнении этой функции каждый вызов помещается в стек вызовов. Когда рекурсия заканчивается, вызовы извлекаются из стека в обратном порядке."
         },
         {
           "id": "h2-queue",
@@ -433,25 +1016,69 @@
           "text": "Очередь (FIFO)"
         },
         {
-          "id": "p3",
+          "id": "p9",
           "type": "paragraph",
-          "text": "Очередь добавляет элементы в конец (`enqueue`) и извлекает из начала (`dequeue`). Используется, например, для управления задачами, потоков данных и обхода графа BFS."
+          "text": "Очередь работает по принципу «первый пришёл — первый ушёл». Это похоже на очередь в магазине: люди становятся в конец очереди, а обслуживается тот, кто стоит первым."
         },
         {
-          "id": "code2",
+          "id": "p10",
+          "type": "paragraph",
+          "text": "Основные операции очереди — enqueue (добавить элемент в конец) и dequeue (извлечь элемент из начала)."
+        },
+        {
+          "id": "code3",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "class Queue {\n  constructor() {\n    this.items = [];\n  }\n  enqueue(x) { this.items.push(x); }\n  dequeue() { return this.items.shift(); }\n  peek() { return this.items[0]; }\n  isEmpty() { return this.items.length === 0; }\n}"
+          "code": "class Queue {\n  constructor() {\n    this.items = [];\n  }\n\n  enqueue(x) {\n    this.items.push(x);\n  }\n\n  dequeue() {\n    return this.items.shift();\n  }\n\n  peek() {\n    return this.items[0];\n  }\n\n  isEmpty() {\n    return this.items.length === 0;\n  }\n}"
         },
         {
           "id": "anim-queue",
           "type": "animation",
-          "html": "<div id='queue-container'></div>",
-          "css": "#queue-container { display: flex; gap: 6px; }\n.box { background: #f59e0b; color: white; text-align: center; padding: 8px 0; border-radius: 4px; width: 60px; }",
-          "js": "const container = document.getElementById('queue-container');\nlet count = 1;\nconst interval = setInterval(()=>{\n  if(count>5) return clearInterval(interval);\n  const div = document.createElement('div');\n  div.className='box';\n  div.textContent='Item '+count;\n  container.appendChild(div);\n  count++;\n}, 600);",
+          "html": "<div id='queue-demo'></div>",
+          "css": "#queue-demo{display:flex;gap:8px;padding:12px;} .box{background:#f59e0b;color:white;border-radius:6px;width:70px;height:36px;display:flex;align-items:center;justify-content:center;font-family:monospace;}",
+          "js": "const root=document.getElementById('queue-demo'); let count=1; const timer=setInterval(()=>{ if(count>5){clearInterval(timer);return;} const el=document.createElement('div'); el.className='box'; el.textContent='Item '+count; root.appendChild(el); count++; },700);",
           "width": "100%",
           "height": 100
+        },
+        {
+          "id": "p11",
+          "type": "paragraph",
+          "text": "На визуализации элементы добавляются справа, а извлекаться будут слева — именно так работает очередь."
+        },
+        {
+          "id": "h2-queue-use",
+          "type": "heading",
+          "level": 2,
+          "text": "Где используется очередь"
+        },
+        {
+          "id": "p12",
+          "type": "paragraph",
+          "text": "Очереди используются в системах обработки задач, сетевых очередях, планировщиках процессов и алгоритмах обхода графов."
+        },
+        {
+          "id": "code4",
+          "type": "code",
+          "language": "text",
+          "editable": false,
+          "code": "Примеры использования очередей:\n\n• обработка задач в очереди\n• BFS (обход графа в ширину)\n• обработка сетевых пакетов\n• системы очередей сообщений"
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p13",
+          "type": "paragraph",
+          "text": "Стек и очередь — простые, но очень важные структуры данных. Они определяют порядок обработки элементов и используются во множестве алгоритмов."
+        },
+        {
+          "id": "p14",
+          "type": "paragraph",
+          "text": "Понимание этих структур поможет вам разобраться в более сложных алгоритмах, таких как обход графов, парсинг выражений, реализация undo/redo и многих других задачах."
         },
         {
           "id": "link1",
@@ -459,11 +1086,6 @@
           "text": "Подробнее про стек и очередь",
           "href": "https://ru.wikipedia.org/wiki/Стек_(структура_данных)",
           "target": "_blank"
-        },
-        {
-          "id": "p4",
-          "type": "paragraph",
-          "text": "Понимание стека и очереди — основа для изучения более сложных структур данных и алгоритмов, таких как BFS, DFS, Undo/Redo в приложениях и рекурсивные алгоритмы."
         }
       ]
     },
@@ -705,8 +1327,14 @@
       "solutionTemplate": "def solution(a: int, b: int) -> int:\n    # Ваш код здесь\n    pass",
       "formatInfo": "Реализуйте функцию solution(a: int, b: int) -> int, которая возвращает сумму a и b.",
       "testCases": [
-        { "input": "2, 3", "expected": "5" },
-        { "input": "-1, 1", "expected": "0" }
+        {
+          "input": "2, 3",
+          "expected": "5"
+        },
+        {
+          "input": "-1, 1",
+          "expected": "0"
+        }
       ]
     },
     {
@@ -725,8 +1353,14 @@
       "solutionTemplate": "def solution(nums: list[int]) -> int:\n    # Ваш код здесь\n    pass",
       "formatInfo": "Реализуйте функцию solution(nums: list[int]) -> int, которая возвращает сумму элементов списка nums.",
       "testCases": [
-        { "input": "[1, 2, 3]", "expected": "6" },
-        { "input": "[]", "expected": "0" }
+        {
+          "input": "[1, 2, 3]",
+          "expected": "6"
+        },
+        {
+          "input": "[]",
+          "expected": "0"
+        }
       ]
     }
   ]

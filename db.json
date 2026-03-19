@@ -1103,28 +1103,94 @@
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Рекурсия — это метод решения задачи, при котором функция вызывает сама себя. Рекурсивный подход позволяет выразительно решать задачи, которые естественно разбиваются на подзадачи."
+          "text": "Рекурсия - это способ решать задачу, когда функция вызывает саму себя. Идея рекурсии проста: мы не пытаемся “разобрать всё сразу”, а решаем исходную задачу через решение более маленьких подзадач того же типа."
         },
         {
           "id": "p2",
           "type": "paragraph",
-          "text": "В рекурсии важно иметь условие выхода, иначе функция будет вызываться бесконечно."
+          "text": "Чтобы рекурсия работала, у неё должны быть два обязательных элемента: базовый случай (base case), который останавливает вызовы, и рекурсивный шаг, который переносит задачу к более простому варианту."
         },
         {
-          "id": "code1",
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Рекурсивный подход особенно удобен там, где вход “естественно” распадается на части: деревья и обходы, разбиение отрезка пополам (divide and conquer), вычисление выражений, задачи на последовательности."
+        },
+        {
+          "id": "h2-template",
+          "type": "heading",
+          "level": 2,
+          "text": "Типовой каркас рекурсивной функции"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "У большинства рекурсивных алгоритмов есть один и тот же “скелет”: сначала проверяем, не достигли ли мы базового случая, а затем рекурсивно решаем уменьшённую версию и (при необходимости) комбинируем результат."
+        },
+        {
+          "id": "code-template",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "function factorial(n) {\n  if (n <= 1) return 1;\n  return n * factorial(n - 1);\n}\nconsole.log(factorial(5)); // 120"
+          "code": "function f(x) {\n  // 1) базовый случай\n  if (/* x достаточно мал */) return result;\n\n  // 2) рекурсивный шаг: продвигаемся к base case\n  const smaller = reduce(x);\n  const subAnswer = f(smaller);\n\n  // 3) комбинирование (иногда отсутствует)\n  return combine(x, subAnswer);\n}"
         },
         {
-          "id": "anim1",
+          "id": "h2-stack",
+          "type": "heading",
+          "level": 2,
+          "text": "Стек вызовов: как рекурсия “раскручивается”"
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "В runtime каждый вызов функции создаёт кадр (frame) и кладёт его в стек вызовов. Когда функция делает рекурсивный вызов, текущий кадр “ждёт” результат под-вызова."
+        },
+        {
+          "id": "p6",
+          "type": "paragraph",
+          "text": "Когда базовый случай срабатывает, начинается обратный ход: подзадача возвращает ответ, кадры снимаются со стека, а оставшиеся вычисления выполняются на пути “назад”."
+        },
+        {
+          "id": "anim-factorial-trace",
           "type": "animation",
-          "html": "<div id='fact-stack'></div>",
-          "css": "#fact-stack { display:flex; flex-direction:column; gap:4px; } .frame { padding:8px; background:#3b82f6; color:white; border-radius:4px; }",
-          "js": "const container=document.getElementById('fact-stack'); for(let i=5;i>=1;i--){ const div=document.createElement('div'); div.className='frame'; div.textContent='factorial('+i+')'; container.appendChild(div); }",
+          "html": "<div id='fact-rec-wrap'><div id='fact-stack'></div><div id='fact-log'></div></div>",
+          "css": "#fact-rec-wrap{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;padding:8px 0;}#fact-stack{min-width:260px;display:flex;flex-direction:column;gap:6px;}#fact-stack .frame{padding:8px 10px;border-radius:10px;background:rgba(59,130,246,0.85);color:#fff;font-family:ui-monospace,monospace;font-size:12px;white-space:nowrap;}#fact-log{flex:1;min-width:240px;font-family:ui-monospace,monospace;}#fact-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#fact-log .stage{color:#93c5fd;font-weight:700;}",
+          "js": "const n=5;const stackEl=document.getElementById('fact-stack');const logEl=document.getElementById('fact-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));const stack=[];function render(){stackEl.innerHTML='';for(const fr of stack){const div=document.createElement('div');div.className='frame';div.innerHTML='<strong>f('+fr.k+')</strong>  ('+fr.phase+')';stackEl.appendChild(div);}}function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}async function factTrace(k){stack.push({k,phase:'push'});render();addLog('Вызов factorial('+k+')', 'CALL');await sleep(420);let res;if(k<=1){res=1;addLog('Базовый случай: factorial('+k+') = 1','BASE');}else{res=k*await factTrace(k-1);}stack.pop();render();addLog('Возврат: factorial('+k+') = '+res,'RETURN');await sleep(300);return res;}(async()=>{addLog('Запуск трассировки factorial('+n+')','START');render();const ans=await factTrace(n);addLog('Итог: factorial('+n+') = '+ans,'DONE');})();",
           "width": "100%",
-          "height": 180
+          "height": 260
+        },
+        {
+          "id": "h2-example",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример: факториал через рекурсию"
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "Факториал задаётся рекурсивно так: n! = 1 при n <= 1, и n! = n * (n-1)! при n > 1. Здесь базовый случай очевиден, а рекурсивный шаг уменьшает аргумент на 1, гарантируя достижение выхода."
+        },
+        {
+          "id": "code-factorial",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function factorial(n) {\n  if (n <= 1) return 1; // базовый случай\n  return n * factorial(n - 1); // рекурсивный шаг\n}\n\nconsole.log(factorial(5)); // 120"
+        },
+        {
+          "id": "h2-termination",
+          "type": "heading",
+          "level": 2,
+          "text": "Завершение и контроль глубины"
+        },
+        {
+          "id": "p8",
+          "type": "paragraph",
+          "text": "Чтобы рекурсия всегда завершалась, шаг reduce(x) должен ввести меру прогресса: значение обязательно “движется” к состоянию, где срабатывает base case. Если прогресса нет, функция будет вызывать сама себя бесконечно."
+        },
+        {
+          "id": "p9",
+          "type": "paragraph",
+          "text": "Практическая сторона: глубина рекурсии влияет на стек. При слишком глубокой рекурсии возможен stack overflow. Часто помогает переписать решение в итеративное или применить оптимизации (аккумулятор, мемоизация, динамика)."
         },
         {
           "id": "link1",
@@ -1132,6 +1198,17 @@
           "text": "Подробнее про рекурсию",
           "href": "https://ru.wikipedia.org/wiki/Рекурсия_(программирование)",
           "target": "_blank"
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p10",
+          "type": "paragraph",
+          "text": "Рекурсия - это мощный инструмент для выражения задач через подзадачи одинаковой структуры. Правильно выбранный базовый случай и прогресс в рекурсивном шаге превращают рекурсивное решение в корректный и понятный алгоритм."
         }
       ]
     },
@@ -1150,21 +1227,128 @@
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Рассмотрим простые примеры рекурсивных функций: факториал, сумма элементов массива и вычисление степени числа."
+          "text": "Чтобы уверенно писать рекурсивные решения, полезно увидеть несколько типовых паттернов. В каждом примере мы ищем: (1) базовый случай, (2) рекурсивный шаг, который делает “меньше” входные данные, и (3) место, где мы комбинируем результат подзадачи."
         },
         {
-          "id": "code1",
+          "id": "h2-1",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример 1: факториал (уменьшаем n на 1)"
+        },
+        {
+          "id": "p2",
+          "type": "paragraph",
+          "text": "Факториал можно определить так: n! = 1 при n <= 1, иначе n! = n * (n-1)!. Здесь базовый случай - это “достаточно маленькое n”, а рекурсивный шаг уменьшает аргумент на 1."
+        },
+        {
+          "id": "code-factorial",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "// Сумма массива\nfunction sum(arr){\n  if(arr.length===0) return 0;\n  return arr[0]+sum(arr.slice(1));\n}\nconsole.log(sum([1,2,3,4])); // 10"
+          "code": "function factorial(n) {\n  if (n <= 1) return 1; // base case\n  return n * factorial(n - 1); // recursive step\n}\n\nconsole.log(factorial(5)); // 120"
         },
         {
-          "id": "code2",
+          "id": "h2-2",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример 2: сумма массива (две идеи уменьшения)"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Сумму массива тоже можно сделать рекурсивно. Есть два популярных подхода: (A) брать первый элемент и вызывать рекурсию для остатка через slice (удобно, но создаёт новые массивы), (B) передавать индекс i и вызывать рекурсию для суффикса arr[i+1...] (эффективнее по памяти). Ниже - вариант B."
+        },
+        {
+          "id": "code-sum",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "// Степень числа\nfunction pow(x,n){\n  if(n===0) return 1;\n  return x*pow(x,n-1);\n}\nconsole.log(pow(2,3)); // 8"
+          "code": "function sumRec(arr, i = 0) {\n  if (i >= arr.length) return 0; // base case\n  return arr[i] + sumRec(arr, i + 1); // add current + sum of the rest\n}\n\nconsole.log(sumRec([1, 2, 3, 4])); // 10"
+        },
+        {
+          "id": "anim-sum-trace",
+          "type": "animation",
+          "html": "<div id='sum-rec-wrap'><div id='sum-stack'></div><div id='sum-log'></div></div>",
+          "css": "#sum-rec-wrap{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;padding:8px 0;}#sum-stack{min-width:260px;display:flex;flex-direction:column;gap:6px;}#sum-stack .frame{padding:8px 10px;border-radius:10px;background:rgba(59,130,246,0.85);color:#fff;font-family:ui-monospace,monospace;font-size:12px;white-space:nowrap;}#sum-log{flex:1;min-width:240px;font-family:ui-monospace,monospace;max-height:240px;overflow:auto;}#sum-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#sum-log .stage{color:#93c5fd;font-weight:700;}",
+          "js": "const arr=[1,2,3,4];const stackEl=document.getElementById('sum-stack');const logEl=document.getElementById('sum-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));const stack=[];function render(){stackEl.innerHTML='';for(const fr of stack){const div=document.createElement('div');div.className='frame';div.textContent='sumRec(i='+fr.i+')';stackEl.appendChild(div);}}function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}async function sumTrace(i){stack.push({i});render();addLog('Вызов sumRec('+i+')', 'CALL');await sleep(380);let res;if(i>=arr.length){res=0;addLog('Базовый случай: i='+i+' => 0', 'BASE');}else{res=arr[i]+await sumTrace(i+1);}stack.pop();render();addLog('Возврат: sumRec('+i+') = '+res,'RETURN');await sleep(260);return res;}(async()=>{addLog('Запуск трассировки sumRec(0)', 'START');render();const ans=await sumTrace(0);addLog('Итог: сумма = '+ans,'DONE');})();",
+          "width": "100%",
+          "height": 260
+        },
+        {
+          "id": "h2-3",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример 3: степень числа x^n (уменьшаем n)"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "Для целых n >= 0 удобно использовать определение: x^0 = 1 и x^n = x * x^(n-1). Базовый случай - n == 0, а рекурсивный шаг делает n меньше, пока не дойдём до выхода."
+        },
+        {
+          "id": "code-pow",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function pow(x, n) {\n  if (n === 0) return 1; // base case\n  return x * pow(x, n - 1); // recursive step\n}\n\nconsole.log(pow(2, 3)); // 8"
+        },
+        {
+          "id": "h2-4",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример 4: рекурсивный бинарный поиск (уменьшаем диапазон)"
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "Если массив отсортирован, можно рекурсивно искать элемент, сужая интервал поиска: [l, r]. Базовый случай обычно такой: l > r (ничего не нашли). Рекурсивный шаг - пересчитать l и r так, чтобы следующий вызов работал с половиной текущего диапазона."
+        },
+        {
+          "id": "code-binary-search",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function binarySearchRec(arr, target, l = 0, r = arr.length - 1) {\n  if (l > r) return -1; // base case\n\n  const mid = Math.floor((l + r) / 2);\n  if (arr[mid] === target) return mid;\n\n  if (target < arr[mid]) return binarySearchRec(arr, target, l, mid - 1);\n  return binarySearchRec(arr, target, mid + 1, r);\n}\n\nconsole.log(binarySearchRec([1, 3, 4, 7, 9], 7)); // 3"
+        },
+        {
+          "id": "h2-trace",
+          "type": "heading",
+          "level": 2,
+          "text": "Как читать “трассу” рекурсивного вызова"
+        },
+        {
+          "id": "p6",
+          "type": "paragraph",
+          "text": "Когда вы видите стек вызовов, считайте его как список активных функций: сверху - самый новый вызов, снизу - ожидание “предыдущих” кадров. После base case стек начинает раскручиваться, и формула на каждом кадре дополняет результат (например, в sumRec на каждом уровне добавляется arr[i])."
+        },
+        {
+          "id": "h2-tips",
+          "type": "heading",
+          "level": 2,
+          "text": "Практические советы"
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "Если рекурсивный шаг использует slice(arr) или строит новые массивы - это может резко увеличить стоимость по памяти и времени. В таких случаях часто лучше передавать индекс (или границы диапазона). Также всегда проверяйте, что аргумент “движется” к условию выхода."
+        },
+        {
+          "id": "link1",
+          "type": "link",
+          "text": "Рекурсия: теория и примеры",
+          "href": "https://ru.wikipedia.org/wiki/Рекурсия_(программирование)",
+          "target": "_blank"
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p8",
+          "type": "paragraph",
+          "text": "Базовые рекурсивные решения сводятся к нескольким повторяющимся идеям: уменьшаем аргумент (n-1), уменьшаем структуру (суффикс массива), или сужаем диапазон (l..r). Освоив эти паттерны, вы сможете уверенно переходить к более сложным задачам - от последовательностей до divide and conquer."
         }
       ]
     },
@@ -1183,58 +1367,132 @@
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Рекурсия удобно используется для вычисления последовательностей, таких как числа Фибоначчи."
+          "text": "Рекурсивная (рекуррентная) последовательность определяется не формулой “в одну строку”, а соотношением между элементами: каждый следующий элемент выражается через предыдущие. В алгоритмах это почти всегда означает рекурсивное вычисление с базовыми случаями."
         },
         {
-          "id": "code1",
-          "type": "code",
-          "language": "js",
-          "editable": false,
-          "code": "function fibonacci(n){\n  if(n<=1) return n;\n  return fibonacci(n-1)+fibonacci(n-2);\n}\nconsole.log(fibonacci(6)); // 8"
-        },
-        {
-          "id": "anim1",
-          "type": "animation",
-          "html": "<div id='fib-tree'></div>",
-          "css": "#fib-tree { display:flex; flex-wrap:wrap; gap:4px; } .node { padding:4px 6px; background:#8b5cf6; color:white; border-radius:4px; }",
-          "js": "const n=6; const container=document.getElementById('fib-tree'); for(let i=0;i<=n;i++){ const div=document.createElement('div'); div.className='node'; div.textContent='fib('+i+')'; container.appendChild(div); }",
-          "width": "100%",
-          "height": 120
-        }
-      ]
-    },
-    {
-      "id": "rekursiya-sequences",
-      "topicId": "rekursiya",
-      "subtopicId": "st-rek-2",
-      "title": "Рекурсивные последовательности",
-      "blocks": [
-        {
-          "id": "h1",
-          "type": "heading",
-          "level": 1,
-          "text": "Рекурсивные последовательности"
-        },
-        {
-          "id": "p1",
+          "id": "p2",
           "type": "paragraph",
-          "text": "Рекурсия удобно используется для вычисления последовательностей, таких как числа Фибоначчи."
+          "text": "Важный практический момент: у рекурсивных последовательностей часто есть повторяющиеся подзадачи. Именно поэтому наивная рекурсия может оказаться экспоненциально медленной, а оптимизированные варианты превращаются в динамическое программирование."
         },
         {
-          "id": "code1",
+          "id": "h2-fib",
+          "type": "heading",
+          "level": 2,
+          "text": "Фибоначчи: базовые случаи и рекуррентное соотношение"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Числа Фибоначчи задаются так: F(0) = 0, F(1) = 1 и F(n) = F(n-1) + F(n-2) для n >= 2. Это прямое “переводимое” в рекурсивную функцию определение."
+        },
+        {
+          "id": "code-fib-naive",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "function fibonacci(n){\n  if(n<=1) return n;\n  return fibonacci(n-1)+fibonacci(n-2);\n}\nconsole.log(fibonacci(6)); // 8"
+          "code": "function fibonacci(n) {\n  if (n <= 1) return n; // base cases\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(6)); // 8"
         },
         {
-          "id": "anim1",
+          "id": "h2-slow",
+          "type": "heading",
+          "level": 2,
+          "text": "Почему наивный вариант медленный"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "В рекурсивном решении fib(n) вызывает fib(n-1) и fib(n-2). Но fib(n-2) снова вызывает fib(n-3), а fib(n-1) тоже вызывает fib(n-3). Эти подвычисления повторяются снова и снова: получается “рекурсивное дерево” с экспоненциальным количеством узлов."
+        },
+        {
+          "id": "h2-anim",
+          "type": "heading",
+          "level": 2,
+          "text": "Анимация: мемоизация убирает повторы"
+        },
+        {
+          "id": "anim-fib-memo",
           "type": "animation",
-          "html": "<div id='fib-tree'></div>",
-          "css": "#fib-tree { display:flex; flex-wrap:wrap; gap:4px; } .node { padding:4px 6px; background:#8b5cf6; color:white; border-radius:4px; }",
-          "js": "const n=6; const container=document.getElementById('fib-tree'); for(let i=0;i<=n;i++){ const div=document.createElement('div'); div.className='node'; div.textContent='fib('+i+')'; container.appendChild(div); }",
+          "html": "<div id='fib-memo-wrap'><div id='fib-memo-grid'></div><div id='fib-memo-log'></div></div>",
+          "css": "#fib-memo-wrap{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;padding:8px 0;}#fib-memo-grid{min-width:290px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}#fib-memo-grid .cell{padding:10px 10px;border-radius:12px;background:rgba(255,255,255,0.06);color:#cbd5f5;font-family:ui-monospace,monospace;font-size:12px;min-height:48px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;border:1px solid rgba(148,163,184,0.15);}#fib-memo-grid .cell.filled{background:rgba(139,92,246,0.22);border-color:rgba(167,139,250,0.45);color:#fff;}#fib-memo-grid .cell.current{box-shadow:0 0 0 2px rgba(147,197,253,0.55);}#fib-memo-log{flex:1;min-width:240px;max-height:240px;overflow:auto;font-family:ui-monospace,monospace;}#fib-memo-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#fib-memo-log .stage{color:#93c5fd;font-weight:700;}",
+          "js": "const n=8;const memo=new Array(n+1).fill(undefined);const grid=document.getElementById('fib-memo-grid');const logEl=document.getElementById('fib-memo-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));const stack=[];let current=-1;function render(){grid.innerHTML='';for(let i=0;i<=n;i++){const cell=document.createElement('div');cell.className='cell'+(memo[i]!==undefined?' filled':'')+(i===current?' current':'');const val=(memo[i]===undefined)?'?':String(memo[i]);cell.innerHTML='<div style=\"opacity:0.85;\">i='+i+'</div><div style=\"font-weight:700;\">'+val+'</div>';grid.appendChild(cell);}}function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}async function fibTrace(k){current=k;render();addLog('Запрос fib('+k+')','CALL');await sleep(320);if(k<=1){memo[k]=k;render();addLog('База: fib('+k+') = '+k,'BASE');await sleep(240);return memo[k];}if(memo[k]!==undefined){addLog('Из кэша: fib('+k+') = '+memo[k],'CACHE');await sleep(220);return memo[k];}addLog('Считаем: fib('+k+') = fib('+(k-1)+') + fib('+(k-2)+')','COMPUTE');await sleep(280);const a=await fibTrace(k-1);const b=await fibTrace(k-2);memo[k]=a+b;render();addLog('Сохраняем: fib('+k+') = '+memo[k],'SAVE');await sleep(280);return memo[k];}(async()=>{addLog('Старт мемоизированного fib('+n+')','START');render();const ans=await fibTrace(n);current=-1;render();addLog('Итог: fib('+n+') = '+ans,'DONE');})();",
           "width": "100%",
-          "height": 120
+          "height": 260
+        },
+        {
+          "id": "h2-memo",
+          "type": "heading",
+          "level": 2,
+          "text": "Мемоизация (top-down DP)"
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "Мемоизация добавляет к рекурсивному решению “кэш”: если мы уже вычисляли fib(k), то больше не пересчитываем. В результате количество реальных вычислений становится линейным по n, и рекурсивное решение превращается в динамическое программирование."
+        },
+        {
+          "id": "code-fib-memo",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function fibonacciMemo(n) {\n  const memo = new Array(n + 1).fill(undefined);\n\n  function fib(k) {\n    if (k <= 1) return k;\n    if (memo[k] !== undefined) return memo[k];\n\n    memo[k] = fib(k - 1) + fib(k - 2);\n    return memo[k];\n  }\n\n  return fib(n);\n}\n\nconsole.log(fibonacciMemo(6)); // 8"
+        },
+        {
+          "id": "h2-iter",
+          "type": "heading",
+          "level": 2,
+          "text": "Итеративный вариант (bottom-up DP)"
+        },
+        {
+          "id": "p6",
+          "type": "paragraph",
+          "text": "Bottom-up подход заполняет таблицу dp снизу вверх: знаем dp[0] и dp[1], затем последовательно вычисляем dp[2], dp[3] ... dp[n]. Это обычно самый быстрый и предсказуемый вариант."
+        },
+        {
+          "id": "code-fib-dp",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function fibonacciDP(n) {\n  if (n <= 1) return n;\n\n  const dp = new Array(n + 1).fill(0);\n  dp[0] = 0;\n  dp[1] = 1;\n\n  for (let i = 2; i <= n; i++) {\n    dp[i] = dp[i - 1] + dp[i - 2];\n  }\n\n  return dp[n];\n}\n\nconsole.log(fibonacciDP(6)); // 8"
+        },
+        {
+          "id": "h2-general",
+          "type": "heading",
+          "level": 2,
+          "text": "Как перенести идею на другие последовательности"
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "Многие последовательности задаются соотношением вида: a(n) = f(a(n-1), a(n-2), ..., a(n-k)) плюс k базовых значений. Прямой рекурсивный код работает “как по определению”, но для эффективности почти всегда нужна мемоизация или табличный DP."
+        },
+        {
+          "id": "h2-complexity",
+          "type": "heading",
+          "level": 2,
+          "text": "Сложность: что меняется при оптимизации"
+        },
+        {
+          "id": "p8",
+          "type": "paragraph",
+          "text": "Наивная рекурсия для Фибоначчи имеет экспоненциальное время (количество вызовов растёт очень быстро) и глубину рекурсии O(n). Мемоизация и DP уменьшают время до O(n) и требуют O(n) памяти под кэш/таблицу."
+        },
+        {
+          "id": "link-fib",
+          "type": "link",
+          "text": "Подробнее: Фибоначчи и рекурсии",
+          "href": "https://ru.wikipedia.org/wiki/Числа_Фибоначчи",
+          "target": "_blank"
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p9",
+          "type": "paragraph",
+          "text": "Рекурсивные последовательности - это “математическое” описание через повторение. В программировании оно превращается в рекурсивную функцию с базовыми случаями. Как только вы замечаете повторные вычисления - добавляйте мемоизацию или переходите к bottom-up DP."
         }
       ]
     },
@@ -1253,19 +1511,127 @@
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Хвостовая рекурсия — это рекурсия, где вызов функции является последней операцией. Это позволяет оптимизировать стек вызовов в некоторых языках."
-        },
-        {
-          "id": "code1",
-          "type": "code",
-          "language": "js",
-          "editable": false,
-          "code": "function factorialTail(n, acc=1){\n  if(n<=1) return acc;\n  return factorialTail(n-1, acc*n);\n}\nconsole.log(factorialTail(5)); // 120"
+          "text": "Хвостовая рекурсия - это рекурсия, в которой рекурсивный вызов является последней операцией функции. То есть после возврата из рекурсивного вызова функция ничего не “должна” вычислять (не осталось ни умножений, ни сложений)."
         },
         {
           "id": "p2",
           "type": "paragraph",
-          "text": "Использование аккумулятора `acc` позволяет рекурсивной функции быть хвостовой, избегая увеличения глубины стека."
+          "text": "Практическая ценность хвостовой рекурсии в том, что при наличии оптимизации хвостовых вызовов (Tail Call Optimization, TCO) компилятор/интерпретатор может не раздувать стек. В таком случае рекурсию можно исполнять как эффективный цикл."
+        },
+        {
+          "id": "h2-tail-template",
+          "type": "heading",
+          "level": 2,
+          "text": "Аккумулятор как ключ к хвостовой форме"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Обычно хвостовую рекурсию получают из “обычной” рекурсии, перенося промежуточные вычисления в дополнительные параметры - аккумуляторы (acc). Вместо того чтобы ждать результата рекурсивного вызова и потом умножать/складывать, мы делаем это до вызова и передаём накопленное значение дальше."
+        },
+        {
+          "id": "code-tail-pattern",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function f(x, acc) {\n  if (/* base case */) return acc;\n  // хвостовой вызов: после него ничего не делаем\n  return f(reduce(x), combine(acc, x));\n}"
+        },
+        {
+          "id": "h2-factorial",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример: факториал с аккумулятором"
+        },
+        {
+          "id": "p4",
+          "type": "paragraph",
+          "text": "Обычный factorial ждёт возврата factorial(n-1) и только потом умножает на n. В хвостовой версии мы накапливаем произведение в acc: factorialTail(n, acc) возвращает произведение всех чисел от текущего n до 1 (в аккумуляторе уже лежит то, что “слева” от n)."
+        },
+        {
+          "id": "code-factorial-tail",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function factorialTail(n, acc = 1) {\n  if (n <= 1) return acc; // base case\n  return factorialTail(n - 1, acc * n); // хвостовой вызов\n}\n\nconsole.log(factorialTail(5)); // 120"
+        },
+        {
+          "id": "anim-factorial-tail",
+          "type": "animation",
+          "html": "<div id='tail-wrap'><div id='tail-frame'></div><div id='tail-steps'></div><div id='tail-log'></div></div>",
+          "css": "#tail-wrap{padding:10px 0;}#tail-frame{padding:12px 14px;border-radius:16px;background:rgba(59,130,246,0.18);border:1px solid rgba(59,130,246,0.35);color:#e5e7eb;font-family:ui-monospace,monospace;min-height:56px;margin-bottom:10px;}#tail-steps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}#tail-steps .stepBox{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(148,163,184,0.15);color:#e5e7eb;font-family:ui-monospace,monospace;font-size:12px;}#tail-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#tail-log .stage{color:#93c5fd;font-weight:700;}",
+          "js": "const n0=6;let n=n0;let acc=1;const frame=document.getElementById('tail-frame');const stepsEl=document.getElementById('tail-steps');const logEl=document.getElementById('tail-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));const render=()=>{frame.textContent='stack depth: 1 | factorialTail(n='+n+', acc='+acc+')';};function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}function addStep(text){const b=document.createElement('div');b.className='stepBox';b.textContent=text;stepsEl.appendChild(b);} (async()=>{render();addLog('Старт: передан acc=1', 'START');addStep('init acc=1');while(n>1){const nextAcc=acc*n;addLog('Шаг: acc = '+acc+' * '+n+' = '+nextAcc,'STEP');acc=nextAcc;n=n-1;addStep('acc='+acc);render();await sleep(520);}addLog('Базовый случай: n<=1, вернуть acc = '+acc,'BASE');await sleep(250);})();",
+          "width": "100%",
+          "height": 260
+        },
+        {
+          "id": "h2-sum",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример: сумма массива хвостовой рекурсией"
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "Суммирование - классическая задача для аккумулятора. Передвигаем индекс i, а промежуточную сумму храним в acc. Каждый рекурсивный вызов - хвостовой: после него функция сразу возвращает результат."
+        },
+        {
+          "id": "code-sum-tail",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function sumTail(arr, i = 0, acc = 0) {\n  if (i >= arr.length) return acc; // base case\n  return sumTail(arr, i + 1, acc + arr[i]); // хвостовой вызов\n}\n\nconsole.log(sumTail([1, 2, 3, 4])); // 10"
+        },
+        {
+          "id": "h2-gcd",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример: НОД (Евклид) - часто бывает хвостовым"
+        },
+        {
+          "id": "p6",
+          "type": "paragraph",
+          "text": "Алгоритм Евклида для НОД легко написать хвостово: gcd(a, b) = gcd(b, a mod b), пока b != 0. Это опять же пример рекурсии, где после рекурсивного вызова ничего не нужно комбинировать."
+        },
+        {
+          "id": "code-gcd-tail",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function gcdTail(a, b) {\n  if (b === 0) return a; // base case\n  return gcdTail(b, a % b); // хвостовой вызов\n}\n\nconsole.log(gcdTail(48, 18)); // 6"
+        },
+        {
+          "id": "h2-tco",
+          "type": "heading",
+          "level": 2,
+          "text": "Хвостовая рекурсия и оптимизация (TCO)"
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "В теории хвостовая рекурсия позволяет оптимизировать стек, заменив рекурсивные вызовы на цикл. На практике поддержка TCO зависит от языка: в большинстве mainstream-языков (и в JavaScript) гарантии нет, поэтому хвостовая рекурсия не всегда спасает от переполнения стека."
+        },
+        {
+          "id": "p8",
+          "type": "paragraph",
+          "text": "Если вы работаете в языке без гарантированной TCO, хвостовую рекурсию лучше переписать в итеративное решение (for/while). Но знание хвостовой формы всё равно полезно: она помогает увидеть “аккумуляторный” способ преобразования рекурсии."
+        },
+        {
+          "id": "link-tail",
+          "type": "link",
+          "text": "Подробнее: хвостовая рекурсия",
+          "href": "https://en.wikipedia.org/wiki/Tail_call",
+          "target": "_blank"
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p9",
+          "type": "paragraph",
+          "text": "Хвостовая рекурсия - это рекурсия без “работы после вызова”. Чаще всего она получается через аккумулятор (acc). Если язык поддерживает TCO, стек может не расти; если нет - хвостовую рекурсию логично заменить на цикл."
         }
       ]
     },
@@ -1273,39 +1639,121 @@
       "id": "rekursiya-divide-conquer",
       "topicId": "rekursiya",
       "subtopicId": "st-rek-4",
-      "title": "Divide and Conquer",
+      "title": "Дели и властвуй (divide and conquer)",
       "blocks": [
         {
           "id": "h1",
           "type": "heading",
           "level": 1,
-          "text": "Divide and Conquer"
+          "text": "Дели и властвуй (Divide and Conquer)"
         },
         {
           "id": "p1",
           "type": "paragraph",
-          "text": "Принцип 'разделяй и властвуй' заключается в разбиении задачи на подзадачи, решении их рекурсивно и объединении результатов."
+          "text": "Divide and Conquer (дили-и-властвуй) - это общий шаблон алгоритмов, где задачу рекурсивно решают через разбиение на несколько подзадач и последующее объединение результатов."
         },
         {
           "id": "p2",
           "type": "paragraph",
-          "text": "Примеры: быстрая сортировка (quicksort) и сортировка слиянием (merge sort)."
+          "text": "Типично у такого алгоритма есть три шага: (1) Divide - делим вход на части; (2) Conquer - решаем подзадачи рекурсией; (3) Combine - объединяем ответы (сливаем, склеиваем, строим структуру, считаем итог)."
         },
         {
-          "id": "code1",
+          "id": "h2-pattern",
+          "type": "heading",
+          "level": 2,
+          "text": "Общий шаблон"
+        },
+        {
+          "id": "code-dc-template",
           "type": "code",
           "language": "js",
           "editable": false,
-          "code": "// Merge sort\nfunction mergeSort(arr){\n  if(arr.length<=1) return arr;\n  const mid=Math.floor(arr.length/2);\n  const left=mergeSort(arr.slice(0,mid));\n  const right=mergeSort(arr.slice(mid));\n  const result=[];\n  while(left.length && right.length){\n    result.push(left[0]<right[0]?left.shift():right.shift());\n  }\n  return result.concat(left,right);\n}\nconsole.log(mergeSort([5,3,8,1])); // [1,3,5,8]"
+          "code": "function solve(problem) {\n  // base case: достаточно маленький вход\n  if (isSmall(problem)) return baseSolution(problem);\n\n  // divide\n  const parts = split(problem);\n\n  // conquer\n  const leftAnswer = solve(parts.left);\n  const rightAnswer = solve(parts.right);\n\n  // combine\n  return merge(leftAnswer, rightAnswer);\n}"
         },
         {
-          "id": "anim1",
+          "id": "h2-merge",
+          "type": "heading",
+          "level": 2,
+          "text": "Merge sort: split + merge"
+        },
+        {
+          "id": "p3",
+          "type": "paragraph",
+          "text": "Merge sort работает именно по паттерну divide and conquer. Мы делим массив пополам, рекурсивно сортируем каждую половину и затем “сливаем” две отсортированные части в одну отсортированную. Важное свойство: merge - линейная по длине операция, поэтому суммарное время получается порядка n log n."
+        },
+        {
+          "id": "code-merge-sort",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function mergeSort(arr) {\n  if (arr.length <= 1) return arr;\n\n  const mid = Math.floor(arr.length / 2);\n  const left = mergeSort(arr.slice(0, mid));\n  const right = mergeSort(arr.slice(mid));\n\n  return merge(left, right);\n}\n\nfunction merge(left, right) {\n  const result = [];\n  let i = 0;\n  let j = 0;\n\n  while (i < left.length && j < right.length) {\n    if (left[i] <= right[j]) result.push(left[i++]);\n    else result.push(right[j++]);\n  }\n\n  while (i < left.length) result.push(left[i++]);\n  while (j < right.length) result.push(right[j++]);\n\n  return result;\n}\n\nconsole.log(mergeSort([5, 3, 8, 1])); // [1, 3, 5, 8]"
+        },
+        {
+          "id": "p4-complexity",
+          "type": "paragraph",
+          "text": "Если описать время через рекуррентную формулу, получится: T(n) = 2*T(n/2) + O(n). Такое уравнение даёт T(n) = O(n log n). Глубина рекурсии равна O(log n), что делает stack-расход предсказуемым."
+        },
+        {
+          "id": "h2-quick",
+          "type": "heading",
+          "level": 2,
+          "text": "Quicksort (коротко): разделение вокруг pivot"
+        },
+        {
+          "id": "p5",
+          "type": "paragraph",
+          "text": "Quicksort тоже divide and conquer, но divide устроен иначе: выбирается pivot, массив делится на элементы меньше/больше pivot, рекурсивно сортируются части, затем объединение в данном случае сводится к конкатенации (так как элементы уже “разложены” относительно pivot). В среднем quicksort работает за O(n log n), но в худшем случае - O(n^2), если pivot каждый раз получается неудачным."
+        },
+        {
+          "id": "code-quick-sort",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function quickSort(arr) {\n  if (arr.length <= 1) return arr;\n\n  const pivot = arr[Math.floor(arr.length / 2)];\n  const left = [];\n  const equal = [];\n  const right = [];\n\n  for (const x of arr) {\n    if (x < pivot) left.push(x);\n    else if (x > pivot) right.push(x);\n    else equal.push(x);\n  }\n\n  return [...quickSort(left), ...equal, ...quickSort(right)];\n}\n\nconsole.log(quickSort([5, 3, 8, 1, 3])); // [1, 3, 3, 5, 8]"
+        },
+        {
+          "id": "h2-anim",
+          "type": "heading",
+          "level": 2,
+          "text": "Анимация: как идёт merge sort"
+        },
+        {
+          "id": "anim-merge-sort",
           "type": "animation",
-          "html": "<div id='merge-anim'></div>",
-          "css": "#merge-anim { display:flex; gap:6px; } .block { padding:6px; background:#3b82f6; color:white; border-radius:4px; }",
-          "js": "const arr=[5,3,8,1]; const container=document.getElementById('merge-anim'); arr.forEach(x=>{ const div=document.createElement('div'); div.className='block'; div.textContent=x; container.appendChild(div); });",
+          "html": "<div id='ms-wrap'><div id='ms-title'></div><div id='ms-levels'></div><div id='ms-log'></div></div>",
+          "css": "#ms-wrap{padding:10px 0;}#ms-title{color:#93c5fd;font-weight:800;font-family:ui-monospace,monospace;margin-bottom:10px;}#ms-levels{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;min-height:90px;}#ms-levels .sub{padding:10px 10px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(148,163,184,0.15);display:flex;gap:8px;flex-wrap:wrap;}#ms-levels .el{width:40px;height:30px;border-radius:12px;background:rgba(59,130,246,0.85);display:flex;align-items:center;justify-content:center;color:#fff;font-family:ui-monospace,monospace;font-size:12px;}#ms-log{margin-top:10px;font-family:ui-monospace,monospace;max-height:140px;overflow:auto;}#ms-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#ms-log .stage{color:#93c5fd;font-weight:700;}",
+          "js": "const stages=[\n  {title:'Исходный массив', parts:[[5,3,8,1]], hint:'Divide не выполнялось ещё'},\n  {title:'Разделяем пополам', parts:[[5,3],[8,1]], hint:'На этом этапе recurse создаёт 2 подзадачи'},\n  {title:'Достигаем base case', parts:[[5],[3],[8],[1]], hint:'Каждая половина доходит до размера 1'},\n  {title:'Сливаем пары', parts:[[3,5],[1,8]], hint:'Combine берёт два отсортированных подмассива и сливает их'},\n  {title:'Финальное слияние', parts:[[1,3,5,8]], hint:'Объединяем результаты в один отсортированный массив'}\n];\nconst titleEl=document.getElementById('ms-title');const levelsEl=document.getElementById('ms-levels');const logEl=document.getElementById('ms-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}function render(parts){levelsEl.innerHTML='';for(const sub of parts){const subEl=document.createElement('div');subEl.className='sub';for(const x of sub){const el=document.createElement('div');el.className='el';el.textContent=String(x);subEl.appendChild(el);}levelsEl.appendChild(subEl);}}(async()=>{addLog('Старт merge sort для [5,3,8,1]','START');for(const s of stages){titleEl.textContent=s.title;render(s.parts);addLog(s.hint,'STEP');await sleep(650);}addLog('Готово: [1,3,5,8]','DONE');})();",
           "width": "100%",
-          "height": 60
+          "height": 300
+        },
+        {
+          "id": "h2-recognize",
+          "type": "heading",
+          "level": 2,
+          "text": "Как узнавать divide and conquer в задачах"
+        },
+        {
+          "id": "p6",
+          "type": "paragraph",
+          "text": "Если при взгляде на задачу вы видите естественное разбиение на одинаковые подструктуры (половины массива, поддеревья, подотрезки, компоненты), то почти наверняка подойдёт divide and conquer. Самое важное - определить корректный base case и правильно сформулировать combine: как из ответов подзадач восстановить ответ исходной задачи."
+        },
+        {
+          "id": "link-merge",
+          "type": "link",
+          "text": "Подробнее: Merge sort и Quicksort",
+          "href": "https://ru.wikipedia.org/wiki/Сортировка_слиянием",
+          "target": "_blank"
+        },
+        {
+          "id": "h2-summary",
+          "type": "heading",
+          "level": 2,
+          "text": "Итог"
+        },
+        {
+          "id": "p7",
+          "type": "paragraph",
+          "text": "Divide and Conquer - это рекурсивный шаблон “делим - решаем - объединяем”. Merge sort наглядно показывает, как линейное слияние на каждом уровне приводит к O(n log n). Понимание этого паттерна помогает решать широкий класс задач: от сортировок до построения структур и обходов."
         }
       ]
     }

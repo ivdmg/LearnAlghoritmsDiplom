@@ -2661,6 +2661,2529 @@
           "target": "_blank"
         }
       ]
+    },
+    {
+      "id": "der-basic",
+      "topicId": "derevya",
+      "subtopicId": "st-der-1",
+      "title": "Базовые деревья: узел, вставка, поиск",
+      "blocks": [
+        {
+          "id": "der1-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Дерево — это не магия, а удобная «схема связей»"
+        },
+        {
+          "id": "der1-p1",
+          "type": "paragraph",
+          "text": "Представьте папки на компьютере: внутри «Документы» лежат «Работа» и «Личное», внутри каждой — свои файлы и папки. Никаких циклов: из папки нельзя зайти в подпапку и случайно вернуться в ту же самую выше по пути. Именно так устроено классическое дерево в программировании: есть один корень (верхушка), от него идут дети, у детей — свои дети."
+        },
+        {
+          "id": "der1-p2",
+          "type": "paragraph",
+          "text": "Зачем это нужно? Чтобы хранить иерархии: меню сайта, комментарии с ответами, выражения в компиляторе, разбор JSON. Дерево — частный случай графа, только без «петель» по пути вверх-вниз."
+        },
+        {
+          "id": "der1-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Слова, которые встретятся везде"
+        },
+        {
+          "id": "der1-p3",
+          "type": "paragraph",
+          "text": "Узел (node) — одна «коробка» с данными. Ребро — связь родитель–ребёнок. Лист — узел без детей. Высота дерева — длина самого длинного пути от корня вниз до листа (как этажи). Если у каждого узла не больше двух детей, дерево бинарное — с ним проще всего начинать."
+        },
+        {
+          "id": "der1-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Как описать узел в коде"
+        },
+        {
+          "id": "der1-p4",
+          "type": "paragraph",
+          "text": "Минимум: значение и список детей. Иногда добавляют ссылку на родителя — тогда проще подниматься вверх (например, «закрыть вкладку и вернуться к родителю» в UI)."
+        },
+        {
+          "id": "der1-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "// N-арное дерево: сколько угодно детей\nclass TreeNode {\n  constructor(value) {\n    this.value = value;\n    this.children = [];\n    this.parent = null; // по желанию\n  }\n  addChild(child) {\n    child.parent = this;\n    this.children.push(child);\n    return child;\n  }\n}"
+        },
+        {
+          "id": "der1-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "// Бинарное дерево — максимум два ребёнка\nclass BinNode {\n  constructor(value) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}"
+        },
+        {
+          "id": "der1-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Поиск, если «порядка» нет"
+        },
+        {
+          "id": "der1-p5",
+          "type": "paragraph",
+          "text": "Если значения в узлах не упорядочены (это ещё не BST), единственный общий способ — обойти дерево и сравнивать. В худшем случае придётся заглянуть в каждый узел: O(n). Зато логика простая: похоже на поиск ключа в JSON — пока не найдём, копаем глубже."
+        },
+        {
+          "id": "der1-c3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function findDFS(root, target) {\n  if (!root) return null;\n  if (root.value === target) return root;\n  for (const ch of root.children) {\n    const hit = findDFS(ch, target);\n    if (hit) return hit;\n  }\n  return null;\n}"
+        },
+        {
+          "id": "der1-p6",
+          "type": "paragraph",
+          "text": "Тот же поиск можно записать через очередь (BFS): сначала смотрим узлы ближе к корню. Если нужен «первый найденный на минимальной глубине», BFS удобнее; если просто «есть или нет» — разницы по скорости нет, оба обходят всё дерево."
+        },
+        {
+          "id": "der1-c4",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function findBFS(root, target) {\n  if (!root) return null;\n  const q = [root];\n  while (q.length) {\n    const u = q.shift();\n    if (u.value === target) return u;\n    for (const ch of u.children) q.push(ch);\n  }\n  return null;\n}"
+        },
+        {
+          "id": "der1-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "Вставка нового узла"
+        },
+        {
+          "id": "der1-p7",
+          "type": "paragraph",
+          "text": "Если вы уже держите ссылку на родителя p, вставка — одна операция: создали узел и добавили в children. Это O(1) по времени. Другое дело, если сначала нужно найти родителя по значению — тогда поиск может стоить O(n)."
+        },
+        {
+          "id": "der1-c5",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function insertUnder(parent, value) {\n  const node = new TreeNode(value);\n  parent.children.push(node);\n  node.parent = parent;\n  return node;\n}"
+        },
+        {
+          "id": "der1-p8",
+          "type": "paragraph",
+          "text": "Итог: дерево — удобная модель «один родитель — много детей». Дальше вы изучите обходы BFS/DFS и особый случай — бинарное дерево поиска, где поиск становится похож на бинарный поиск по массиву."
+        },
+        {
+          "id": "der1-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Обход «как по слоям»: сначала корень, потом дети (учебная аналогия)</div><div class=\"viz-hint\" id=\"der1-hint\"></div><div class=\"viz-chart\" id=\"der1-ch\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('der1-ch');\n  var hint=document.getElementById('der1-hint');\n  var order=[10,20,21,30,31,32];\n  var maxV=VizBars.maxOf(order);\n  VizBars.render(chart,order,{max:maxV});\n  var step=0;\n  var t=setInterval(function(){\n    VizBars.clearStates(chart);\n    VizBars.setState(chart,step,'active');\n    hint.textContent='Порядок обхода в ширину (значения в узлах — условные)';\n    step=(step+1)%order.length;\n  },700);\n})();",
+          "width": "100%",
+          "height": 220,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "der1-l1",
+          "type": "link",
+          "text": "Дерево (структура данных) — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Дерево_(структура_данных)",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "der-bfs",
+      "topicId": "derevya",
+      "subtopicId": "st-der-2",
+      "title": "Обход дерева в ширину (BFS)",
+      "blocks": [
+        {
+          "id": "der2-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Сначала всё рядом, потом дальше"
+        },
+        {
+          "id": "der2-p1",
+          "type": "paragraph",
+          "text": "BFS (breadth-first search) обходит дерево «по кругам», как волна от камня в воде: сначала корень, потом все его прямые дети, потом все внуки и так далее. Это не «интуиция ради интуиции»: такой порядок гарантирует, что вы встретите узлы на расстоянии 1 раньше, чем на расстоянии 2 — пригодится в графах для кратчайшего пути."
+        },
+        {
+          "id": "der2-p2",
+          "type": "paragraph",
+          "text": "Технически нужна очередь FIFO: «встали в хвост — обслуживаем с головы». Сняли узел, обработали, всех детей аккуратно добавили в конец очереди. В JavaScript для учебы можно q.shift() — помните, что у большого массива это дорого; в бою берут указатели головы/хвоста или deque."
+        },
+        {
+          "id": "der2-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Код обхода"
+        },
+        {
+          "id": "der2-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function bfs(root, visit) {\n  if (!root) return;\n  const q = [root];\n  while (q.length) {\n    const u = q.shift();\n    visit(u);\n    for (const ch of u.children) q.push(ch);\n  }\n}"
+        },
+        {
+          "id": "der2-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Собрать узлы по уровням в массив"
+        },
+        {
+          "id": "der2-p3",
+          "type": "paragraph",
+          "text": "Частая задача на собеседованиях: вернуть [[корень],[его дети],[следующий уровень],...]. Идея: на каждом шаге знаем, сколько узлов в текущем «слое» (размер очереди в начале итерации)."
+        },
+        {
+          "id": "der2-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function levels(root) {\n  if (!root) return [];\n  const res = [];\n  let q = [root];\n  while (q.length) {\n    const row = [];\n    const next = [];\n    for (const u of q) {\n      row.push(u.value);\n      for (const ch of u.children) next.push(ch);\n    }\n    res.push(row);\n    q = next;\n  }\n  return res;\n}"
+        },
+        {
+          "id": "der2-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Сложность"
+        },
+        {
+          "id": "der2-p4",
+          "type": "paragraph",
+          "text": "Время O(n): каждый узел зайдёт в очередь ровно один раз, каждое ребро мы «пересечём» константное число раз. Память — ширина дерева: если у корня миллион детей, в очереди может стоять O(миллион)."
+        },
+        {
+          "id": "der2-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Очередь: кто пришёл первым — обслуживается первым</div><div class=\"viz-hint\" id=\"der2-hint\"></div><div class=\"viz-row viz-row--queue\" id=\"der2-q\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var root=document.getElementById('der2-q');\n  var hint=document.getElementById('der2-hint');\n  var levels=[['A'],['B','C'],['D','E','F']];\n  var flat=[]; levels.forEach(function(L){ L.forEach(function(x){ flat.push(x); }); });\n  var i=0;\n  function step(){\n    if(i>=flat.length){ i=0; root.innerHTML=''; }\n    var d=document.createElement('div');\n    d.className='viz-cell viz-cell--enter-right viz-cell--shown';\n    d.innerHTML='<span class=\"viz-cell__main\">'+flat[i]+'</span><span class=\"viz-cell__sub\">обработали</span>';\n    root.appendChild(d);\n    hint.textContent='Уровень за уровнем: '+flat[i];\n    i++;\n  }\n  step();\n  setInterval(step,900);\n})();",
+          "width": "100%",
+          "height": 200,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "der2-p5",
+          "type": "paragraph",
+          "text": "Когда BFS «лучше DFS» в дереве? Когда важна минимальная глубина ответа (первое совпадение ближе всего к корню). Когда достаточно любого обхода — выбирайте тот, что проще написать."
+        },
+        {
+          "id": "der2-l1",
+          "type": "link",
+          "text": "Поиск в ширину — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Поиск_в_ширину",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "der-dfs",
+      "topicId": "derevya",
+      "subtopicId": "st-der-3",
+      "title": "Обход дерева в глубину (DFS)",
+      "blocks": [
+        {
+          "id": "der3-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Идём до упора, потом разворачиваемся"
+        },
+        {
+          "id": "der3-p1",
+          "type": "paragraph",
+          "text": "DFS (depth-first search) похож на обход лабиринта с правилом «всегда углубляйся в первый доступный ход». Дошли до тупика — откатываемся и пробуем следующий ход. В дереве тупик — это лист."
+        },
+        {
+          "id": "der3-p2",
+          "type": "paragraph",
+          "text": "Рекурсивная версия красивая: стек вызовов сам хранит путь «куда мы зашли». Итеративная — явный массив-стек; полезно, когда глубина большая и стек вызовов боюсь переполнить."
+        },
+        {
+          "id": "der3-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Три классических порядка (бинарное дерево)"
+        },
+        {
+          "id": "der3-p3",
+          "type": "paragraph",
+          "text": "Представьте маленькое дерево: корень 2, слева 1, справа 3. Preorder (префиксный): сначала говорим о родителе, потом левое поддерево, потом правое → [2,1,3]. Inorder (симметричный): левое, родитель, правое → [1,2,3] — в BST это всегда ключи по возрастанию. Postorder: левое, правое, родитель → [1,3,2] — удобно, когда сначала нужно «убрать детей», потом родителя (например, освобождение памяти)."
+        },
+        {
+          "id": "der3-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function preorder(node, out = []) {\n  if (!node) return out;\n  out.push(node.value);\n  preorder(node.left, out);\n  preorder(node.right, out);\n  return out;\n}\n\nfunction inorder(node, out = []) {\n  if (!node) return out;\n  inorder(node.left, out);\n  out.push(node.value);\n  inorder(node.right, out);\n  return out;\n}\n\nfunction postorder(node, out = []) {\n  if (!node) return out;\n  postorder(node.left, out);\n  postorder(node.right, out);\n  out.push(node.value);\n  return out;\n}"
+        },
+        {
+          "id": "der3-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "DFS со стеком без рекурсии (preorder)"
+        },
+        {
+          "id": "der3-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function preorderIter(root, visit) {\n  if (!root) return;\n  const st = [root];\n  while (st.length) {\n    const u = st.pop();\n    visit(u);\n    // сначала правый, потом левый — чтобы левый обработался первым\n    if (u.right) st.push(u.right);\n    if (u.left) st.push(u.left);\n  }\n}"
+        },
+        {
+          "id": "der3-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Preorder: порядок посещения (как «закрашиваем» узлы)</div><div class=\"viz-hint\" id=\"der3-hint\"></div><div class=\"viz-chart\" id=\"der3-ch\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('der3-ch');\n  var hint=document.getElementById('der3-hint');\n  var preorder=[2,1,3];\n  var maxV=VizBars.maxOf(preorder);\n  VizBars.render(chart,preorder,{max:maxV});\n  var k=0;\n  setInterval(function(){\n    VizBars.clearStates(chart);\n    VizBars.setState(chart,k,'active');\n    hint.textContent='Шаг preorder: узел '+preorder[k];\n    k=(k+1)%preorder.length;\n  },850);\n})();",
+          "width": "100%",
+          "height": 230,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "der3-p4",
+          "type": "paragraph",
+          "text": "Память O(h), h — высота. В идеально сбалансированном дереве h ≈ log n. В «списке» из узлов h = n — стек вызовов может стать проблемой."
+        },
+        {
+          "id": "der3-l1",
+          "type": "link",
+          "text": "Поиск в глубину — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Поиск_в_глубину",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "der-bst",
+      "topicId": "derevya",
+      "subtopicId": "st-der-4",
+      "title": "Бинарное дерево поиска (BST)",
+      "blocks": [
+        {
+          "id": "der4-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Как телефонная книга, только в виде дерева"
+        },
+        {
+          "id": "der4-p1",
+          "type": "paragraph",
+          "text": "Правило простое: у каждого узла все ключи в левом поддереве меньше, в правом — больше (дубликаты обычно договариваются: только влево или только вправо). Тогда на каждом шаге поиска мы выбираем одну из двух веток — как бинарный поиск в отсортированном массиве, только структура древовидная."
+        },
+        {
+          "id": "der4-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function search(node, key) {\n  if (!node || node.key === key) return node;\n  return key < node.key ? search(node.left, key) : search(node.right, key);\n}"
+        },
+        {
+          "id": "der4-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Вставка"
+        },
+        {
+          "id": "der4-p2",
+          "type": "paragraph",
+          "text": "Спускаемся как при поиске. Когда дошли до пустого места (null) — вот сюда и вешаем новый лист. Если вставлять ключи уже в отсортированном порядке 1,2,3,4,5… без балансировки, дерево превращается в «гирлянду» вправо — высота n, и мы потеряли все преимущества."
+        },
+        {
+          "id": "der4-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function insert(node, key) {\n  if (!node) return { key, left: null, right: null };\n  if (key < node.key) node.left = insert(node.left, key);\n  else if (key > node.key) node.right = insert(node.right, key);\n  return node;\n}"
+        },
+        {
+          "id": "der4-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Удаление (идея)"
+        },
+        {
+          "id": "der4-p3",
+          "type": "paragraph",
+          "text": "0 детей — просто убрали узел. 1 ребёнок — «подтянули» ребёнка на место удаляемого. 2 ребёнка — находим минимальный ключ в правом поддереве (или максимальный в левом), копируем значение в удаляемый узел, потом удаляем «простой» узел с тем минимумом."
+        },
+        {
+          "id": "der4-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Скорость"
+        },
+        {
+          "id": "der4-p4",
+          "type": "paragraph",
+          "text": "Средний случай при случайных вставках — O(log n) на операцию. Худший — O(n) при вырождении. Поэтому в продакшене используют сбалансированные деревья или другие структуры."
+        },
+        {
+          "id": "der4-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Поиск ключа 9: на каждом шаге отрезаем «не ту» половину</div><div class=\"viz-hint\" id=\"der4-hint\"></div><div class=\"viz-chart\" id=\"der4-chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var root=document.getElementById('der4-chart');\n  var hint=document.getElementById('der4-hint');\n  var keys=[4,2,6,1,3,5,8,7,9];\n  var maxV=VizBars.maxOf(keys);\n  VizBars.render(root,keys,{max:maxV});\n  var path=[0,2,6,8];\n  var pi=0;\n  var timer=setInterval(function(){\n    VizBars.clearStates(root);\n    var idx=path[pi];\n    var v=keys[idx];\n    VizBars.setState(root,idx,'compare');\n    hint.textContent='Сравниваем с '+v+': куда пойти дальше?';\n    pi++;\n    if(pi>=path.length){\n      clearInterval(timer);\n      VizBars.setState(root,8,'success');\n      hint.textContent='Нашли 9';\n    }\n  },800);\n})();",
+          "width": "100%",
+          "height": 240,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "der4-anim2",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Вставка 1,2,3,4,5 подряд — дерево вырождается в «лестницу»</div><div class=\"viz-hint\" id=\"der4h2\"></div><div class=\"viz-chart\" id=\"der4ch2\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('der4ch2');\n  var hint=document.getElementById('der4h2');\n  var seq=[1,2,3,4,5,6,7];\n  var maxV=VizBars.maxOf(seq);\n  VizBars.render(chart,seq,{max:maxV});\n  hint.textContent='Высота почти n — поиск как в связном списке';\n  VizBars.setZone(chart,0,seq.length-1,'viz-bar-col--zone-b');\n})();",
+          "width": "100%",
+          "height": 220,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "der4-l1",
+          "type": "link",
+          "text": "Двоичное дерево поиска — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Двоичное_дерево_поиска",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "der-balanced",
+      "topicId": "derevya",
+      "subtopicId": "st-der-5",
+      "title": "Сбалансированные деревья: AVL и красно-чёрные",
+      "blocks": [
+        {
+          "id": "der5-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Проблема: красивое BST может «сломаться» от данных"
+        },
+        {
+          "id": "der5-p1",
+          "type": "paragraph",
+          "text": "Вы уже знаете: BST отлично работает, когда высота порядка log n. Но одна неудачная последовательность вставок превращает его в длинную цепочку. Сбалансированные деревья — это способ после каждой вставки или удаления чуть-чуть «подкрутить» структуру (поворотами или перекраской), чтобы высота оставалась логарифмической. Гарантия в худшем случае — главный выигрыш."
+        },
+        {
+          "id": "der5-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Поворот — не страшная формула, а перестановка трёх узлов"
+        },
+        {
+          "id": "der5-p2",
+          "type": "paragraph",
+          "text": "Представьте, что «тяжёлая» ветка перевешивает. Поворот вокруг ребра локально переподвешивает поддерево так, что порядок ключей (инвариант BST) сохраняется, а глубина уменьшается. Иногда нужен один поворот, иногда два подряд (left-right case)."
+        },
+        {
+          "id": "der5-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "AVL-деревья"
+        },
+        {
+          "id": "der5-p3",
+          "type": "paragraph",
+          "text": "Для каждого узла высоты левого и правого поддеревьев отличаются не больше чем на 1. Самое жёсткое из популярных правил — дерево очень ровное, поиск чуть быстрее, зато после вставки/удаления может понадобиться больше вращений."
+        },
+        {
+          "id": "der5-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Красно-чёрные деревья"
+        },
+        {
+          "id": "der5-p4",
+          "type": "paragraph",
+          "text": "Узлы красятся; держим правила про чередование цветов и чёрную высоту. Допускается чуть менее идеальная форма, чем у AVL, но зато меньше работы при модификациях. Именно RB часто стоят за TreeMap, std::map, внутренними структурами языков."
+        },
+        {
+          "id": "der5-p5",
+          "type": "paragraph",
+          "text": "Что запомнить на старте: балансировка нужна, чтобы BST не деградировал; AVL «строже» по форме, RB — компромисс для частых обновлений. На олимпиадах и в JS часто проще взять готовую структуру или другой приём (например, кучу + массив), но понимание «зачем крутят дерево» обязательно."
+        },
+        {
+          "id": "der5-l1",
+          "type": "link",
+          "text": "AVL-дерево — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/AVL-дерево",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "der-segment",
+      "topicId": "derevya",
+      "subtopicId": "st-der-6",
+      "title": "Сегментное дерево (Segment Tree)",
+      "blocks": [
+        {
+          "id": "der6-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Много запросов «сумма на отрезке» — без полного перебора"
+        },
+        {
+          "id": "der6-p1",
+          "type": "paragraph",
+          "text": "Есть массив из n чисел. Снова и снова спрашивают: сколько сумма с индекса L по R? Если каждый раз суммировать в лоб — O(длина отрезка). Если запросов много, нужна структура. Сегментное дерево хранит суммы (или min/max) для кусков массива; любой отрезок [L,R] разбивается на O(log n) таких кусков."
+        },
+        {
+          "id": "der6-p2",
+          "type": "paragraph",
+          "text": "Вершина дерева отвечает за отрезок [tl, tr]. Лист — один элемент. Рекурсивно делим пополам: левый сын [tl, tm], правый [tm+1, tr]. Значение в узле = сумма детей."
+        },
+        {
+          "id": "der6-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function build(a, v, tl, tr, t) {\n  if (tl === tr) t[v] = a[tl];\n  else {\n    const tm = (tl + tr) >> 1;\n    build(a, v * 2, tl, tm, t);\n    build(a, v * 2 + 1, tm + 1, tr, t);\n    t[v] = t[v * 2] + t[v * 2 + 1];\n  }\n}"
+        },
+        {
+          "id": "der6-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function sum(v, tl, tr, l, r, t) {\n  if (l > r) return 0;\n  if (l === tl && r === tr) return t[v];\n  const tm = (tl + tr) >> 1;\n  return sum(v * 2, tl, tm, l, Math.min(r, tm), t)\n       + sum(v * 2 + 1, tm + 1, tr, Math.max(l, tm + 1), r, t);\n}"
+        },
+        {
+          "id": "der6-p3",
+          "type": "paragraph",
+          "text": "Обновление одного элемента: спускаемся в нужный лист и на обратном пути пересчитываем суммы — O(log n). Для «прибавить x на всём отрезке» придумали ленивое проталкивание (lazy propagation) — отдельная тема, но идея та же: не трогать каждый лист, а откладывать работу метками на узлах."
+        },
+        {
+          "id": "der6-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Массив: запрос суммы на подотрезке (подсветка)</div><div class=\"viz-hint\" id=\"der6-hint\"></div><div class=\"viz-chart\" id=\"der6-ch\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('der6-ch');\n  var hint=document.getElementById('der6-hint');\n  var a=[2,1,4,3,5,2,7];\n  var maxV=VizBars.maxOf(a);\n  VizBars.render(chart,a,{max:maxV});\n  hint.textContent='Сегментное дерево внутри «склеивает» такие куски за O(log n)';\n  setTimeout(function(){\n    VizBars.clearZones(chart);\n    VizBars.setZone(chart,2,4,'viz-bar-col--zone-a');\n    hint.textContent='Запрос [2..4]: в дереве это несколько узлов-покрытий, не все листья';\n  },1200);\n})();",
+          "width": "100%",
+          "height": 220,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "der6-l1",
+          "type": "link",
+          "text": "Segment tree — Wikipedia",
+          "href": "https://en.wikipedia.org/wiki/Segment_tree",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "der-fenwick",
+      "topicId": "derevya",
+      "subtopicId": "st-der-7",
+      "title": "Дерево Фенвика (Fenwick Tree, BIT)",
+      "blocks": [
+        {
+          "id": "der7-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Компактная таблица для префиксных сумм"
+        },
+        {
+          "id": "der7-p1",
+          "type": "paragraph",
+          "text": "Fenwick tree (Binary Indexed Tree) — массив длины n+1 со странными индексами. Зато add(i, delta) «прибавить к позиции» и sum(i) «сумма с 1 по i» работают за O(log n), код короче сегментного дерева для сумм."
+        },
+        {
+          "id": "der7-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Зачем выражение i & -i"
+        },
+        {
+          "id": "der7-p2",
+          "type": "paragraph",
+          "text": "В двоичном виде i & -i выделяет младший единичный бит. Им сдвигаемся при обходе: в sum идём «вниз» по дереву индексов (i -= i & -i), в add — «вверх» покрывая старшие блоки (i += i & -i). Не обязано быть прозрачно с первого раза; попробуйте на бумаге для i = 13 (1101₂) проследить шаги."
+        },
+        {
+          "id": "der7-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "class Fenwick {\n  constructor(n) { this.n = n; this.t = new Array(n + 1).fill(0); }\n  /** delta на позиции i (1..n) */\n  add(i, delta) {\n    for (; i <= this.n; i += i & -i) this.t[i] += delta;\n  }\n  /** сумма [1..i] */\n  sum(i) {\n    let s = 0;\n    for (; i > 0; i -= i & -i) s += this.t[i];\n    return s;\n  }\n  rangeSum(l, r) {\n    return this.sum(r) - this.sum(l - 1);\n  }\n}"
+        },
+        {
+          "id": "der7-p3",
+          "type": "paragraph",
+          "text": "Сумма на отрезке: prefix(r) − prefix(l−1). Классические задачи: подсчёт инверсий, динамические частоты значений. Если нужен min на отрезке или нет обратной операции — часто возвращаются к сегментному дереву."
+        },
+        {
+          "id": "der7-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Индексы BIT (учебно): шаги по младшим битам</div><div class=\"viz-hint\" id=\"der7-h\"></div><div class=\"viz-grid\" id=\"der7-g\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var g=document.getElementById('der7-g');\n  var hint=document.getElementById('der7-h');\n  var idx=[1,2,3,4,5,6,7,8];\n  idx.forEach(function(i){\n    var c=document.createElement('div');\n    c.className='viz-cell';\n    c.innerHTML='<span class=\"viz-cell__sub\">i</span><span class=\"viz-cell__main\">'+i+'</span>';\n    g.appendChild(c);\n  });\n  hint.textContent='sum(6): 6→4→0 вычитая младшие биты (6&-6=2, 4&-4=4)';\n  var cells=g.querySelectorAll('.viz-cell');\n  var path=[5,3,0];\n  var step=0;\n  setInterval(function(){\n    cells.forEach(function(el){ el.classList.remove('viz-cell--active','viz-cell--success'); });\n    if(path[step]!=null) cells[path[step]].classList.add('viz-cell--active');\n    step=(step+1)%4;\n  },700);\n})();",
+          "width": "100%",
+          "height": 200,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "der7-l1",
+          "type": "link",
+          "text": "Fenwick tree — Wikipedia",
+          "href": "https://en.wikipedia.org/wiki/Fenwick_tree",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "graf-repr",
+      "topicId": "grafy",
+      "subtopicId": "st-graf-1",
+      "title": "Представление графа: список смежности и матрица",
+      "blocks": [
+        {
+          "id": "g1-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Граф — это «связи между точками»"
+        },
+        {
+          "id": "g1-p1",
+          "type": "paragraph",
+          "text": "Вершины (nodes) — объекты: города, страницы сайта, задачи. Рёбра (edges) — связи: дорога между городами, ссылка между страницами, «A должна выполниться до B». Граф может быть направленным (стрелка в одну сторону) или ненаправленным (дружба в соцсети — оба друга друг другу)."
+        },
+        {
+          "id": "g1-p2",
+          "type": "paragraph",
+          "text": "Первый практический вопрос: как хранить это в памяти? Два главных ответа — список смежности и матрица смежности. Выбор зависит от того, насколько граф «густой» (много рёбер) и какие операции нужны чаще."
+        },
+        {
+          "id": "g1-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Список смежности"
+        },
+        {
+          "id": "g1-p3",
+          "type": "paragraph",
+          "text": "Для каждой вершины держим массив соседей. Память O(V + E): каждое ребро записано один раз (или дважды, если ненаправленный граф и вы кладёте u→v и v→u). Обход соседей вершины v — O(степень v). Это стандарт для большинства задач на олимпиадах и в продакшене."
+        },
+        {
+          "id": "g1-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "const V = 5;\nconst g = Array.from({ length: V }, () => []);\n\n// ориентированное ребро u -> v\nfunction addEdge(u, v, w = 1) {\n  g[u].push({ to: v, w }); // можно хранить просто v, если вес не нужен\n}\n\n// ненаправленное: добавляем в обе стороны\nfunction addUndirected(u, v, w = 1) {\n  g[u].push({ to: v, w });\n  g[v].push({ to: u, w });\n}"
+        },
+        {
+          "id": "g1-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Матрица смежности"
+        },
+        {
+          "id": "g1-p4",
+          "type": "paragraph",
+          "text": "Таблица V×V: в ячейке (i,j) — вес ребра или 0/∞, если ребра нет. Проверка «есть ли ребро» за O(1), но память O(V²), и чтобы перечислить всех соседей i, иногда приходится пробежать все V столбцов. Удобно при маленьком V или для Floyd–Warshall."
+        },
+        {
+          "id": "g1-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "const n = 4;\nconst INF = Infinity;\n// dist[i][j] — вес ребра i→j или INF\nconst dist = Array.from({ length: n }, () => Array(n).fill(INF));\nfor (let i = 0; i < n; i++) dist[i][i] = 0;"
+        },
+        {
+          "id": "g1-p5",
+          "type": "paragraph",
+          "text": "Практическое правило: разреженный граф (мало рёбер относительно V²) — почти всегда список смежности. Плотный или алгоритм «все пары вершин» на маленьком n — смотрите на матрицу."
+        },
+        {
+          "id": "g1-l1",
+          "type": "link",
+          "text": "Граф (математика) — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Граф_(математика)",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "graf-traversal",
+      "topicId": "grafy",
+      "subtopicId": "st-graf-2",
+      "title": "DFS и BFS на графе",
+      "blocks": [
+        {
+          "id": "g2-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "В дереве не было циклов — в графе они есть"
+        },
+        {
+          "id": "g2-p1",
+          "type": "paragraph",
+          "text": "Если обойти граф «как дерево» без осторожности, можно ходить кругами бесконечно. Поэтому нужен массив или множество visited: вершина уже была — не заходим снова (в обучающем DFS; в некоторых задачах с весами рёбер правила другие)."
+        },
+        {
+          "id": "g2-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "DFS — углубляемся"
+        },
+        {
+          "id": "g2-p2",
+          "type": "paragraph",
+          "text": "Рекурсия или явный стек. Удобно для поиска пути, топосорта на DAG, классификации рёбер. Время O(V + E): каждую вершину и каждое ребро смотрим ограниченное число раз."
+        },
+        {
+          "id": "g2-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function dfs(g, start, visit) {\n  const seen = new Set();\n  function go(v) {\n    if (seen.has(v)) return;\n    seen.add(v);\n    visit(v);\n    for (const to of g[v]) go(to);\n  }\n  go(start);\n}"
+        },
+        {
+          "id": "g2-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "BFS — волна"
+        },
+        {
+          "id": "g2-p3",
+          "type": "paragraph",
+          "text": "Очередь. Стартуем с s, помечаем расстояние 0, соседям — 1, их соседям ещё не помеченным — 2 и т.д. В невзвешенном графе это кратчайшие пути по числу рёбер."
+        },
+        {
+          "id": "g2-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function bfs(g, start, visit) {\n  const seen = new Set([start]);\n  const q = [start];\n  while (q.length) {\n    const v = q.shift();\n    visit(v);\n    for (const to of g[v]) {\n      if (!seen.has(to)) {\n        seen.add(to);\n        q.push(to);\n      }\n    }\n  }\n}"
+        },
+        {
+          "id": "g2-c3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** расстояния от start (нерешённые = -1) */\nfunction bfsDist(g, start) {\n  const n = g.length;\n  const dist = new Array(n).fill(-1);\n  const q = [start];\n  dist[start] = 0;\n  while (q.length) {\n    const v = q.shift();\n    for (const to of g[v]) {\n      if (dist[to] === -1) {\n        dist[to] = dist[v] + 1;\n        q.push(to);\n      }\n    }\n  }\n  return dist;\n}"
+        },
+        {
+          "id": "g2-p4",
+          "type": "paragraph",
+          "text": "Счётчик компонент связности: перебираем все вершины; если ещё не visited — запускаем DFS/BFS и увеличиваем ответ на 1."
+        },
+        {
+          "id": "g2-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">BFS: слои расстояний (чем выше столбец — тем «дальше» от старта)</div><div class=\"viz-hint\" id=\"g2-h\"></div><div class=\"viz-chart\" id=\"g2-ch\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('g2-ch');\n  var hint=document.getElementById('g2-h');\n  var dist=[0,1,1,2,2,2,3];\n  var maxV=VizBars.maxOf(dist);\n  VizBars.render(chart,dist,{max:maxV||1});\n  hint.textContent='Старт в 0; соседи на расстоянии 1, потом 2…';\n  var i=0;\n  setInterval(function(){\n    VizBars.clearStates(chart);\n    VizBars.setState(chart,i,'active');\n    hint.textContent='Вершина '+i+', расстояние '+dist[i];\n    i=(i+1)%dist.length;\n  },750);\n})();",
+          "width": "100%",
+          "height": 230,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "g2-l1",
+          "type": "link",
+          "text": "Обход графа — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Обход_графа",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "graf-topo",
+      "topicId": "grafy",
+      "subtopicId": "st-graf-3",
+      "title": "Топологическая сортировка",
+      "blocks": [
+        {
+          "id": "g3-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "В каком порядке готовить блюда, если есть рецепт?"
+        },
+        {
+          "id": "g3-p1",
+          "type": "paragraph",
+          "text": "Сначала нарежьте овощи, потом обжарьте, потом добавьте соус. Если нарисовать стрелки «A до B», получится направленный граф. Топологический порядок — линейный список всех шагов так, что каждая стрелка идёт слева направо. Такой порядок бывает только если нет циклов (иначе «яйцо и курица» навсегда)."
+        },
+        {
+          "id": "g3-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Алгоритм Кана — как «снимать» задачи без входящих"
+        },
+        {
+          "id": "g3-p2",
+          "type": "paragraph",
+          "text": "Считаем для каждой вершины сколько рёбер на неё указывает (in-degree). Все с нулём готовы к выполнению — кладём в очередь. Вынимаем одну, «убираем» её исходящие рёбра (уменьшаем in-degree соседей). Появились новые нули — в очередь. Если в конце обработали меньше V вершин — в графе цикл."
+        },
+        {
+          "id": "g3-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function topologicalSortKahn(g) {\n  const n = g.length;\n  const indeg = new Array(n).fill(0);\n  for (let u = 0; u < n; u++) for (const v of g[u]) indeg[v]++;\n  const q = [];\n  for (let i = 0; i < n; i++) if (indeg[i] === 0) q.push(i);\n  const order = [];\n  while (q.length) {\n    const u = q.shift();\n    order.push(u);\n    for (const v of g[u]) {\n      if (--indeg[v] === 0) q.push(v);\n    }\n  }\n  return order.length === n ? order : null;\n}"
+        },
+        {
+          "id": "g3-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "DFS-версия (постфикс + разворот)"
+        },
+        {
+          "id": "g3-p3",
+          "type": "paragraph",
+          "text": "Красят вершины: белый — не видели, серый — в текущем стеке DFS, чёрный — обработали. Если из серого ушли в другого серого — нашли обратное ребро, значит цикл. Иначе после обхода поддерева кладём вершину в массив и в конце разворачиваем — получится топопорядок."
+        },
+        {
+          "id": "g3-p4",
+          "type": "paragraph",
+          "text": "Где в жизни: сборка проекта, порядок курсов в университете, планирование задач. Если null — нужно искать и ломать цикл или менять модель."
+        },
+        {
+          "id": "g3-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">In-degree падает до нуля — вершина «готова»</div><div class=\"viz-hint\" id=\"g3-h\"></div><div class=\"viz-row\" id=\"g3-r\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var row=document.getElementById('g3-r');\n  var hint=document.getElementById('g3-h');\n  var steps=['A:0','B:0','C:1→0','D:1→0'];\n  var i=0;\n  function tick(){\n    row.innerHTML='';\n    var d=document.createElement('div');\n    d.className='viz-cell viz-cell--shown';\n    d.innerHTML='<span class=\"viz-cell__main\">'+steps[i]+'</span><span class=\"viz-cell__sub\">очередь Кана</span>';\n    row.appendChild(d);\n    hint.textContent='Сначала берём вершины без зависимостей, потом «освобождаем» соседей';\n    i=(i+1)%steps.length;\n  }\n  tick();\n  setInterval(tick,1000);\n})();",
+          "width": "100%",
+          "height": 180,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "g3-l1",
+          "type": "link",
+          "text": "Топологическая сортировка — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Топологическая_сортировка",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "graf-shortest",
+      "topicId": "grafy",
+      "subtopicId": "st-graf-4",
+      "title": "Кратчайшие пути: Дейкстра и Беллман–Форд",
+      "blocks": [
+        {
+          "id": "g4-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Карта с дорогами разной длины"
+        },
+        {
+          "id": "g4-p1",
+          "type": "paragraph",
+          "text": "Каждому ребру дали вес (время, деньги, километры). Нужно минимизировать сумму по пути. Если все веса неотрицательны — классика Дейкстры: жадно берём вершину с текущей лучшей оценкой и обновляем соседей («релаксация»: нашли короче — записали)."
+        },
+        {
+          "id": "g4-p2",
+          "type": "paragraph",
+          "text": "Дейкстра с кучей (priority queue) даёт O((V+E) log V). Важно: один отрицательный вес может сломать жадность — тогда другие методы."
+        },
+        {
+          "id": "g4-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** Простейшая Дейкстра O(V²) — без кучи, для плотных графов терпимо при малых V */\nfunction dijkstraNaive(adj, src) {\n  const n = adj.length;\n  const dist = new Array(n).fill(Infinity);\n  const used = new Array(n).fill(false);\n  dist[src] = 0;\n  for (let it = 0; it < n; it++) {\n    let v = -1;\n    for (let i = 0; i < n; i++)\n      if (!used[i] && (v < 0 || dist[i] < dist[v])) v = i;\n    if (dist[v] === Infinity) break;\n    used[v] = true;\n    for (const { to, w } of adj[v]) {\n      if (dist[v] + w < dist[to]) dist[to] = dist[v] + w;\n    }\n  }\n  return dist;\n}"
+        },
+        {
+          "id": "g4-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Беллман–Форд: терпеливо улучшаем все рёбра"
+        },
+        {
+          "id": "g4-p3",
+          "type": "paragraph",
+          "text": "Делаем до V−1 проходов: для каждого ребра (u,v,w) пробуем улучшить dist[v] через dist[u]+w. Интуиция: за один проход путь может удлиниться на одно ребро, за V−1 проходов учтём путь из не более чем V−1 ребра. Ещё один проход: если что-то улучшилось — есть цикл отрицательного веса."
+        },
+        {
+          "id": "g4-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function bellmanFord(edges, n, src) {\n  const dist = new Array(n).fill(Infinity);\n  dist[src] = 0;\n  for (let k = 0; k < n - 1; k++) {\n    for (const [u, v, w] of edges) {\n      if (dist[u] + w < dist[v]) dist[v] = dist[u] + w;\n    }\n  }\n  for (const [u, v, w] of edges) {\n    if (dist[u] + w < dist[v]) return { dist: null, negCycle: true };\n  }\n  return { dist, negCycle: false };\n}"
+        },
+        {
+          "id": "g4-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Релаксация: оценки расстояний улучшаются</div><div class=\"viz-hint\" id=\"g4-hint\"></div><div class=\"viz-chart\" id=\"g4-ch\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('g4-ch');\n  var hint=document.getElementById('g4-hint');\n  var vis=[0,2,8,12,20];\n  var maxV=VizBars.maxOf(vis);\n  VizBars.render(chart,vis,{max:maxV});\n  hint.textContent='Условные «лучшие известные» расстояния до вершин';\n  setTimeout(function(){\n    vis=[0,2,5,9,14];\n    VizBars.refresh(chart,vis,{max:VizBars.maxOf(vis)});\n    hint.textContent='После релаксаций нашли более короткие пути';\n  },1400);\n})();",
+          "width": "100%",
+          "height": 230,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "g4-p4",
+          "type": "paragraph",
+          "text": "Шпаргалка: неотрицательные веса — Дейкстра; допускаем отрицательные, но без отрицательных циклов на пути — Беллман–Форд; все пары вершин на маленьком n — Floyd–Warshall."
+        },
+        {
+          "id": "g4-l1",
+          "type": "link",
+          "text": "Алгоритм Дейкстры — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Алгоритм_Дейкстры",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "graf-mst",
+      "topicId": "grafy",
+      "subtopicId": "st-graf-5",
+      "title": "Минимальное остовное дерево: Краскал и Прим",
+      "blocks": [
+        {
+          "id": "g5-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Соединить все города дорогами как можно дешевле"
+        },
+        {
+          "id": "g5-p1",
+          "type": "paragraph",
+          "text": "Граф связный, рёбра с ценой. Нужно выбрать подмножество рёбер без циклов, чтобы все вершины были достижимы, а сумма весов минимальна. Это минимальное остовное дерево (MST). Рёбер ровно V−1."
+        },
+        {
+          "id": "g5-p2",
+          "type": "paragraph",
+          "text": "Свойство отсечения (неформально): самое дешёвое ребро, пересекающее разрез «уже внутри / ещё снаружи», можно смело брать в MST. Отсюда две жадные схемы."
+        },
+        {
+          "id": "g5-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Краскал"
+        },
+        {
+          "id": "g5-p3",
+          "type": "paragraph",
+          "text": "Сортируем рёбра по весу. Идём с начала: если ребро соединяет два разных компонента — добавляем (Union–Find), иначе пропускаем (создали бы цикл). Остановились, когда взяли V−1 ребро."
+        },
+        {
+          "id": "g5-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function kruskal(edges, n) {\n  edges.sort((a, b) => a.w - b.w);\n  const parent = Array.from({ length: n }, (_, i) => i);\n  function find(x) {\n    return parent[x] === x ? x : (parent[x] = find(parent[x]));\n  }\n  const mst = [];\n  for (const { u, v, w } of edges) {\n    const a = find(u), b = find(v);\n    if (a !== b) {\n      parent[a] = b;\n      mst.push({ u, v, w });\n      if (mst.length === n - 1) break;\n    }\n  }\n  return mst;\n}"
+        },
+        {
+          "id": "g5-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Прим"
+        },
+        {
+          "id": "g5-p4",
+          "type": "paragraph",
+          "text": "Начинаем с любой вершины. На каждом шаге добавляем самое лёгкое ребро из уже выбранного «облака» наружу. Удобно хранить кандидатов в min-heap. На плотных графах часто хорош; Краскал проще писать, когда рёбра уже в списке."
+        },
+        {
+          "id": "g5-p5",
+          "type": "paragraph",
+          "text": "Оба алгоритма дают один и тот же оптимальный вес MST (при равных весах дерево может отличаться, но сумма та же)."
+        },
+        {
+          "id": "g5-l1",
+          "type": "link",
+          "text": "Минимальное остовное дерево — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Минимальное_остовное_дерево",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "graf-cycle",
+      "topicId": "grafy",
+      "subtopicId": "st-graf-6",
+      "title": "Циклы, SCC: Флойд на списке, Тарьян, Косарайю",
+      "blocks": [
+        {
+          "id": "g6-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Три разные истории с похожими именами"
+        },
+        {
+          "id": "g6-p1",
+          "type": "paragraph",
+          "text": "«Флойд» в списке — это черепаха и заяц: медленный указатель на шаг, быстрый на два. Если список закольцован, быстрый догонит медленный. Если нет — быстрый упрётся в null. Память O(1), время O(n)."
+        },
+        {
+          "id": "g6-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function hasCycleFloyd(head) {\n  let slow = head, fast = head;\n  while (fast && fast.next) {\n    slow = slow.next;\n    fast = fast.next.next;\n    if (slow === fast) return true;\n  }\n  return false;\n}"
+        },
+        {
+          "id": "g6-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Цикл в ориентированном графе"
+        },
+        {
+          "id": "g6-p2",
+          "type": "paragraph",
+          "text": "Топосорт Кана: если не все вершины попали в порядок — цикл есть. DFS с цветами: серый предок, снова попали в серого — обратное ребро, цикл."
+        },
+        {
+          "id": "g6-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Сильно связные компоненты (SCC)"
+        },
+        {
+          "id": "g6-p3",
+          "type": "paragraph",
+          "text": "В ориентированном графе группа вершин, из каждой можно добраться до каждой по направленным рёбрам. Граф можно сжать в DAG компонент — полезно для анализа зависимостей. Косарайю: DFS, запоминаем порядок выхода; разворачиваем рёбра; второй DFS по этому порядку. Тарьян — один DFS с lowlink и стеком, без явного транспонирования."
+        },
+        {
+          "id": "g6-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Черепаха и заяц на «кольце» (анимация-аналог)</div><div class=\"viz-hint\" id=\"g6-h\"></div><div class=\"viz-row\" id=\"g6-r\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var row=document.getElementById('g6-r');\n  var hint=document.getElementById('g6-h');\n  var cells=['1','2','3','4','5'];\n  cells.forEach(function(v,i){\n    var d=document.createElement('div');\n    d.className='viz-cell';\n    d.innerHTML='<span class=\"viz-cell__main\">'+v+'</span>';\n    row.appendChild(d);\n  });\n  var slow=0,fast=0;\n  setInterval(function(){\n    var ch=row.children;\n    for(var j=0;j<ch.length;j++) ch[j].classList.remove('viz-cell--active','viz-cell--success');\n    slow=(slow+1)%ch.length;\n    fast=(fast+2)%(ch.length);\n    ch[slow].classList.add('viz-cell--active');\n    ch[fast].classList.add('viz-cell--success');\n    hint.textContent=slow===fast?'Встретились — есть цикл':'slow и fast двигаются';\n  },600);\n})();",
+          "width": "100%",
+          "height": 160,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "g6-l1",
+          "type": "link",
+          "text": "Strongly connected component — Wikipedia",
+          "href": "https://en.wikipedia.org/wiki/Strongly_connected_component",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "graf-floydw",
+      "topicId": "grafy",
+      "subtopicId": "st-graf-7",
+      "title": "Floyd–Warshall: все пары вершин",
+      "blocks": [
+        {
+          "id": "g7-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Три вложенных цикла — и готово"
+        },
+        {
+          "id": "g7-p1",
+          "type": "paragraph",
+          "text": "Нужны кратчайшие пути между всеми парами (i, j). Идея динамического программирования: разрешаем в качестве промежуточных только вершины с номером ≤ k. Для k+1 сравниваем старый путь i→j с путём i→k→j."
+        },
+        {
+          "id": "g7-p2",
+          "type": "paragraph",
+          "text": "Реализация обычно in-place по матрице dist[n][n]. После внешнего цикла по k матрица учитывает все вершины до k включительно как «транзит». Сложность O(V³), память O(V²). Подходит для n до порядка нескольких сотен–тысячи в зависимости от времени."
+        },
+        {
+          "id": "g7-p3",
+          "type": "paragraph",
+          "text": "Отрицательные рёбра допустимы; если после алгоритма dist[i][i] < 0 для какого-то i — через i проходит цикл отрицательного веса."
+        },
+        {
+          "id": "g7-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function floydWarshall(n, dist) {\n  for (let k = 0; k < n; k++)\n    for (let i = 0; i < n; i++)\n      for (let j = 0; j < n; j++)\n        if (dist[i][k] + dist[k][j] < dist[i][j])\n          dist[i][j] = dist[i][k] + dist[k][j];\n  return dist;\n}"
+        },
+        {
+          "id": "g7-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">k = 0,1,2… по очереди «разрешаем» новую вершину как транзит</div><div class=\"viz-hint\" id=\"g7-h\"></div><div class=\"viz-badge\" id=\"g7-b\">k = ?</div></div>",
+          "css": "",
+          "js": "(function(){\n  var hint=document.getElementById('g7-h');\n  var b=document.getElementById('g7-b');\n  var k=0;\n  setInterval(function(){\n    b.textContent='k = '+k;\n    hint.textContent='Обновляем все пары (i,j), пробуя путь через вершину '+k;\n    k=(k+1)%5;\n  },900);\n})();",
+          "width": "100%",
+          "height": 140,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "g7-l1",
+          "type": "link",
+          "text": "Алгоритм Флойда — Уоршелла — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Алгоритм_Флойда_—_Уоршелла",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "str-pq",
+      "topicId": "struktury",
+      "subtopicId": "st-str-1",
+      "title": "Очередь с приоритетом и бинарная куча (heap)",
+      "blocks": [
+        {
+          "id": "s1-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Не «кто первый встал», а «кто важнее»"
+        },
+        {
+          "id": "s1-p1",
+          "type": "paragraph",
+          "text": "Обычная очередь честная: первым пришёл — первым ушёл. В очереди с приоритетом каждый элемент имеет «важность». Достаём не того, кто дольше ждал, а того, у кого приоритет выше (или число меньше — как договоритесь). Так работает диспетчер задач в ОС, открытый список в Дейкстре и многое другое."
+        },
+        {
+          "id": "s1-p2",
+          "type": "paragraph",
+          "text": "Реализовать можно через сбалансированное дерево или через кучу (heap). Бинарная куча — почти полное бинарное дерево, уложенное в массив: у узла с индексом i дети 2i+1 и 2i+2, родитель ⌊(i−1)/2⌋."
+        },
+        {
+          "id": "s1-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Свойство min-heap"
+        },
+        {
+          "id": "s1-p3",
+          "type": "paragraph",
+          "text": "Значение в узле не больше, чем у детей. Минимум всегда в корне (индекс 0). Вставка: кладём элемент в конец и «всплываем» (sift-up), пока не нарушим порядок. Извлечение минимума: корень забираем, последний элемент переносим в корень и «просеиваем вниз» (sift-down)."
+        },
+        {
+          "id": "s1-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "class MinHeap {\n  constructor() { this.a = []; }\n  push(x) {\n    this.a.push(x);\n    let i = this.a.length - 1;\n    while (i > 0) {\n      const p = (i - 1) >> 1;\n      if (this.a[p] <= this.a[i]) break;\n      [this.a[p], this.a[i]] = [this.a[i], this.a[p]];\n      i = p;\n    }\n  }\n  pop() {\n    const a = this.a;\n    if (!a.length) return undefined;\n    const top = a[0];\n    const x = a.pop();\n    if (a.length) {\n      a[0] = x;\n      let i = 0;\n      for (;;) {\n        let l = i * 2 + 1, r = l + 1, m = i;\n        if (l < a.length && a[l] < a[m]) m = l;\n        if (r < a.length && a[r] < a[m]) m = r;\n        if (m === i) break;\n        [a[i], a[m]] = [a[m], a[i]];\n        i = m;\n      }\n    }\n    return top;\n  }\n}"
+        },
+        {
+          "id": "s1-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Зачем это в алгоритмах"
+        },
+        {
+          "id": "s1-p4",
+          "type": "paragraph",
+          "text": "Дейкстра: хранить вершины по текущей дистанции. Prim для MST: брать минимальное ребро из границы. Пирамидальная сортировка: построили кучу и по одному вытаскиваем минимум. Всё это O(log n) на операцию с кучей."
+        },
+        {
+          "id": "s1-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Массив = куча: индекс 0 — минимум, дети 2i+1 и 2i+2</div><div class=\"viz-hint\" id=\"s1-hint\"></div><div class=\"viz-chart\" id=\"s1-ch\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('s1-ch');\n  var hint=document.getElementById('s1-hint');\n  var heap=[1,3,5,7,9,8,10];\n  var maxV=VizBars.maxOf(heap);\n  VizBars.render(chart,heap,{max:maxV});\n  hint.textContent='Корень (слева в массиве) — всегда наименьший';\n  VizBars.setState(chart,0,'success');\n  var i=0;\n  setInterval(function(){\n    VizBars.clearStates(chart);\n    VizBars.setState(chart,i,'compare');\n    hint.textContent='Уровень в куче: индекс '+i+', значение '+heap[i];\n    i=(i+1)%heap.length;\n  },700);\n})();",
+          "width": "100%",
+          "height": 220,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "s1-l1",
+          "type": "link",
+          "text": "Очередь с приоритетом — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Очередь_с_приоритетом",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "str-deque",
+      "topicId": "struktury",
+      "subtopicId": "st-str-2",
+      "title": "Deque и двусвязный список",
+      "blocks": [
+        {
+          "id": "s2-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Очередь с двумя концами"
+        },
+        {
+          "id": "s2-p1",
+          "type": "paragraph",
+          "text": "Deque (double-ended queue) позволяет добавлять и убирать элементы и с головы, и с хвоста за O(1) в хорошей реализации (кольцевой буфер в массиве фиксированного запаса или указатели в связном списке). Это удобно для скользящего окна, BFS в 0-1 BFS и многих двухуказательных трюков."
+        },
+        {
+          "id": "s2-p2",
+          "type": "paragraph",
+          "text": "В JavaScript массив .push() и .pop() с конца быстрые, а .shift() с начала может быть O(n), потому что сдвигаются все элементы. Если из головы читаем часто и n большой — ищите deque в библиотеке или реализуйте кольцо на массиве."
+        },
+        {
+          "id": "s2-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Двусвязный список"
+        },
+        {
+          "id": "s2-p3",
+          "type": "paragraph",
+          "text": "Каждый узел знает prev и next. Вставка или удаление, если уже есть указатель на узел — O(1). Зато добраться до k-го элемента нужно идти с края — нет индексации за O(1) как у массива."
+        },
+        {
+          "id": "s2-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "class Node {\n  constructor(v) {\n    this.v = v;\n    this.prev = this.next = null;\n  }\n}\nclass DoublyLinkedList {\n  constructor() {\n    this.head = this.tail = null;\n  }\n  pushBack(v) {\n    const n = new Node(v);\n    if (!this.tail) this.head = this.tail = n;\n    else {\n      n.prev = this.tail;\n      this.tail.next = n;\n      this.tail = n;\n    }\n  }\n  popFront() {\n    if (!this.head) return undefined;\n    const v = this.head.v;\n    this.head = this.head.next;\n    if (this.head) this.head.prev = null;\n    else this.tail = null;\n    return v;\n  }\n}"
+        },
+        {
+          "id": "s2-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Пример идеи: монотонная deque"
+        },
+        {
+          "id": "s2-p4",
+          "type": "paragraph",
+          "text": "В задаче «максимум в окне длины k» держим индексы в deque так, чтобы значения в нём шли по убыванию; выкидываем с хвоста всё, что меньше нового элемента. С головы снимаем устаревшие индексы. Итог O(n) вместо O(nk)."
+        },
+        {
+          "id": "s2-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** максимумы в каждом окне длины k */\nfunction slidingMax(arr, k) {\n  const dq = []; // индексы, значения arr[dq] убывают\n  const out = [];\n  for (let i = 0; i < arr.length; i++) {\n    while (dq.length && arr[dq[dq.length - 1]] <= arr[i]) dq.pop();\n    dq.push(i);\n    while (dq[0] <= i - k) dq.shift();\n    if (i >= k - 1) out.push(arr[dq[0]]);\n  }\n  return out;\n}"
+        },
+        {
+          "id": "s2-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Двусторонняя очередь: можно снимать слева и справа</div><div class=\"viz-hint\" id=\"s2-h\"></div><div class=\"viz-row viz-row--queue\" id=\"s2-q\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var q=document.getElementById('s2-q');\n  var hint=document.getElementById('s2-h');\n  var seq=['pushBack A','pushBack B','pushFront C','popFront','popBack'];\n  var i=0;\n  function tick(){\n    q.innerHTML='';\n    hint.textContent=seq[i];\n    var show=['C','A','B'];\n    if(i>=3) show=['A','B'];\n    if(i>=4) show=['A'];\n    show.forEach(function(x){\n      var d=document.createElement('div');\n      d.className='viz-cell viz-cell--shown';\n      d.innerHTML='<span class=\"viz-cell__main\">'+x+'</span>';\n      q.appendChild(d);\n    });\n    i=(i+1)%seq.length;\n  }\n  tick();\n  setInterval(tick,1100);\n})();",
+          "width": "100%",
+          "height": 180,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "s2-l1",
+          "type": "link",
+          "text": "Двусвязный список — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Связный_список",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "str-trie",
+      "topicId": "struktury",
+      "subtopicId": "st-str-3",
+      "title": "Trie (префиксное дерево)",
+      "blocks": [
+        {
+          "id": "s3-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Строки с общим началом делят одни и те же рёбра"
+        },
+        {
+          "id": "s3-p1",
+          "type": "paragraph",
+          "text": "Представьте автодополнение в поиске: пользователь ввёл «ал». Все слова из словаря с этим префиксом лежат в одной ветке дерева. Корень — пустой префикс; по букве «а» переходим в дочерний узел, потом по «л» и т.д. Конец слова помечаем флагом."
+        },
+        {
+          "id": "s3-p2",
+          "type": "paragraph",
+          "text": "Вставка и поиск слова длины L за O(L) при фиксированном алфавите (русский/английский буквы или биты 0/1). Память — сумма длин всех строк в худшем случае; для сильно пересекающихся префиксов trie экономит сравнения «строка со строкой»."
+        },
+        {
+          "id": "s3-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "class TrieNode {\n  constructor() {\n    this.children = new Map();\n    this.end = false;\n  }\n}\nclass Trie {\n  constructor() { this.root = new TrieNode(); }\n  insert(word) {\n    let n = this.root;\n    for (const ch of word) {\n      if (!n.children.has(ch)) n.children.set(ch, new TrieNode());\n      n = n.children.get(ch);\n    }\n    n.end = true;\n  }\n  has(word) {\n    let n = this.root;\n    for (const ch of word) {\n      if (!n.children.has(ch)) return false;\n      n = n.children.get(ch);\n    }\n    return n.end;\n  }\n  startsWith(prefix) {\n    let n = this.root;\n    for (const ch of prefix) {\n      if (!n.children.has(ch)) return false;\n      n = n.children.get(ch);\n    }\n    return true;\n  }\n}"
+        },
+        {
+          "id": "s3-p3",
+          "type": "paragraph",
+          "text": "Расширения: счётчик слов с данным префиксом, XOR-максимум для массива через битовый trie, сжатие цепочек в radix tree."
+        },
+        {
+          "id": "s3-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Общий префикс «ca» у слов cat и car</div><div class=\"viz-hint\" id=\"s3-hint\"></div><div class=\"viz-row\" id=\"s3-row\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var row=document.getElementById('s3-row');\n  var hint=document.getElementById('s3-hint');\n  var steps=['c','ca','cat','c','ca','car'];\n  var i=0;\n  function add(sym){\n    var d=document.createElement('div');\n    d.className='viz-cell viz-cell--enter-right viz-cell--shown';\n    d.innerHTML='<span class=\"viz-cell__main\">'+sym+'</span><span class=\"viz-cell__sub\">префикс</span>';\n    row.appendChild(d);\n  }\n  function tick(){\n    row.innerHTML='';\n    var w=steps[i];\n    hint.textContent='Наращиваем путь: «'+w+'»';\n    for(var k=0;k<w.length;k++) add(w.slice(0,k+1));\n    i=(i+1)%steps.length;\n  }\n  tick();\n  setInterval(tick,1100);\n})();",
+          "width": "100%",
+          "height": 200,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "s3-l1",
+          "type": "link",
+          "text": "Trie — Wikipedia",
+          "href": "https://en.wikipedia.org/wiki/Trie",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "str-dsu",
+      "topicId": "struktury",
+      "subtopicId": "st-str-4",
+      "title": "Union–Find (Disjoint Set Union)",
+      "blocks": [
+        {
+          "id": "s4-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Группы объектов: сливаем и спрашиваем «в одной ли паре?»"
+        },
+        {
+          "id": "s4-p1",
+          "type": "paragraph",
+          "text": "Изначально каждый элемент — своя группа. Операция union(a,b) объединяет группы. find(x) возвращает «представителя» группы x (любой фиксированный элемент компоненты). Запрос: find(a) === find(b)?"
+        },
+        {
+          "id": "s4-p2",
+          "type": "paragraph",
+          "text": "Наивно дерево может выродиться в цепочку. Два приёма: union по рангу/размеру (подвешиваем меньшее к большему) и сжатие путей при find (все узлы на пути сразу указывают на корень). Тогда амортизированно почти константа — α(n), обратная функция Аккермана, на практике считайте O(1)."
+        },
+        {
+          "id": "s4-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "class DSU {\n  constructor(n) {\n    this.p = Array.from({ length: n }, (_, i) => i);\n    this.r = new Array(n).fill(0);\n  }\n  find(x) {\n    if (this.p[x] !== x) this.p[x] = this.find(this.p[x]);\n    return this.p[x];\n  }\n  union(a, b) {\n    a = this.find(a); b = this.find(b);\n    if (a === b) return false;\n    if (this.r[a] < this.r[b]) [a, b] = [b, a];\n    this.p[b] = a;\n    if (this.r[a] === this.r[b]) this.r[a]++;\n    return true;\n  }\n}"
+        },
+        {
+          "id": "s4-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Краскал и DSU — идеальная пара"
+        },
+        {
+          "id": "s4-p3",
+          "type": "paragraph",
+          "text": "Перебираем рёбра от лёгких к тяжёлым. Ребро соединяет разные компоненты? union и добавляем в MST. Уже в одной компоненте? Пропускаем — иначе цикл."
+        },
+        {
+          "id": "s4-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function mstKruskal(edges, n) {\n  edges.sort((a, b) => a.w - b.w);\n  const dsu = new DSU(n);\n  const mst = [];\n  for (const e of edges) {\n    if (dsu.union(e.u, e.v)) {\n      mst.push(e);\n      if (mst.length === n - 1) break;\n    }\n  }\n  return mst;\n}"
+        },
+        {
+          "id": "s4-p4",
+          "type": "paragraph",
+          "text": "Ещё применения: динамическая связность графа, offline запросы, задачи на эквивалентности. Без сжатия путей и ранга на больших данных решение может не уложиться во время."
+        },
+        {
+          "id": "s4-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Union: два множества сливаются в одно</div><div class=\"viz-hint\" id=\"s4-h\"></div><div class=\"viz-row\" id=\"s4-r\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var row=document.getElementById('s4-r');\n  var hint=document.getElementById('s4-h');\n  var phase=0;\n  setInterval(function(){\n    row.innerHTML='';\n    var labels=phase===0?['{A}','{B}','{C}','{D}']:['{A,B,C,D}'];\n    labels.forEach(function(t){\n      var d=document.createElement('div');\n      d.className='viz-cell viz-cell--shown';\n      d.innerHTML='<span class=\"viz-cell__main\">'+t+'</span>';\n      row.appendChild(d);\n    });\n    hint.textContent=phase===0?'До union: 4 компоненты':'После union-ов: одна компонента';\n    phase=1-phase;\n  },1600);\n})();",
+          "width": "100%",
+          "height": 160,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "s4-l1",
+          "type": "link",
+          "text": "Система непересекающихся множеств — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Система_непересекающихся_множеств",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "dp-basics",
+      "topicId": "dp",
+      "subtopicId": "st-dp-1",
+      "title": "Базовые задачи ДП: Фибоначчи, пути в сетке",
+      "blocks": [
+        {
+          "id": "dp1-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Динамическое программирование — когда грубая сила повторяет одно и то же"
+        },
+        {
+          "id": "dp1-p1",
+          "type": "paragraph",
+          "text": "Представьте, что вы считаете числа Фибоначчи наивной рекурсией: fib(5) вызывает fib(4) и fib(3), fib(4) снова вызывает fib(3) и fib(2)… Один и тот же fib(3) пересчитывается снова и снова. Это и есть перекрывающиеся подзадачи. Динамическое программирование (ДП) — способ запоминать уже посчитанное и не делать лишнюю работу."
+        },
+        {
+          "id": "dp1-p2",
+          "type": "paragraph",
+          "text": "Второй кирпич — оптимальная подструктура: оптимальное решение задачи составлено из оптимальных решений подзадач меньшего размера. Если оба свойства есть, часто можно выписать рекуррентную формулу и заполнить таблицу."
+        },
+        {
+          "id": "dp1-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Два стиля: мемоизация и таблица"
+        },
+        {
+          "id": "dp1-p3",
+          "type": "paragraph",
+          "text": "Мемоизация (сверху вниз): пишем рекурсию «как в лоб», но перед вычислением смотрим в кэш; после — кладём результат. Табуляция (снизу вверх): явно перебираем состояния от малых к большим в циклах. Оба подхода дают одинаковую асимптотику, если состояния одни и те же; мемоизация иногда проще для нестандартного порядка, табуляция — для экономии памяти (скользящие массивы)."
+        },
+        {
+          "id": "dp1-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "const memo = new Map();\nfunction fibMemo(n) {\n  if (n <= 1) return n;\n  if (memo.has(n)) return memo.get(n);\n  const v = fibMemo(n - 1) + fibMemo(n - 2);\n  memo.set(n, v);\n  return v;\n}\n\nfunction fibTab(n) {\n  const dp = new Array(n + 1).fill(0);\n  dp[1] = 1;\n  for (let i = 2; i <= n; i++) dp[i] = dp[i - 1] + dp[i - 2];\n  return dp[n];\n}\n\nfunction fibO1(n) {\n  let a = 0, b = 1;\n  for (let i = 2; i <= n; i++) [a, b] = [b, a + b];\n  return n <= 1 ? n : b;\n}"
+        },
+        {
+          "id": "dp1-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Пути в сетке: сколько способов дойти из левого верхнего угла в правый нижний"
+        },
+        {
+          "id": "dp1-p4",
+          "type": "paragraph",
+          "text": "Разрешены только шаги вправо и вниз. Дойти в клетку (i,j) можно либо сверху (i-1,j), либо слева (i,j-1). Число способов: dp[i][j] = dp[i-1][j] + dp[i][j-1], база — первая строка и столбец единицами (если нет стен). Это классическая композиция подзадач: путь в цель = два непересекающихся класса предыдущих путей."
+        },
+        {
+          "id": "dp1-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** grid[i][j] === 1 — проходима, 0 — стена */\nfunction uniquePaths(grid) {\n  const n = grid.length, m = grid[0].length;\n  const dp = Array.from({ length: n }, () => Array(m).fill(0));\n  dp[0][0] = grid[0][0] ? 1 : 0;\n  for (let i = 0; i < n; i++)\n    for (let j = 0; j < m; j++) {\n      if (!grid[i][j]) { dp[i][j] = 0; continue; }\n      if (i === 0 && j === 0) continue;\n      const up = i > 0 ? dp[i - 1][j] : 0;\n      const left = j > 0 ? dp[i][j - 1] : 0;\n      dp[i][j] = up + left;\n    }\n  return dp[n - 1][m - 1];\n}"
+        },
+        {
+          "id": "dp1-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Минимальная стоимость пути (не количество путей)"
+        },
+        {
+          "id": "dp1-p5",
+          "type": "paragraph",
+          "text": "Если в каждой клетке штраф (или бонус), и нужно минимизировать сумму на пути вправо/вниз, переход тот же по направлению, но вместо суммы способов берём минимум: dp[i][j] = cost[i][j] + min(dp[i-1][j], dp[i][j-1]). Здесь уже не считаем варианты, а выбираем лучший среди двух предшественников — всё ещё ДП, но другая агрегатная операция."
+        },
+        {
+          "id": "dp1-c3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function minPathSum(cost) {\n  const n = cost.length, m = cost[0].length;\n  const dp = Array.from({ length: n }, () => Array(m).fill(Infinity));\n  dp[0][0] = cost[0][0];\n  for (let i = 0; i < n; i++)\n    for (let j = 0; j < m; j++) {\n      if (i === 0 && j === 0) continue;\n      const up = i > 0 ? dp[i - 1][j] : Infinity;\n      const le = j > 0 ? dp[i][j - 1] : Infinity;\n      dp[i][j] = cost[i][j] + Math.min(up, le);\n    }\n  return dp[n - 1][m - 1];\n}"
+        },
+        {
+          "id": "dp1-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "Восстановление ответа"
+        },
+        {
+          "id": "dp1-p6",
+          "type": "paragraph",
+          "text": "Часто нужен не только число, но и сам путь. После заполнения dp идём от (n-1,m-1) к (0,0): на каждом шаге смотрим, откуда пришло оптимальное значение (где был min или откуда шла сумма способов). Если равенство — можно брать любой вариант или все (в зависости от задачи)."
+        },
+        {
+          "id": "dp1-h6",
+          "type": "heading",
+          "level": 2,
+          "text": "Типичные ошибки"
+        },
+        {
+          "id": "dp1-p7",
+          "type": "paragraph",
+          "text": "Путаница порядка циклов при сжатии памяти: для некоторых задач нужно идти в определённом направлении, иначе перезапишем ещё не использованное состояние. Забытая база или неверный диапазон индексов. Попытка жадного выбора там, где локально оптимальный шаг ломает глобальный оптимум — тогда нужно именно ДП или другой метод."
+        },
+        {
+          "id": "dp1-h7",
+          "type": "heading",
+          "level": 2,
+          "text": "Лестница: сколько способов подняться на n ступенек за шаги 1 или 2"
+        },
+        {
+          "id": "dp1-p8",
+          "type": "paragraph",
+          "text": "Состояние dp[i] — число способов попасть на ступень i. Переход: с i-1 или с i-2, значит dp[i] = dp[i-1] + dp[i-2]. База dp[0]=1, dp[1]=1. Это снова Фибоначчи в другой одежде: одна и та же рекуррентность встречается в десятках задач."
+        },
+        {
+          "id": "dp1-c4",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function climbStairs(n) {\n  let a = 1, b = 1;\n  for (let i = 2; i <= n; i++) [a, b] = [b, a + b];\n  return b;\n}"
+        },
+        {
+          "id": "dp1-h8",
+          "type": "heading",
+          "level": 2,
+          "text": "Наибольшая общая подпоследовательность (LCS) — два измерения"
+        },
+        {
+          "id": "dp1-p9",
+          "type": "paragraph",
+          "text": "Строки A и B. dp[i][j] — длина LCS префиксов A[0..i) и B[0..j). Если символы равны — dp[i][j]=1+dp[i-1][j-1]; иначе max(dp[i-1][j], dp[i][j-1]). Ответ dp[n][m], время O(nm). Восстановление строки: идём из угла, сравниваем с соседними ячейками."
+        },
+        {
+          "id": "dp1-c5",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function lcsLen(a, b) {\n  const n = a.length, m = b.length;\n  const dp = Array.from({ length: n + 1 }, () => Array(m + 1).fill(0));\n  for (let i = 1; i <= n; i++)\n    for (let j = 1; j <= m; j++)\n      dp[i][j] =\n        a[i - 1] === b[j - 1]\n          ? dp[i - 1][j - 1] + 1\n          : Math.max(dp[i - 1][j], dp[i][j - 1]);\n  return dp[n][m];\n}"
+        },
+        {
+          "id": "dp1-h9",
+          "type": "heading",
+          "level": 2,
+          "text": "Сжатие памяти в сетке до двух строк"
+        },
+        {
+          "id": "dp1-p10",
+          "type": "paragraph",
+          "text": "Если для перехода по строке i нужна только строка i-1, храним два массива prev и cur длины m или один массив и перезаписываем в правильном порядке. Память O(m) вместо O(nm). Для восстановления пути нужна вся таблица или битовые маски направлений."
+        },
+        {
+          "id": "dp1-h10",
+          "type": "heading",
+          "level": 2,
+          "text": "Как узнать, что перед вами ДП"
+        },
+        {
+          "id": "dp1-p11",
+          "type": "paragraph",
+          "text": "Спрашивают «число способов», «да/нет достижимости суммы», минимум/максимум на разбиении, задача разбита на подзадачи меньшего размера с пересечением подзадач. Если полный перебор экспоненциален, а подзадач полиномиально много — кандидат на ДП. Если жадный алгоритм доказуемо оптимален — ДП может быть избыточно, но часто проще сначала найти контрпример к жадности."
+        },
+        {
+          "id": "dp1-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Подсветка пути в сетке (значения — условные накопленные суммы)</div><div class=\"viz-hint\" id=\"dp1-h\"></div><div class=\"viz-grid\" id=\"dp1-g\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var g=document.getElementById('dp1-g');\n  var hint=document.getElementById('dp1-h');\n  var vals=['1','4','7','2','5','8','3','6','9'];\n  vals.forEach(function(v,i){\n    var c=document.createElement('div');\n    c.className='viz-cell';\n    c.innerHTML='<span class=\"viz-cell__main\">'+v+'</span>';\n    g.appendChild(c);\n  });\n  var path=[0,1,4,7,8];\n  var k=0;\n  setInterval(function(){\n    var ch=g.children;\n    for(var i=0;i<ch.length;i++) ch[i].classList.remove('viz-cell--active','viz-cell--success');\n    for(var j=0;j<=k;j++) ch[path[j]].classList.add(j===k?'viz-cell--active':'viz-cell--success');\n    hint.textContent='Восстановление: откуда пришло минимум/максимум';\n    k=(k+1)%path.length;\n  },700);\n})();",
+          "width": "100%",
+          "height": 220,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "dp1-l",
+          "type": "link",
+          "text": "Динамическое программирование — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Динамическое_программирование",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "dp-knapsack",
+      "topicId": "dp",
+      "subtopicId": "st-dp-2",
+      "title": "Задача о рюкзаке: 0/1, unbounded, варианты",
+      "blocks": [
+        {
+          "id": "dp2-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Рюкзак — эталонная модель «выбрать подмножество с ограничением»"
+        },
+        {
+          "id": "dp2-p1",
+          "type": "paragraph",
+          "text": "Есть предметы с весом и ценностью, вместимость рюкзака W. В версии 0/1 каждый предмет берём не больше одного раза. В unbounded (полный, неограниченный) каждый тип можно брать сколько угодно раз. Задача: максимизировать суммарную ценность без превышения веса."
+        },
+        {
+          "id": "dp2-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "0/1 knapsack: двумерная таблица"
+        },
+        {
+          "id": "dp2-p2",
+          "type": "paragraph",
+          "text": "Состояние dp[i][w] — максимальная ценность, используя первые i предметов и суммарный вес не больше w. Переход: не брать i-й → dp[i-1][w]; брать (если w>=weight[i]) → value[i] + dp[i-1][w-weight[i]]. Берём максимум. Ответ dp[n][W]. Время O(n·W), память O(n·W)."
+        },
+        {
+          "id": "dp2-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function knapsack01(weights, values, W) {\n  const n = weights.length;\n  const dp = Array.from({ length: n + 1 }, () => Array(W + 1).fill(0));\n  for (let i = 1; i <= n; i++)\n    for (let w = 0; w <= W; w++) {\n      dp[i][w] = dp[i - 1][w];\n      if (w >= weights[i - 1]) {\n        const take = values[i - 1] + dp[i - 1][w - weights[i - 1]];\n        dp[i][w] = Math.max(dp[i][w], take);\n      }\n    }\n  return dp[n][W];\n}"
+        },
+        {
+          "id": "dp2-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Сжатие до одного массива"
+        },
+        {
+          "id": "dp2-p3",
+          "type": "paragraph",
+          "text": "Заметим, что строка i зависит только от строки i-1. Можно держать один массив длины W+1 и обновлять w справа налево (от W к 0), чтобы не использовать уже обновлённое значение как «предыдущую строку». Если идти слева направо, один предмет может учесться несколько раз — это уже другая задача."
+        },
+        {
+          "id": "dp2-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function knapsack01Space(weights, values, W) {\n  const dp = new Array(W + 1).fill(0);\n  for (let i = 0; i < weights.length; i++)\n    for (let w = W; w >= weights[i]; w--)\n      dp[w] = Math.max(dp[w], values[i] + dp[w - weights[i]]);\n  return dp[W];\n}"
+        },
+        {
+          "id": "dp2-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Unbounded knapsack: порядок циклов решает всё"
+        },
+        {
+          "id": "dp2-p4",
+          "type": "paragraph",
+          "text": "Когда предметов каждого типа бесконечно, переход: dp[w] = max по предметам (value[i] + dp[w - weight[i]]). Если внешний цикл по w от 0 до W, а внутренний по предметам, мы разрешаем повторное использование — потому что dp[w-weight] уже мог включать тот же тип. Для 0/1 тот же двойной цикл, но w идём назад — «запрет на повтор в одной итерации предмета»."
+        },
+        {
+          "id": "dp2-c3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function unboundedKnapsack(weights, values, W) {\n  const dp = new Array(W + 1).fill(0);\n  for (let w = 1; w <= W; w++)\n    for (let i = 0; i < weights.length; i++)\n      if (w >= weights[i])\n        dp[w] = Math.max(dp[w], values[i] + dp[w - weights[i]]);\n  return dp[W];\n}"
+        },
+        {
+          "id": "dp2-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "Subset sum и разбиение на две равные суммы"
+        },
+        {
+          "id": "dp2-p5",
+          "type": "paragraph",
+          "text": "Subset sum: есть ли подмножество с суммой ровно T? dp[i][s] или битсет по s. Partition: сумма всех чисел должна быть чётной; проверяем достижимость sum/2. Это частные случаи рюкзака, где «цена» = «вес»."
+        },
+        {
+          "id": "dp2-h6",
+          "type": "heading",
+          "level": 2,
+          "text": "Почему жадность не всегда работает"
+        },
+        {
+          "id": "dp2-p6",
+          "type": "paragraph",
+          "text": "Жадный выбор по соотношению value/weight может провалиться для 0/1 (целые предметы). Для дробного рюкзака (можно делить предметы) жадность по удельной ценности оптимальна — но это уже не целочисленное ДП."
+        },
+        {
+          "id": "dp2-h7",
+          "type": "heading",
+          "level": 2,
+          "text": "Ограниченный knapsack (ограниченное число копий)"
+        },
+        {
+          "id": "dp2-p7",
+          "type": "paragraph",
+          "text": "У каждого типа k_i копий. Наивно разворачивать копии в k_i отдельных предметов раздувает n. Трюк бинарного разбиения: число k представляем как сумму степеней двойки (1,2,4,… остаток) — O(log k) «виртуальных» предметов на тип, каждый 0/1. Дальше обычный 0/1 knapsack."
+        },
+        {
+          "id": "dp2-h8",
+          "type": "heading",
+          "level": 2,
+          "text": "Монеты: количество способов набрать сумму"
+        },
+        {
+          "id": "dp2-p8",
+          "type": "paragraph",
+          "text": "Набор номиналов, порядок не важен. Unbounded: dp[s] += dp[s - coin] для s от coin до S. 0/1 по каждому номиналу один раз: внутренний цикл по s от S вниз до coin. Перепутанный порядок циклов даёт разные задачи (перестановки vs комбинации)."
+        },
+        {
+          "id": "dp2-c4",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** число способов набрать сумму S монетами (порядок не важен), бесконечные монеты */\nfunction coinChangeCombinations(coins, S) {\n  const dp = new Array(S + 1).fill(0);\n  dp[0] = 1;\n  for (const c of coins)\n    for (let s = c; s <= S; s++) dp[s] += dp[s - c];\n  return dp[S];\n}"
+        },
+        {
+          "id": "dp2-h9",
+          "type": "heading",
+          "level": 2,
+          "text": "Псевдополиномиальное время"
+        },
+        {
+          "id": "dp2-p9",
+          "type": "paragraph",
+          "text": "Сложность O(n·W) зависит от числа W, а не только от размера записи числа в битах. Если W = 10^9, таблица не влезет и время огромно. Для «маленьких сумм» в задаче ДП по сумме идеально; для больших W ищут приближения, встречное встречное разбиение или другие методы."
+        },
+        {
+          "id": "dp2-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Вместимость W: заполняем «лучшую ценность» по весу</div><div class=\"viz-hint\" id=\"dp2-h\"></div><div class=\"viz-chart\" id=\"dp2-ch\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('dp2-ch');\n  var hint=document.getElementById('dp2-h');\n  var w=[0,2,5,8,10,12,14];\n  var maxV=VizBars.maxOf(w);\n  VizBars.render(chart,w,{max:maxV});\n  hint.textContent='dp[w] растёт по мере учёта предметов (схема)';\n  VizBars.setState(chart,w.length-1,'success');\n})();",
+          "width": "100%",
+          "height": 210,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "dp2-l",
+          "type": "link",
+          "text": "Задача о рюкзаке — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Задача_о_рюкзаке",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "dp-prefix",
+      "topicId": "dp",
+      "subtopicId": "st-dp-3",
+      "title": "Оптимизация ДП: префиксы, суммы, скользящие идеи",
+      "blocks": [
+        {
+          "id": "dp3-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Префиксные суммы — фундамент быстрых отрезков"
+        },
+        {
+          "id": "dp3-p1",
+          "type": "paragraph",
+          "text": "pref[i] = a[0]+…+a[i-1]. Сумма на [l,r) = pref[r]-pref[l] за O(1). В ДП часто нужно быстро получить сумму подмассива, заканчивающегося в j, с разными левыми границами — без префиксов получится O(n²) лишних суммирований."
+        },
+        {
+          "id": "dp3-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function prefixSums(a) {\n  const p = new Array(a.length + 1).fill(0);\n  for (let i = 0; i < a.length; i++) p[i + 1] = p[i] + a[i];\n  return p;\n}\nfunction rangeSum(p, l, r) { return p[r + 1] - p[l]; }"
+        },
+        {
+          "id": "dp3-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Максимальная сумма подотрезка (Кадане)"
+        },
+        {
+          "id": "dp3-p2",
+          "type": "paragraph",
+          "text": "dp заканчивается на i: либо расширяем предыдущий отрезок, либо начинаем заново в i. Формула: cur = max(a[i], cur + a[i]); ans = max(ans, cur). Линейное время, O(1) памяти. Это ДП, хотя часто называют просто «алгоритм Кадане»."
+        },
+        {
+          "id": "dp3-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function maxSubarray(a) {\n  let cur = a[0], best = a[0];\n  for (let i = 1; i < a.length; i++) {\n    cur = Math.max(a[i], cur + a[i]);\n    best = Math.max(best, cur);\n  }\n  return best;\n}"
+        },
+        {
+          "id": "dp3-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "НВП (LIS) и бинарный поиск"
+        },
+        {
+          "id": "dp3-p3",
+          "type": "paragraph",
+          "text": "Наивно dp[i] = 1 + max(dp[j]) для j<i с a[j]<a[i] — O(n²). Оптимизация: поддерживаем массив tails[k] — минимальный хвост возрастающей подпоследовательности длины k+1. Новый элемент ищем позицию lower_bound в tails — O(n log n)."
+        },
+        {
+          "id": "dp3-c3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function lisLength(a) {\n  const tails = [];\n  for (const x of a) {\n    let lo = 0, hi = tails.length;\n    while (lo < hi) {\n      const mid = (lo + hi) >> 1;\n      if (tails[mid] < x) lo = mid + 1;\n      else hi = mid;\n    }\n    if (lo === tails.length) tails.push(x);\n    else tails[lo] = x;\n  }\n  return tails.length;\n}"
+        },
+        {
+          "id": "dp3-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Разность массивов (difference array)"
+        },
+        {
+          "id": "dp3-p4",
+          "type": "paragraph",
+          "text": "Много запросов «прибавить v на [l,r]» на статичном массиве: diff[l]+=v, diff[r+1]-=v; потом префиксная сумма diff восстанавливает значения. Часто комбинируют с ДП по событиям на оси."
+        },
+        {
+          "id": "dp3-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "Конвейерная оптимизация"
+        },
+        {
+          "id": "dp3-p5",
+          "type": "paragraph",
+          "text": "Если переход dp[i] зависит только от окна dp[i-k]…dp[i-1], можно deque монотонный для min/max в окне (как в скользящем окне). Тогда вместо O(n·k) получаем O(n)."
+        },
+        {
+          "id": "dp3-h6",
+          "type": "heading",
+          "level": 2,
+          "text": "Edit distance (расстояние Левенштейна)"
+        },
+        {
+          "id": "dp3-p6",
+          "type": "paragraph",
+          "text": "dp[i][j] — минимальное число операций (вставка, удаление, замена), чтобы превратить префикс A[0..i) в B[0..j). Три-четыре случая перехода, ответ dp[n][m]. Классика двумерной ДП с префиксной идеей «стоимости хвоста»."
+        },
+        {
+          "id": "dp3-c4",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function editDistance(a, b) {\n  const n = a.length, m = b.length;\n  const dp = Array.from({ length: n + 1 }, () => Array(m + 1).fill(0));\n  for (let i = 0; i <= n; i++) dp[i][0] = i;\n  for (let j = 0; j <= m; j++) dp[0][j] = j;\n  for (let i = 1; i <= n; i++)\n    for (let j = 1; j <= m; j++) {\n      const c = a[i - 1] === b[j - 1] ? 0 : 1;\n      dp[i][j] = Math.min(\n        dp[i - 1][j] + 1,\n        dp[i][j - 1] + 1,\n        dp[i - 1][j - 1] + c,\n      );\n    }\n  return dp[n][m];\n}"
+        },
+        {
+          "id": "dp3-h7",
+          "type": "heading",
+          "level": 2,
+          "text": "Битовый set для subset sum на больших n, малой сумме"
+        },
+        {
+          "id": "dp3-p7",
+          "type": "paragraph",
+          "text": "Достижимые суммы хранят как биты BigInt или битовую маску: сдвиг влево на w и OR с текущей маской. Иногда быстрее, чем массив boolean, на компактных данных."
+        },
+        {
+          "id": "dp3-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Префикс: сумма отрезка [0..i] — один индекс в массиве p</div><div class=\"viz-hint\" id=\"dp3-h\"></div><div class=\"viz-chart\" id=\"dp3-ch\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('dp3-ch');\n  var hint=document.getElementById('dp3-h');\n  var a=[2,5,1,3,4];\n  var p=[0];\n  for(var i=0;i<a.length;i++) p.push(p[p.length-1]+a[i]);\n  var vis=p.slice(1);\n  var maxV=VizBars.maxOf(vis);\n  VizBars.render(chart,vis,{max:maxV});\n  hint.textContent='p[k] = сумма первых k элементов исходного массива';\n})();",
+          "width": "100%",
+          "height": 200,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "dp3-l",
+          "type": "link",
+          "text": "Префиксная сумма — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Префиксная_сумма",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "dp-bitmask",
+      "topicId": "dp",
+      "subtopicId": "st-dp-4",
+      "title": "ДП по маскам битов (bitmask DP)",
+      "blocks": [
+        {
+          "id": "dp4-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Когда множество маленькое, его кодируют битами"
+        },
+        {
+          "id": "dp4-p1",
+          "type": "paragraph",
+          "text": "Если n ≤ 20–22, подмножество {0,…,n-1} можно представить числом mask от 0 до 2^n-1: i-й бит = «элемент i выбран». Операции: проверка (mask >> i) & 1, включить mask | (1<<i), выключить mask & ~(1<<i), переключить mask ^ (1<<i). Так состояние ДП становится целым числом — компактно и быстро."
+        },
+        {
+          "id": "dp4-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "TSP (коммивояжёр) и dp[mask][last]"
+        },
+        {
+          "id": "dp4-p2",
+          "type": "paragraph",
+          "text": "Классика: обойти все вершины по рёбрам с минимальной суммой и вернуться (или не возвращаться — вариант). Состояние dp[mask][j] — минимальная стоимость пути, посетив ровно множество mask вершин, закончив в j. Переход: из предыдущей вершины k убрать j из маски и добавить вес ребра k→j. Сложность O(n²·2^n), память столько же (можно оптимизировать слоями по чётности popcount)."
+        },
+        {
+          "id": "dp4-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** dist[i][j] — матрица расстояний, n <= 18 */\nfunction tsp(dist) {\n  const n = dist.length;\n  const FULL = (1 << n) - 1;\n  const dp = Array.from({ length: 1 << n }, () => Array(n).fill(Infinity));\n  dp[1][0] = 0;\n  for (let mask = 1; mask <= FULL; mask++)\n    for (let last = 0; last < n; last++) {\n      if (dp[mask][last] === Infinity) continue;\n      if (((mask >> last) & 1) === 0) continue;\n      for (let nxt = 0; nxt < n; nxt++) {\n        if ((mask >> nxt) & 1) continue;\n        const nm = mask | (1 << nxt);\n        dp[nm][nxt] = Math.min(dp[nm][nxt], dp[mask][last] + dist[last][nxt]);\n      }\n    }\n  let ans = Infinity;\n  for (let last = 1; last < n; last++)\n    ans = Math.min(ans, dp[FULL][last] + dist[last][0]);\n  return ans;\n}"
+        },
+        {
+          "id": "dp4-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Назначения, подмножества задач, SOS DP"
+        },
+        {
+          "id": "dp4-p3",
+          "type": "paragraph",
+          "text": "Маски используют в задачах «каждому сотруднику назначить уникальную задачу», покрытия битами, разбиения множества. SOS (Sum Over Subsets) DP — за O(n·2^n) считает суммы по всем подмаскам; нужна в некоторых подсчётах и вероятностях."
+        },
+        {
+          "id": "dp4-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Ограничения и подводные камни"
+        },
+        {
+          "id": "dp4-p4",
+          "type": "paragraph",
+          "text": "2^25 уже тяжело для времени и памяти. Порядок перебора масок важен, если нужны только подмаски. В JavaScript битовые операции работают с 32-битными знаковыми целыми — для n>30 нужен BigInt или другой подход."
+        },
+        {
+          "id": "dp4-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "Перебор подмасок для фиксированной маски"
+        },
+        {
+          "id": "dp4-p5",
+          "type": "paragraph",
+          "text": "Для mask цикл for (let s = mask; s > 0; s = (s - 1) & mask) перебирает все непустые подмаски за O(2^{popcount(mask)}). Полезно в комбинаторных ДП, когда нужно разбить множество на части."
+        },
+        {
+          "id": "dp4-h6",
+          "type": "heading",
+          "level": 2,
+          "text": "SOS DP (sum over subsets)"
+        },
+        {
+          "id": "dp4-p6",
+          "type": "paragraph",
+          "text": "Если для каждой маски M нужно суммировать f[S] по всем S ⊆ M, наивно O(3^n). SOS за O(n·2^n): для каждого бита i обновляем все маски, где бит установлен, добавляя вклад от маски без этого бита. Применяют в подсчётах по AND/OR, в некоторых задачах на вероятностях."
+        },
+        {
+          "id": "dp4-h7",
+          "type": "heading",
+          "level": 2,
+          "text": "Назначение работников на задачи"
+        },
+        {
+          "id": "dp4-p7",
+          "type": "paragraph",
+          "text": "n работников, n задач, стоимость c[i][j]. Состояние mask — какие задачи уже распределены, последний работник не обязателен в ключе, если задачи уникальны: dp[mask] = min по выбору следующей пары (работник, задача) с учётом уже занятых битов. Варианты с навыками «у работника подмножество допустимых задач» естественно кодируют битами."
+        },
+        {
+          "id": "dp4-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** перебор всех подмасок mask (кроме 0) */\nfunction forEachSubmask(mask, fn) {\n  for (let s = mask; s > 0; s = (s - 1) & mask) fn(s);\n}"
+        },
+        {
+          "id": "dp4-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Маска: биты = какие города уже посетили</div><div class=\"viz-hint\" id=\"dp4-h\"></div><div class=\"viz-badge\" id=\"dp4-b\">mask</div></div>",
+          "css": "",
+          "js": "(function(){\n  var hint=document.getElementById('dp4-h');\n  var b=document.getElementById('dp4-b');\n  var masks=[1,3,7,15];\n  var i=0;\n  setInterval(function(){\n    b.textContent='mask = '+masks[i]+' (двоично: '+masks[i].toString(2)+')';\n    hint.textContent='Каждый бит — посещена ли вершина с данным номером';\n    i=(i+1)%masks.length;\n  },900);\n})();",
+          "width": "100%",
+          "height": 140,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "dp4-l",
+          "type": "link",
+          "text": "Hamiltonian path — Wikipedia",
+          "href": "https://en.wikipedia.org/wiki/Hamiltonian_path",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "dp-tree-graph",
+      "topicId": "dp",
+      "subtopicId": "st-dp-5",
+      "title": "ДП на деревьях и графах",
+      "blocks": [
+        {
+          "id": "dp5-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Дерево: один путь между вершинами — проще, чем общий граф"
+        },
+        {
+          "id": "dp5-p1",
+          "type": "paragraph",
+          "text": "Выбираем корень. Поддерево узла v изолировано от остального дерева рёбрами только через v. Поэтому многие задачи решаются dfs(v): сначала рекурсия к детям, потом комбинируем их dp в ответ для v."
+        },
+        {
+          "id": "dp5-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Максимальное независимое множество в дереве"
+        },
+        {
+          "id": "dp5-p2",
+          "type": "paragraph",
+          "text": "dp0[v] — оптимум в поддереве v, если v не берём в множество; dp1[v] — если берём (тогда детей нельзя). dp1[v] = a[v] + sum(dp0[child]); dp0[v] = sum(max(dp0[child], dp1[child]))."
+        },
+        {
+          "id": "dp5-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function treeIndependentSet(g, root, weight) {\n  function dfs(v, parent) {\n    let take = weight[v], skip = 0;\n    for (const to of g[v]) {\n      if (to === parent) continue;\n      const [t, s] = dfs(to, v);\n      take += s;\n      skip += Math.max(t, s);\n    }\n    return [take, skip];\n  }\n  const [take, skip] = dfs(root, -1);\n  return Math.max(take, skip);\n}"
+        },
+        {
+          "id": "dp5-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Диаметр дерева"
+        },
+        {
+          "id": "dp5-p3",
+          "type": "paragraph",
+          "text": "В листьях высота 0. Для v берём два максимальных «плеча» среди детей; диаметр кандидат = сумма двух лучших + 2 (если вес ребра 1). Обновляем глобальный максимум. Один dfs — O(n)."
+        },
+        {
+          "id": "dp5-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Rerooting (переподвешивание)"
+        },
+        {
+          "id": "dp5-p4",
+          "type": "paragraph",
+          "text": "Если ответ зависит от выбора корня, делают первый dfs для подсчёта значений вниз, второй dfs — перенос значения при смене корня на соседа за O(1) амортизированно с префиксами/суффиксами по детям."
+        },
+        {
+          "id": "dp5-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "DAG: динамика по топологическому порядке"
+        },
+        {
+          "id": "dp5-p5",
+          "type": "paragraph",
+          "text": "В направленном ациклическом графе топосорт даёт порядок: все рёбра идут вперёд. Тогда dp[v] можно обновлять от уже обработанных предков: например, самый длинный путь, число путей, минимальная стоимость достижения."
+        },
+        {
+          "id": "dp5-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** order — топологический порядок вершин */\nfunction longestPathDAG(g, order, n) {\n  const dp = Array(n).fill(0);\n  for (const v of order)\n    for (const to of g[v]) dp[to] = Math.max(dp[to], dp[v] + 1);\n  return Math.max(...dp);\n}"
+        },
+        {
+          "id": "dp5-p6",
+          "type": "paragraph",
+          "text": "Если в графе есть циклы, «простая» динамика по слоям не работает без дополнительной структуры (например, сжатие в SCC и ДП на конденсации)."
+        },
+        {
+          "id": "dp5-h6",
+          "type": "heading",
+          "level": 2,
+          "text": "Максимальный путь в дереве (два BFS / один DFS)"
+        },
+        {
+          "id": "dp5-p7",
+          "type": "paragraph",
+          "text": "Дважды: найти самую дальшую вершину от произвольного старта, потом от неё — расстояние до другой дальней даёт диаметр. Или один DFS с комбинированием двух лучших глубин среди детей — та же асимптотика O(n)."
+        },
+        {
+          "id": "dp5-h7",
+          "type": "heading",
+          "level": 2,
+          "text": "Вершинное покрытие в дереве"
+        },
+        {
+          "id": "dp5-p8",
+          "type": "paragraph",
+          "text": "Связано с независимым множеством в двудольном случае не всегда, но в дереве похожая двухцветная ДП: dp0[v] — минимальный размер покрытия в поддереве, если v не в покрытии (тогда все рёбра к детям закрыты детьми); dp1[v] — если v в покрытии. Формулы выводятся из локальных случаев."
+        },
+        {
+          "id": "dp5-h8",
+          "type": "heading",
+          "level": 2,
+          "text": "Количество путей в DAG"
+        },
+        {
+          "id": "dp5-p9",
+          "type": "paragraph",
+          "text": "Топосорт: dp[v] += dp[u] для рёбер u→v, база dp[s]=1. За один проход считаем число путей из s во все вершины. Для «все пути в графе с циклами» без доп. ограничений может быть бесконечно."
+        },
+        {
+          "id": "dp5-c3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function pathCountDAG(g, order, s) {\n  const n = g.length;\n  const dp = new Array(n).fill(0);\n  dp[s] = 1;\n  for (const u of order)\n    for (const v of g[u]) dp[v] += dp[u];\n  return dp;\n}"
+        },
+        {
+          "id": "dp5-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Дерево: ответ в корне собирается из ответов детей</div><div class=\"viz-hint\" id=\"dp5-h\"></div><div class=\"viz-stack-v\" id=\"dp5-st\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var st=document.getElementById('dp5-st');\n  var hint=document.getElementById('dp5-h');\n  ['dfs(2)','dfs(5)','dfs(1)'].forEach(function(t){\n    var d=document.createElement('div');\n    d.className='viz-cell viz-cell--shown';\n    d.innerHTML='<span class=\"viz-cell__main\">'+t+'</span>';\n    st.appendChild(d);\n  });\n  hint.textContent='Стек DFS обходит поддеревья перед возвратом к родителю';\n})();",
+          "width": "100%",
+          "height": 180,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "dp5-l",
+          "type": "link",
+          "text": "Tree (graph theory) — Wikipedia",
+          "href": "https://en.wikipedia.org/wiki/Tree_(graph_theory)",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "prod-strings",
+      "topicId": "prodvinutye",
+      "subtopicId": "st-prod-1",
+      "title": "Алгоритмы на строках: KMP, Z-функция, Rabin–Karp",
+      "blocks": [
+        {
+          "id": "pr1-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Поиск подстроки быстрее, чем наивный O(n·m)"
+        },
+        {
+          "id": "pr1-p1",
+          "type": "paragraph",
+          "text": "Наивный метод сравнивает образец со всеми сдвигами текста. При несовпадении на позиции j откатывается на один символ текста — и начинает образец с нуля. KMP (Кнут–Моррис–Пратт) использует информацию: какой самый длинный префикс образца уже совпал с суффиксом прочитанной части, чтобы не «забывать» уже известное."
+        },
+        {
+          "id": "pr1-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Префикс-функция π"
+        },
+        {
+          "id": "pr1-p2",
+          "type": "paragraph",
+          "text": "π[i] — длина самого длинного собственного префикса подстроки s[0…i], который одновременно является суффиксом этой подстроки. Собственный значит не вся строка. Строится за O(m) одним проходом с «откатом» указателя j."
+        },
+        {
+          "id": "pr1-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function prefixFunction(s) {\n  const pi = new Array(s.length).fill(0);\n  for (let i = 1; i < s.length; i++) {\n    let j = pi[i - 1];\n    while (j > 0 && s[i] !== s[j]) j = pi[j - 1];\n    if (s[i] === s[j]) j++;\n    pi[i] = j;\n  }\n  return pi;\n}"
+        },
+        {
+          "id": "pr1-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function kmpSearch(text, pat) {\n  const pi = prefixFunction(pat);\n  const res = [];\n  let j = 0;\n  for (let i = 0; i < text.length; i++) {\n    while (j > 0 && text[i] !== pat[j]) j = pi[j - 1];\n    if (text[i] === pat[j]) j++;\n    if (j === pat.length) {\n      res.push(i - pat.length + 1);\n      j = pi[j - 1];\n    }\n  }\n  return res;\n}"
+        },
+        {
+          "id": "pr1-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Z-функция"
+        },
+        {
+          "id": "pr1-p3",
+          "type": "paragraph",
+          "text": "z[i] — длина максимального префикса строки s, совпадающего с подстрокой, начинающейся в i. Строится за O(n) с окном [l,r], внутри которого уже известно совпадение с префиксом. Удобна для подсчёта вхождений: склеить pattern#text и смотреть z на границах."
+        },
+        {
+          "id": "pr1-c3",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function zFunction(s) {\n  const n = s.length;\n  const z = new Array(n).fill(0);\n  let l = 0, r = 0;\n  for (let i = 1; i < n; i++) {\n    if (i <= r) z[i] = Math.min(r - i + 1, z[i - l]);\n    while (i + z[i] < n && s[z[i]] === s[i + z[i]]) z[i]++;\n    if (i + z[i] - 1 > r) { l = i; r = i + z[i] - 1; }\n  }\n  return z;\n}"
+        },
+        {
+          "id": "pr1-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Rabin–Karp: хеш как «отпечаток» подстроки"
+        },
+        {
+          "id": "pr1-p4",
+          "type": "paragraph",
+          "text": "Выбираем модуль p и основание b. Хеш длины m обновляется за O(1) при сдвиге окна (убрали старший символ, добавили новый). Совпадение хешей — кандидат; ложные срабатывания снимаются второй проверкой или вторым модулем (double hashing). Среднее время близко к линейному, худшее при специально подобранных анти-хешах — O(n·m); в соревнованиях используют два 64-битных модуля или random base."
+        },
+        {
+          "id": "pr1-c4",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function rabinKarp(text, pat, p = 1e9 + 7, b = 911382323) {\n  const n = text.length, m = pat.length;\n  if (m > n) return [];\n  let h = 0, hp = 0, pw = 1;\n  for (let i = 0; i < m; i++) {\n    h = (h * b + text.charCodeAt(i)) % p;\n    hp = (hp * b + pat.charCodeAt(i)) % p;\n    if (i) pw = (pw * b) % p;\n  }\n  const out = [];\n  for (let i = 0; i <= n - m; i++) {\n    if (h === hp && text.slice(i, i + m) === pat) out.push(i);\n    if (i < n - m) {\n      h = (h - text.charCodeAt(i) * pw % p + p) % p;\n      h = (h * b + text.charCodeAt(i + m)) % p;\n    }\n  }\n  return out;\n}"
+        },
+        {
+          "id": "pr1-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "Что выбрать"
+        },
+        {
+          "id": "pr1-p5",
+          "type": "paragraph",
+          "text": "KMP/Z — детерминированно O(n+m), предсказуемо. Rabin–Karp — простой для нескольких образцов одной длины, для 2D-подстрок; нужна осторожность с коллизиями. Для больших алфавитов и онлайн-потоков иногда используют суффиксные структуры (дерево/автомат) — отдельная большая тема."
+        },
+        {
+          "id": "pr1-h6",
+          "type": "heading",
+          "level": 2,
+          "text": "Автомат Ахо–Корасик (много образцов сразу)"
+        },
+        {
+          "id": "pr1-p6",
+          "type": "paragraph",
+          "text": "Обобщение префикс-функции на trie из всех шаблонов. У каждой вершины trie есть суффиксная ссылка на самый длинный суффикс, который тоже префикс какого-то шаблона. Один проход по тексту длины n — O(n + совпадения + сумма длин образцов). Незаменим при фильтрации спама по словарю ключевых слов."
+        },
+        {
+          "id": "pr1-h7",
+          "type": "heading",
+          "level": 2,
+          "text": "Манакер для палиндромов"
+        },
+        {
+          "id": "pr1-p7",
+          "type": "paragraph",
+          "text": "За O(n) находит радиусы палиндромов в каждом центре (чётная/нечётная длина — два прохода или трюк с разделителями). Полезно в задачах на симметрию строки."
+        },
+        {
+          "id": "pr1-h8",
+          "type": "heading",
+          "level": 2,
+          "text": "Нюансы хеширования строк"
+        },
+        {
+          "id": "pr1-p8",
+          "type": "paragraph",
+          "text": "Один модуль и фиксированное основание уязвимы к анти-тестам в хакерских соревнованиях. Два независимых модуля или случайное основание при старте снижают вероятность коллизии. Для криптографии нужны настоящие криптостойкие хеши — это другая лига."
+        },
+        {
+          "id": "pr1-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">KMP: при несовпадении сдвигаем образец по π, не текст с «нуля»</div><div class=\"viz-hint\" id=\"pr1-h\"></div><div class=\"viz-row\" id=\"pr1-r\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var row=document.getElementById('pr1-r');\n  var hint=document.getElementById('pr1-h');\n  ['A','B','A','B','A'].forEach(function(c){\n    var d=document.createElement('div');\n    d.className='viz-cell viz-cell--shown';\n    d.innerHTML='<span class=\"viz-cell__main\">'+c+'</span>';\n    row.appendChild(d);\n  });\n  hint.textContent='Префикс-функция подсказывает, куда «откатить» шаблон';\n})();",
+          "width": "100%",
+          "height": 140,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "pr1-l",
+          "type": "link",
+          "text": "KMP — Википедия",
+          "href": "https://ru.wikipedia.org/wiki/Алгоритм_Кнута_—_Морриса_—_Пратта",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "prod-sqrt",
+      "topicId": "prodvinutye",
+      "subtopicId": "st-prod-2",
+      "title": "Sqrt-decomposition: корневое разбиение массива",
+      "blocks": [
+        {
+          "id": "pr2-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Идея: разбить n на блоки размера ≈ √n"
+        },
+        {
+          "id": "pr2-p1",
+          "type": "paragraph",
+          "text": "Много запросов на массив: обновление одного элемента и сумма на отрезке. Дерево отрезков — O(log n). Sqrt-decomposition — проще в реализации: предпосчитываем агрегат (сумму, min) на каждом блоке. Запрос [l,r] = неполные края в O(√n) + полные блоки между ними за число блоков O(√n). Итого O(√n) на запрос, предобработка O(n)."
+        },
+        {
+          "id": "pr2-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Структура"
+        },
+        {
+          "id": "pr2-p2",
+          "type": "paragraph",
+          "text": "blockId(i) = Math.floor(i / B), B = ceil(sqrt(n)). Массив blockSum[k] хранит сумму k-го блока. При a[i] += v добавляем v к blockSum[blockId(i)] и к a[i]. На запросе перебираем элементы от l до min(r, конец блока l), затем целые блоки циклом, затем хвост."
+        },
+        {
+          "id": "pr2-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "class SqrtSum {\n  constructor(a) {\n    this.a = [...a];\n    this.n = a.length;\n    this.B = Math.ceil(Math.sqrt(this.n)) || 1;\n    const nb = Math.ceil(this.n / this.B);\n    this.bSum = new Array(nb).fill(0);\n    for (let i = 0; i < this.n; i++) this.bSum[this.bi(i)] += this.a[i];\n  }\n  bi(i) { return Math.floor(i / this.B); }\n  add(i, v) {\n    this.a[i] += v;\n    this.bSum[this.bi(i)] += v;\n  }\n  sum(l, r) {\n    let s = 0;\n    if (this.bi(l) === this.bi(r)) {\n      for (let i = l; i <= r; i++) s += this.a[i];\n      return s;\n    }\n    const endL = (this.bi(l) + 1) * this.B - 1;\n    for (let i = l; i <= endL; i++) s += this.a[i];\n    const startR = this.bi(r) * this.B;\n    for (let b = this.bi(l) + 1; b < this.bi(r); b++) s += this.bSum[b];\n    for (let i = startR; i <= r; i++) s += this.a[i];\n    return s;\n  }\n}"
+        },
+        {
+          "id": "pr2-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Алгоритм Мо на запросах отрезков"
+        },
+        {
+          "id": "pr2-p3",
+          "type": "paragraph",
+          "text": "Если запросы офлайн, можно отсортировать их в особом порядке (по блоку левой границы, внутри — по правой) и двигать указатели L,R, поддерживая текущий ответ за O(1) на шаг. Сложность O((n+q)·√n) для аддитивных функций — классика на соревнованиях."
+        },
+        {
+          "id": "pr2-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Когда sqrt, а когда дерево"
+        },
+        {
+          "id": "pr2-p4",
+          "type": "paragraph",
+          "text": "Sqrt проще кодить под нестандартные операции и офлайн-задачи. Дерево отрезков / Fenwick — быстрее онлайн при больших ограничениях. Гибриды: «lazy sqrt» на блоках с внутренними деревьями."
+        },
+        {
+          "id": "pr2-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "Lazy на блоке"
+        },
+        {
+          "id": "pr2-p5",
+          "type": "paragraph",
+          "text": "Если на отрезке нужно прибавить константу ко всем элементам, можно хранить addTag на блоке и «проталкивать» при точечном доступе. Запрос суммы на отрезке: полные блоки — сумма blockSum + длина·tag; куски поэлементно с учётом тега."
+        },
+        {
+          "id": "pr2-h6",
+          "type": "heading",
+          "level": 2,
+          "text": "Идея Мо: сортировка запросов"
+        },
+        {
+          "id": "pr2-p6",
+          "type": "paragraph",
+          "text": "Запросы (L,R). Блокируем L по √n: внутри блока сортируем по R (на чётных блоках по возрастанию R, на нечётных — по убыванию — «змейка»). Двигаем границы текущего отрезка и обновляем ответ за O(1) на шаг. Сложность O((n+q)√n) при аддитивной функции."
+        },
+        {
+          "id": "pr2-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Блоки длины B ≈ √n</div><div class=\"viz-hint\" id=\"pr2-h\"></div><div class=\"viz-chart\" id=\"pr2-ch\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var chart=document.getElementById('pr2-ch');\n  var hint=document.getElementById('pr2-h');\n  var a=[3,1,4,1,5,9,2,6,5,3,5,8];\n  var maxV=VizBars.maxOf(a);\n  VizBars.render(chart,a,{max:maxV});\n  VizBars.setZone(chart,0,3,'viz-bar-col--zone-a');\n  VizBars.setZone(chart,8,11,'viz-bar-col--zone-b');\n  hint.textContent='Середина — целые блоки, края — поэлементно';\n})();",
+          "width": "100%",
+          "height": 210,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "pr2-l",
+          "type": "link",
+          "text": "Sqrt decomposition — Wikipedia",
+          "href": "https://en.wikipedia.org/wiki/Square_root_decomposition",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "prod-flow",
+      "topicId": "prodvinutye",
+      "subtopicId": "st-prod-3",
+      "title": "Потоки в сети: max flow, Edmonds–Karp",
+      "blocks": [
+        {
+          "id": "pr3-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Поток: сколько «воды» пройдёт от истока к стоку"
+        },
+        {
+          "id": "pr3-p1",
+          "type": "paragraph",
+          "text": "Ориентированный граф, у каждого ребра пропускная способность. Поток не превышает пропускную способность на ребре, и для каждой вершины кроме s и t входящий поток равен исходящему (закон сохранения). Ищем максимальный поток."
+        },
+        {
+          "id": "pr3-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Ford–Fulkerson: идея дополняющих путей"
+        },
+        {
+          "id": "pr3-p2",
+          "type": "paragraph",
+          "text": "Строим остаточную сеть: для ребра (u,v) с потоком f и ёмкостью c остаётся прямая дуга с остатком c−f и обратная с f (чтобы можно было «откатить» поток). Пока в остаточной сети есть путь s→t (BFS/DFS), накидываем поток на минимальный остаток вдоль пути. Суммарно для целых ёмкостей конечно."
+        },
+        {
+          "id": "pr3-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Edmonds–Karp: BFS по кратчайшему пути в рёбрах"
+        },
+        {
+          "id": "pr3-p3",
+          "type": "paragraph",
+          "text": "Если каждый раз искать дополняющий путь кратчайшей длины в количестве рёбер (BFS), число итераций O(V·E), каждая BFS O(E), итого O(V·E²). Это гарантированный полином, в отличие от произвольного DFS, который на патологических графах может быть экспоненциальным по выбору путей."
+        },
+        {
+          "id": "pr3-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** capacities[u][v], нет ребра = 0 */\nfunction edmondsKarp(cap, s, t) {\n  const n = cap.length;\n  const flow = Array.from({ length: n }, () => Array(n).fill(0));\n  let total = 0;\n  for (;;) {\n    const parent = new Array(n).fill(-1);\n    const q = [s];\n    parent[s] = s;\n    for (let qi = 0; qi < q.length; qi++) {\n      const u = q[qi];\n      for (let v = 0; v < n; v++) {\n        if (parent[v] !== -1) continue;\n        const rem = cap[u][v] - flow[u][v];\n        if (rem <= 0) continue;\n        parent[v] = u;\n        q.push(v);\n      }\n    }\n    if (parent[t] === -1) break;\n    let add = Infinity;\n    for (let v = t; v !== s; v = parent[v]) {\n      const u = parent[v];\n      add = Math.min(add, cap[u][v] - flow[u][v]);\n    }\n    for (let v = t; v !== s; v = parent[v]) {\n      const u = parent[v];\n      flow[u][v] += add;\n      flow[v][u] -= add;\n    }\n    total += add;\n  }\n  return total;\n}"
+        },
+        {
+          "id": "pr3-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Теорема о максимальном потоке и минимальном разрезе"
+        },
+        {
+          "id": "pr3-p4",
+          "type": "paragraph",
+          "text": "Величина максимального потока равна минимальной пропускной способности разреза (множество рёбер, отделяющее s от t). Практически: после алгоритма достижимые из s в остаточной сети — одна сторона разреза."
+        },
+        {
+          "id": "pr3-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "Двудольное паросочетание"
+        },
+        {
+          "id": "pr3-p5",
+          "type": "paragraph",
+          "text": "Сеть: s → все левые (ёмкость 1), рёбра графа → ёмкость 1, правые → t. Максимальный поток = размер максимального паросочетания (теорема Кёнига в двудольном случае связана с вершинным покрытием)."
+        },
+        {
+          "id": "pr3-h6",
+          "type": "heading",
+          "level": 2,
+          "text": "Dinic и push-relabel"
+        },
+        {
+          "id": "pr3-p6",
+          "type": "paragraph",
+          "text": "На плотных графах Edmonds–Karp может быть медленнее. Алгоритм Диница строит блочирующий поток в слоях BFS-дерева кратчайших путей; часто O(V²E) или лучше на практике. Push-relabel (preflow) — другой класс быстрых реализаций для соревнований."
+        },
+        {
+          "id": "pr3-h7",
+          "type": "heading",
+          "level": 2,
+          "text": "Минимальный разрез и приложения"
+        },
+        {
+          "id": "pr3-p7",
+          "type": "paragraph",
+          "text": "Задача «минимально отрезать рёбра, чтобы отделить s от t» решается max-flow. В проектировании сетей, сегментации изображений (графы пикселей), планировании — одна и та же математическая сердцевина."
+        },
+        {
+          "id": "pr3-h8",
+          "type": "heading",
+          "level": 2,
+          "text": "Целочисленные потоки"
+        },
+        {
+          "id": "pr3-p8",
+          "type": "paragraph",
+          "text": "Если все ёмкости целые, величина максимального потока целая, и Ford–Fulkerson с целыми дополнениями за конечное число шагов. Сумма ёмкостей исходящих из s — верхняя граница."
+        },
+        {
+          "id": "pr3-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Остаточная сеть: по прямым рёбрам ещё можно «дожать» поток</div><div class=\"viz-hint\" id=\"pr3-h\"></div><div class=\"viz-row\" id=\"pr3-r\"></div></div>",
+          "css": "",
+          "js": "(function(){\n  var row=document.getElementById('pr3-r');\n  var hint=document.getElementById('pr3-h');\n  ['s','→','u','→','v','→','t'].forEach(function(x){\n    var d=document.createElement('div');\n    d.className='viz-cell viz-cell--shown';\n    d.innerHTML='<span class=\"viz-cell__main\">'+x+'</span>';\n    row.appendChild(d);\n  });\n  hint.textContent='BFS ищет путь с положительным остатком ёмкости';\n})();",
+          "width": "100%",
+          "height": 130,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "pr3-l",
+          "type": "link",
+          "text": "Max flow — Wikipedia",
+          "href": "https://en.wikipedia.org/wiki/Maximum_flow_problem",
+          "target": "_blank"
+        }
+      ]
+    },
+    {
+      "id": "prod-linalg",
+      "topicId": "prodvinutye",
+      "subtopicId": "st-prod-4",
+      "title": "Матрицы и быстрое возведение в степень",
+      "blocks": [
+        {
+          "id": "pr4-h1",
+          "type": "heading",
+          "level": 1,
+          "text": "Линейные рекуррентности через умножение матриц"
+        },
+        {
+          "id": "pr4-p1",
+          "type": "paragraph",
+          "text": "Если состояние задачи — вектор фиксированной длины k, а шаг — линейное преобразование (умножение на матрицу k×k), то после n шагов состояние = M^n · v0. Вычислять M^n наивно O(k³·n), но бинарное возведение в степень даёт O(k³ log n)."
+        },
+        {
+          "id": "pr4-h2",
+          "type": "heading",
+          "level": 2,
+          "text": "Фибоначчи матрицей 2×2"
+        },
+        {
+          "id": "pr4-p2",
+          "type": "paragraph",
+          "text": "Вектор (F_n, F_{n+1})^T получается умножением [[0,1],[1,1]] на (F_{n-1}, F_n)^T. Значит (F_n, F_{n+1}) = M^n · (0,1)^T. Один log n шагов умножения 2×2."
+        },
+        {
+          "id": "pr4-c1",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "function matMul(A, B, mod) {\n  const n = A.length, m = B[0].length, k = B.length;\n  const C = Array.from({ length: n }, () => Array(m).fill(0));\n  for (let i = 0; i < n; i++)\n    for (let j = 0; j < m; j++)\n      for (let t = 0; t < k; t++)\n        C[i][j] = (C[i][j] + A[i][t] * B[t][j]) % mod;\n  return C;\n}\nfunction matPow(M, p, mod) {\n  let n = M.length;\n  let R = Array.from({ length: n }, (_, i) =>\n    Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)));\n  let A = M.map((row) => [...row]);\n  while (p > 0) {\n    if (p & 1) R = matMul(R, A, mod);\n    A = matMul(A, A, mod);\n    p >>= 1;\n  }\n  return R;\n}"
+        },
+        {
+          "id": "pr4-h3",
+          "type": "heading",
+          "level": 2,
+          "text": "Число путей длины k в графе"
+        },
+        {
+          "id": "pr4-p3",
+          "type": "paragraph",
+          "text": "Пусть A — матрица смежности (A[i][j]=1 если есть ребро i→j). Тогда (A^k)[i][j] — число путей из i в j ровно из k рёбер. Степень считаем бинарно, умножение матриц O(n³)."
+        },
+        {
+          "id": "pr4-h4",
+          "type": "heading",
+          "level": 2,
+          "text": "Модуль и переполнение"
+        },
+        {
+          "id": "pr4-p4",
+          "type": "paragraph",
+          "text": "В задачах «ответ по модулю p» каждое умножение и сложение берут по mod. В JS для больших чисел следите за BigInt или используйте int64-библиотеки; обычный Number теряет точность выше 2^53."
+        },
+        {
+          "id": "pr4-h5",
+          "type": "heading",
+          "level": 2,
+          "text": "Китайская теорема об остатках и большие степени"
+        },
+        {
+          "id": "pr4-p5",
+          "type": "paragraph",
+          "text": "Если mod раскладывается на взаимно простые множители, можно считать ответ по каждому простому модулю и восстанавливать через CRT. Для простого модуля иногда применим малый тест Ферма a^(p-1)≡1 для обратного элемента."
+        },
+        {
+          "id": "pr4-h6",
+          "type": "heading",
+          "level": 2,
+          "text": "Линейные рекуррентности высокого порядка"
+        },
+        {
+          "id": "pr4-p6",
+          "type": "paragraph",
+          "text": "Если a_n = c1 a_{n-1} + … + ck a_{n-k}, строится матрица k×k сдвига состояния (a_{n-1}…a_{n-k}) и умножается на характеристический вид. Алгоритм Берлекэмпа–Масси по последовательности восстанавливает минимальную рекуррентность — продвинутый инструмент."
+        },
+        {
+          "id": "pr4-c2",
+          "type": "code",
+          "language": "js",
+          "editable": false,
+          "code": "/** F_n mod MOD через матрицу 2x2 */\nfunction fibMod(n, MOD) {\n  const mul = (A, B) => {\n    const a = (A[0][0]*B[0][0] + A[0][1]*B[1][0]) % MOD;\n    const b = (A[0][0]*B[0][1] + A[0][1]*B[1][1]) % MOD;\n    const c = (A[1][0]*B[0][0] + A[1][1]*B[1][0]) % MOD;\n    const d = (A[1][0]*B[0][1] + A[1][1]*B[1][1]) % MOD;\n    return [[a,b],[c,d]];\n  };\n  const id = [[1,0],[0,1]];\n  if (n === 0) return 0;\n  let M = [[0,1],[1,1]], res = id, e = n;\n  while (e > 0) {\n    if (e & 1) res = mul(res, M);\n    M = mul(M, M);\n    e >>= 1;\n  }\n  /* M^n = [[F_{n-1}, F_n],[F_n, F_{n+1}]] */\n  return res[0][1];\n}"
+        },
+        {
+          "id": "pr4-anim",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">M^8 = ((((M^2)^2)^2)) — логарифм числа умножений</div><div class=\"viz-hint\" id=\"pr4-h\"></div><div class=\"viz-badge\" id=\"pr4-b\">exp</div></div>",
+          "css": "",
+          "js": "(function(){\n  var hint=document.getElementById('pr4-h');\n  var b=document.getElementById('pr4-b');\n  var e=1;\n  setInterval(function(){\n    b.textContent='степень '+e;\n    hint.textContent='Бинарное разложение: умножаем только где бит exp = 1';\n    e=(e%64)+1;\n  },500);\n})();",
+          "width": "100%",
+          "height": 120,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
+          "id": "pr4-l",
+          "type": "link",
+          "text": "Exponentiation by squaring — Wikipedia",
+          "href": "https://en.wikipedia.org/wiki/Exponentiation_by_squaring",
+          "target": "_blank"
+        }
+      ]
     }
   ],
   "tasks": [

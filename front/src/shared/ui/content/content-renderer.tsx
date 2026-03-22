@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type {
   ContentBlock,
   HeadingBlock,
@@ -7,9 +7,12 @@ import type {
   CodeBlock,
   AnimationBlock,
 } from '@/entities/article';
+import { LayoutGroup, motion } from 'framer-motion';
 import { Highlight, themes } from 'prism-react-renderer';
+import glassTabStyles from '@/shared/ui/glass-tabs/glass-tabs.module.css';
 import { GlassButton } from '../glass-button/glass-button';
 import { VIZ_ANIMATION_BASE_CSS } from './viz-animation-base';
+import { VIZ_IFRAME_RUNTIME_JS } from './viz-iframe-runtime';
 import styles from "./content-renderer.module.css";
 
 interface ContentRendererProps {
@@ -110,10 +113,50 @@ function CodeBlockView({ block }: { block: CodeBlock }) {
   );
 }
 
+const VIZ_SPEEDS = [0.25, 0.5, 1, 1.5, 2] as const;
+
 function AnimationBlockView({ block }: { block: AnimationBlock }) {
   const [playId, setPlayId] = useState(0);
-  const showPlayButton = block.showPlayButton ?? true;
+  const [speed, setSpeed] = useState<number>(1);
+  const [paused, setPaused] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const showToolbar = block.showPlayButton ?? true;
   const vizLayout = block.vizLayout === 'tall' ? 'tall' : 'default';
+
+  const postToIframe = useCallback((cmd: 'speed' | 'pause' | 'resume', value?: number) => {
+    iframeRef.current?.contentWindow?.postMessage(
+      { __learnAlgoViz: 1, cmd, value },
+      '*',
+    );
+  }, []);
+
+  const restart = useCallback(() => {
+    setPaused(false);
+    setPlayId((id) => id + 1);
+  }, []);
+
+  const setSpeedAndSync = useCallback(
+    (v: number) => {
+      setSpeed(v);
+      postToIframe('speed', v);
+    },
+    [postToIframe],
+  );
+
+  const pause = useCallback(() => {
+    setPaused(true);
+    postToIframe('pause');
+  }, [postToIframe]);
+
+  const resume = useCallback(() => {
+    setPaused(false);
+    postToIframe('resume');
+  }, [postToIframe]);
+
+  const onIframeLoad = useCallback(() => {
+    postToIframe('speed', speed);
+    postToIframe(paused ? 'pause' : 'resume');
+  }, [postToIframe, speed, paused]);
 
   // Всегда полный документ (HTML+CSS+JS), чтобы при открытии статьи контент
   // сразу отображался: в блоках он создаётся скриптом, без JS блок пустой.
@@ -134,6 +177,9 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
       </div>
     </div>
     <script>
+      ${VIZ_IFRAME_RUNTIME_JS}
+    </script>
+    <script>
       ${block.js ?? ""}
     </script>
   </body>
@@ -141,17 +187,74 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
 
   return (
     <div className={styles.animationWrapper}>
-      {showPlayButton && (
-        <GlassButton
-          type="button"
-          className={styles.animationReplayGlass}
-          onClick={() => setPlayId((id) => id + 1)}
-          aria-label="Перезапустить визуализацию"
-        >
-          ▶
-        </GlassButton>
+      {showToolbar && (
+        <div className={styles.animationToolbar} role="toolbar" aria-label="Управление визуализацией">
+          <LayoutGroup>
+            <div
+              className={`${glassTabStyles.root} ${styles.animationToolbarPill}`}
+            >
+              <div className={glassTabStyles.tabWrapper}>
+                <GlassButton
+                  type="button"
+                  className={glassTabStyles.iconTabButton}
+                  onClick={restart}
+                  aria-label="Перезапустить с начала"
+                >
+                  ⟲
+                </GlassButton>
+              </div>
+              <div className={glassTabStyles.tabWrapper}>
+                <GlassButton
+                  type="button"
+                  className={glassTabStyles.iconTabButton}
+                  onClick={pause}
+                  disabled={paused}
+                  aria-label="Пауза"
+                >
+                  ⏸
+                </GlassButton>
+              </div>
+              <div className={glassTabStyles.tabWrapper}>
+                <GlassButton
+                  type="button"
+                  className={glassTabStyles.iconTabButton}
+                  onClick={resume}
+                  disabled={!paused}
+                  aria-label="Продолжить"
+                >
+                  ▶
+                </GlassButton>
+              </div>
+              <div className={glassTabStyles.spacer} aria-hidden />
+              {VIZ_SPEEDS.map((v) => (
+                <div key={v} className={glassTabStyles.tabWrapper}>
+                  {speed === v && (
+                    <motion.div
+                      className={glassTabStyles.indicator}
+                      layoutId={`viz-anim-speed-${block.id}`}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 320,
+                        damping: 32,
+                      }}
+                    />
+                  )}
+                  <GlassButton
+                    type="button"
+                    className={`${glassTabStyles.tabButton} ${styles.animationSpeedTab}`}
+                    onClick={() => setSpeedAndSync(v)}
+                    aria-label={`Скорость ${v}×`}
+                  >
+                    {v}×
+                  </GlassButton>
+                </div>
+              ))}
+            </div>
+          </LayoutGroup>
+        </div>
       )}
       <iframe
+        ref={iframeRef}
         key={playId}
         className={`${styles.animationFrame} ${block.className ?? ""}`}
         style={block.style}
@@ -161,6 +264,7 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
         sandbox="allow-scripts"
         loading="lazy"
         title={block.id}
+        onLoad={onIframeLoad}
       />
     </div>
   );

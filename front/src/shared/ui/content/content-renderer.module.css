@@ -78,34 +78,44 @@
   transition: box-shadow 0.2s ease;
 }
 
+/* Тот же сероватый фон, что у блока кода (inline background в CodeBlockView) */
 .animationFrame {
   width: 100%;
+  display: block;
   border: none;
-  border-radius: 16px;
-  box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(148, 163, 184, 0.2);
+  border-radius: 0 0 16px 16px;
+  box-shadow: none;
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
 }
 
 .animationWrapper {
-  position: relative;
   border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* Круглая «стеклянная» кнопка перезапуска поверх iframe (GlassButton + локальные размеры) */
-.animationReplayGlass {
-  position: absolute !important;
-  top: 10px;
-  right: 10px;
-  z-index: 3;
-  width: 40px !important;
-  min-width: 40px !important;
-  height: 40px !important;
-  padding: 0 !important;
-  border-radius: 50% !important;
-  font-size: 14px !important;
-  letter-spacing: 0 !important;
+/* Тулбар: оболочка как GlassTabs в сайдбаре (glass-tabs.module.css .root) */
+.animationToolbar {
+  padding: 10px 10px 10px;
+  margin-bottom: 0;
+  background: rgba(255, 255, 255, 0.05);;
+  border-bottom: none;
+}
+
+.animationToolbarPill {
+  width: 100%;
+  flex-wrap: wrap;
+  row-gap: 6px;
+  align-items: center;
+}
+
+/* Узкие «табы» скорости — не 120px как у Теория/Задачи */
+.animationSpeedTab {
+  width: auto !important;
+  min-width: 52px;
+  padding: 8px 12px !important;
+  font-size: 11px !important;
+  letter-spacing: 0.03em !important;
   text-transform: none !important;
 }

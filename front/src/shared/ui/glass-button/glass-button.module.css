@@ -51,6 +51,21 @@
   z-index: 1;
 }
 
+/* компактная кнопка без «стеклянных» inset-теней (тулбар визуализаций) */
+.button.toolbar {
+  padding: 6px 10px;
+  min-width: auto;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  border-radius: 10px;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.button.toolbar:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* кнопка закрытия */
 .button.close {
   border-radius: 50%;

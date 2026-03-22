@@ -58,6 +58,7 @@
   - `height?: string | number` — высота iframe (по умолчанию `220`);
   - `vizLayout?: 'default' | 'tall'` — режим укладки внутри iframe (высокие схемы: стек, дерево рекурсии и т.п.); базовые классы и палитра — в `front/src/shared/ui/content/viz-animation-base.css`, подключаются автоматически в `ContentRenderer`.
 - **Правила визуализаций** (единый стиль, без «консоли», компоновка): см. **`rulesVizualization.md`** в корне репозитория.
+- **Тулбар у анимации** (перезапуск, пауза, продолжить, скорость 0.25–2×): рендерится в `ContentRenderer` над iframe; в iframe подключается рантайм `viz-iframe-runtime.ts` (пауза/скорость через `postMessage`).
 
 ## Как отрисовываются блоки
 

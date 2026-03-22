@@ -6,7 +6,7 @@ interface GlassButtonProps {
   onClick?: () => void;
   active?: boolean;
   layoutId?: string; // для скольжения
-  variant?: "default" | "close";
+  variant?: "default" | "close" | "toolbar";
   className?: string; // можно передавать кастомный класс
   disabled?: boolean;
   type?: "button" | "submit";
@@ -28,7 +28,7 @@ export function GlassButton({
     <motion.button
       type={type}
       aria-label={ariaLabel}
-      className={`${styles.button} ${variant === "close" ? styles.close : ""} ${className}`}
+      className={`${styles.button} ${variant === "close" ? styles.close : ""} ${variant === "toolbar" ? styles.toolbar : ""} ${className}`}
       onClick={onClick}
       disabled={disabled}
       layout

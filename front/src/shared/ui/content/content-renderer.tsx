@@ -8,6 +8,8 @@ import type {
   AnimationBlock,
 } from '@/entities/article';
 import { Highlight, themes } from 'prism-react-renderer';
+import { GlassButton } from '../glass-button/glass-button';
+import { VIZ_ANIMATION_BASE_CSS } from './viz-animation-base';
 import styles from "./content-renderer.module.css";
 
 interface ContentRendererProps {
@@ -111,6 +113,7 @@ function CodeBlockView({ block }: { block: CodeBlock }) {
 function AnimationBlockView({ block }: { block: AnimationBlock }) {
   const [playId, setPlayId] = useState(0);
   const showPlayButton = block.showPlayButton ?? true;
+  const vizLayout = block.vizLayout === 'tall' ? 'tall' : 'default';
 
   // Всегда полный документ (HTML+CSS+JS), чтобы при открытии статьи контент
   // сразу отображался: в блоках он создаётся скриптом, без JS блок пустой.
@@ -120,12 +123,16 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
   <head>
     <meta charset="UTF-8" />
     <style>
-      body { margin: 0; background: transparent; }
+      ${VIZ_ANIMATION_BASE_CSS}
       ${block.css ?? ""}
     </style>
   </head>
   <body>
-    ${block.html}
+    <div class="viz-viewport" data-viz-layout="${vizLayout}">
+      <div class="viz-stage">
+        ${block.html}
+      </div>
+    </div>
     <script>
       ${block.js ?? ""}
     </script>
@@ -135,13 +142,14 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
   return (
     <div className={styles.animationWrapper}>
       {showPlayButton && (
-        <button
+        <GlassButton
           type="button"
-          className={styles.animationPlayButton}
+          className={styles.animationReplayGlass}
           onClick={() => setPlayId((id) => id + 1)}
+          aria-label="Перезапустить визуализацию"
         >
-          <span className={styles.animationPlayIcon} />
-        </button>
+          ▶
+        </GlassButton>
       )}
       <iframe
         key={playId}

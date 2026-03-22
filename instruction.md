@@ -55,7 +55,9 @@
   - `css?: string` — CSS‑код (добавляется в `<style>` внутри iframe);
   - `js?: string` — JS‑код (выполняется внутри iframe, можно анимировать DOM);
   - `width?: string | number` — ширина iframe (по умолчанию `'100%'`);
-  - `height?: string | number` — высота iframe (по умолчанию `220`).
+  - `height?: string | number` — высота iframe (по умолчанию `220`);
+  - `vizLayout?: 'default' | 'tall'` — режим укладки внутри iframe (высокие схемы: стек, дерево рекурсии и т.п.); базовые классы и палитра — в `front/src/shared/ui/content/viz-animation-base.css`, подключаются автоматически в `ContentRenderer`.
+- **Правила визуализаций** (единый стиль, без «консоли», компоновка): см. **`rulesVizualization.md`** в корне репозитория.
 
 ## Как отрисовываются блоки
 

@@ -79,11 +79,13 @@
         {
           "id": "anim-array",
           "type": "animation",
-          "html": "<svg id=\"array-svg\" width=\"100%\" height=\"120\" viewBox=\"0 0 520 120\"></svg>",
-          "css": "#array-svg text { font-family: monospace; font-size: 14px; }\n.cell { fill: #1f2937; stroke: #4b5563; }\n.index { fill: #9ca3af; }\n.value { fill: #22c55e; }",
-          "js": "const svg = document.getElementById('array-svg');\nconst values = [4,8,1,7,3,9];\nvalues.forEach((v,i)=>{\n  const x = 20 + i*70;\n  const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');\n  rect.setAttribute('x',x);\n  rect.setAttribute('y',40);\n  rect.setAttribute('width',60);\n  rect.setAttribute('height',40);\n  rect.setAttribute('class','cell');\n  svg.appendChild(rect);\n\n  const val = document.createElementNS('http://www.w3.org/2000/svg','text');\n  val.setAttribute('x',x+30);\n  val.setAttribute('y',65);\n  val.setAttribute('text-anchor','middle');\n  val.setAttribute('class','value');\n  val.textContent = v;\n  svg.appendChild(val);\n\n  const idx = document.createElementNS('http://www.w3.org/2000/svg','text');\n  idx.setAttribute('x',x+30);\n  idx.setAttribute('y',100);\n  idx.setAttribute('text-anchor','middle');\n  idx.setAttribute('class','index');\n  idx.textContent = i;\n  svg.appendChild(idx);\n});",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Массив: значение и индекс</div><div class=\"viz-row\" id=\"viz-array\"></div></div>",
+          "css": "",
+          "js": "(function(){var root=document.getElementById('viz-array');var values=[4,8,1,7,3,9];values.forEach(function(v,i){var el=document.createElement('div');el.className='viz-cell';el.innerHTML='<span class=\"viz-cell__main\">'+v+'</span><span class=\"viz-cell__sub\">i = '+i+'</span>';root.appendChild(el);});})();",
           "width": "100%",
-          "height": 120
+          "height": 220,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "p9",
@@ -122,11 +124,13 @@
         {
           "id": "anim2",
           "type": "animation",
-          "html": "<div id=\"loop-container\"></div>",
-          "css": "#loop-container { display:flex; gap:6px; padding:12px; }\n.loop-cell { width:40px; height:40px; background:#1f2937; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#e5e7eb; font-family:monospace; }\n.active { background:#22c55e; color:#022c22; }",
-          "js": "const root = document.getElementById('loop-container');\nconst values=[3,5,7,2,6];\nconst nodes=[];\nvalues.forEach(v=>{\n const el=document.createElement('div');\n el.className='loop-cell';\n el.textContent=v;\n root.appendChild(el);\n nodes.push(el);\n});\nlet i=0;\nsetInterval(()=>{\n nodes.forEach(n=>n.classList.remove('active'));\n nodes[i].classList.add('active');\n i=(i+1)%nodes.length;\n},800);",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Линейный проход</div><div class=\"viz-hint\" id=\"viz-loop-hint\"></div><div class=\"viz-row\" id=\"viz-loop\"></div></div>",
+          "css": "",
+          "js": "(function(){var root=document.getElementById('viz-loop');var hint=document.getElementById('viz-loop-hint');var values=[3,5,7,2,6];var nodes=[];values.forEach(function(v){var el=document.createElement('div');el.className='viz-cell';el.innerHTML='<span class=\"viz-cell__main\">'+v+'</span>';root.appendChild(el);nodes.push(el);});var i=0;function tick(){nodes.forEach(function(n){n.classList.remove('viz-cell--active');});nodes[i].classList.add('viz-cell--active');hint.textContent='Шаг '+(i+1)+' / '+values.length+' — смотрим элемент '+values[i];i=(i+1)%values.length;}tick();setInterval(tick,850);})();",
           "width": "100%",
-          "height": 80
+          "height": 240,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "p12",
@@ -238,12 +242,13 @@
         {
           "id": "anim-time",
           "type": "animation",
-          "html": "<div id='time-bars'></div>",
-          "css": "#time-bars{display:flex;gap:6px;padding:12px;} .bar{width:20px;background:linear-gradient(180deg,#60a5fa,#2563eb);border-radius:4px 4px 0 0;}",
-          "js": "const root=document.getElementById('time-bars');const n=14;for(let i=1;i<=n;i++){const el=document.createElement('div');el.className='bar';el.style.height=8+i*7+'px';el.style.opacity=String(0.3+i/(n+2));root.appendChild(el);}",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Операций всё больше при росте n</div><div class=\"viz-bars\" id=\"viz-bars\"></div><div class=\"viz-hint\" id=\"viz-bar-hint\"></div></div>",
+          "css": "",
+          "js": "(function(){var root=document.getElementById('viz-bars');var hint=document.getElementById('viz-bar-hint');var n=12;for(var i=1;i<=n;i++){var el=document.createElement('div');el.className='viz-bar';el.style.height=(12+i*6)+'px';el.style.opacity=String(0.35+i/(n+3));root.appendChild(el);}hint.textContent='Каждый столбец — больший n, выше «стоимость» шагов';})();",
           "width": "100%",
-          "height": 180,
-          "showPlayButton": false
+          "height": 220,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "p9",
@@ -397,11 +402,13 @@
         {
           "id": "anim-memory",
           "type": "animation",
-          "html": "<svg id=\"array-memory-svg\" width=\"100%\" height=\"130\" viewBox=\"0 0 520 130\"></svg>",
-          "css": "#array-memory-svg text{font-family:monospace;font-size:13px;} .mem-cell{fill:#0f172a;stroke:#334155;} .mem-index{fill:#94a3b8;} .mem-value{fill:#22c55e;}",
-          "js": "const svg=document.getElementById('array-memory-svg'); const values=[10,14,7,3,8,21]; values.forEach((v,i)=>{ const x=20+i*70; const rect=document.createElementNS('http://www.w3.org/2000/svg','rect'); rect.setAttribute('x',x); rect.setAttribute('y',40); rect.setAttribute('width',60); rect.setAttribute('height',40); rect.setAttribute('class','mem-cell'); svg.appendChild(rect); const val=document.createElementNS('http://www.w3.org/2000/svg','text'); val.setAttribute('x',x+30); val.setAttribute('y',65); val.setAttribute('text-anchor','middle'); val.setAttribute('class','mem-value'); val.textContent=v; svg.appendChild(val); const idx=document.createElementNS('http://www.w3.org/2000/svg','text'); idx.setAttribute('x',x+30); idx.setAttribute('y',100); idx.setAttribute('text-anchor','middle'); idx.setAttribute('class','mem-index'); idx.textContent=i; svg.appendChild(idx); });",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Подряд в памяти</div><div class=\"viz-row\" id=\"viz-mem\"></div></div>",
+          "css": "",
+          "js": "(function(){var root=document.getElementById('viz-mem');var values=[10,14,7,3,8,21];values.forEach(function(v,i){var el=document.createElement('div');el.className='viz-cell';el.innerHTML='<span class=\"viz-cell__main\">'+v+'</span><span class=\"viz-cell__sub\">i = '+i+'</span>';root.appendChild(el);});})();",
           "width": "100%",
-          "height": 130
+          "height": 220,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "p4",
@@ -434,11 +441,13 @@
         {
           "id": "anim-iteration",
           "type": "animation",
-          "html": "<div id=\"array-iter\"></div>",
-          "css": "#array-iter{display:flex;gap:8px;padding:12px;} .cell{width:42px;height:42px;background:#1e293b;border-radius:8px;color:#e5e7eb;display:flex;align-items:center;justify-content:center;font-family:monospace;} .active{background:#22c55e;color:#052e16;}",
-          "js": "const root=document.getElementById('array-iter'); const values=[4,7,1,9,3]; const nodes=[]; values.forEach(v=>{ const el=document.createElement('div'); el.className='cell'; el.textContent=v; root.appendChild(el); nodes.push(el); }); let i=0; setInterval(()=>{ nodes.forEach(n=>n.classList.remove('active')); nodes[i].classList.add('active'); i=(i+1)%nodes.length; },900);",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Суммирование по элементам</div><div class=\"viz-hint\" id=\"viz-sum-hint\"></div><div class=\"viz-row\" id=\"viz-sum-row\"></div><div class=\"viz-badge\" id=\"viz-sum-total\">Σ = 0</div></div>",
+          "css": "",
+          "js": "(function(){var row=document.getElementById('viz-sum-row');var hint=document.getElementById('viz-sum-hint');var totalEl=document.getElementById('viz-sum-total');var values=[4,7,1,9,3];var nodes=[];var acc=0;values.forEach(function(v){var el=document.createElement('div');el.className='viz-cell';el.innerHTML='<span class=\"viz-cell__main\">'+v+'</span>';row.appendChild(el);nodes.push(el);});var i=0;function step(){nodes.forEach(function(n){n.classList.remove('viz-cell--active');});nodes[i].classList.add('viz-cell--active');acc+=values[i];totalEl.textContent='Σ = '+acc;hint.textContent='Добавляем arr['+i+'] = '+values[i];i=(i+1)%values.length;if(i===0)acc=0;}step();setInterval(step,900);})();",
           "width": "100%",
-          "height": 100
+          "height": 260,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "p7",
@@ -603,11 +612,13 @@
         {
           "id": "anim-search",
           "type": "animation",
-          "html": "<div id=\"search-demo\"></div>",
-          "css": "#search-demo{display:flex;gap:6px;padding:12px;} .cell{width:34px;height:34px;background:#1e293b;color:white;display:flex;align-items:center;justify-content:center;border-radius:6px;font-family:monospace;} .check{background:#f59e0b;} .found{background:#22c55e;}",
-          "js": "const arr=[3,7,1,9,5]; const target=9; const root=document.getElementById('search-demo'); const nodes=[]; arr.forEach(v=>{ const el=document.createElement('div'); el.className='cell'; el.textContent=v; root.appendChild(el); nodes.push(el);}); let i=0; const timer=setInterval(()=>{ if(i>=arr.length){clearInterval(timer);return;} nodes[i].classList.add('check'); if(arr[i]===target){ nodes[i].classList.remove('check'); nodes[i].classList.add('found'); clearInterval(timer);} i++; },700);",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Линейный поиск</div><div class=\"viz-hint\" id=\"viz-find-hint\"></div><div class=\"viz-row\" id=\"viz-find\"></div><div class=\"viz-badge\" id=\"viz-find-badge\">ищем: 9</div></div>",
+          "css": "",
+          "js": "(function(){var arr=[3,7,1,9,5];var target=9;var root=document.getElementById('viz-find');var hint=document.getElementById('viz-find-hint');var nodes=[];arr.forEach(function(v){var el=document.createElement('div');el.className='viz-cell';el.innerHTML='<span class=\"viz-cell__main\">'+v+'</span>';root.appendChild(el);nodes.push(el);});var i=0;var timer=setInterval(function(){if(i>=arr.length){clearInterval(timer);hint.textContent='Не найдено';return;}nodes.forEach(function(n){n.classList.remove('viz-cell--active','viz-cell--compare','viz-cell--success');});nodes[i].classList.add('viz-cell--compare');hint.textContent='Сравниваем с индексом '+i;if(arr[i]===target){nodes[i].classList.remove('viz-cell--compare');nodes[i].classList.add('viz-cell--success');hint.textContent='Найдено на позиции '+i;clearInterval(timer);return;}i++;},750);})();",
           "width": "100%",
-          "height": 90
+          "height": 240,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "p5",
@@ -640,11 +651,13 @@
         {
           "id": "anim-insert",
           "type": "animation",
-          "html": "<div id=\"insert-demo\"></div>",
-          "css": "#insert-demo{display:flex;gap:6px;padding:12px;} .cell{width:36px;height:36px;border-radius:6px;background:#1e293b;color:white;display:flex;align-items:center;justify-content:center;font-family:monospace;} .new{background:#22c55e;}",
-          "js": "const root=document.getElementById('insert-demo'); let arr=[1,2,4,5]; function render(){ root.innerHTML=''; arr.forEach(v=>{ const el=document.createElement('div'); el.className='cell'; el.textContent=v; root.appendChild(el);}); } render(); setTimeout(()=>{ arr.splice(2,0,3); render(); root.children[2].classList.add('new'); },1200);",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Вставка в середину</div><div class=\"viz-hint\" id=\"viz-ins-hint\"></div><div class=\"viz-row\" id=\"viz-ins\"></div></div>",
+          "css": "",
+          "js": "(function(){var root=document.getElementById('viz-ins');var hint=document.getElementById('viz-ins-hint');var arr=[1,2,4,5];function render(){root.innerHTML='';arr.forEach(function(v,idx){var el=document.createElement('div');el.className='viz-cell';el.innerHTML='<span class=\"viz-cell__main\">'+v+'</span><span class=\"viz-cell__sub\">'+idx+'</span>';root.appendChild(el);});}render();hint.textContent='До вставки 3 на позицию 2';setTimeout(function(){arr.splice(2,0,3);render();hint.textContent='После вставки: элементы сдвинулись вправо';var cells=root.querySelectorAll('.viz-cell');if(cells[2]){cells[2].classList.add('viz-cell--success');}},1400);})();",
           "width": "100%",
-          "height": 90
+          "height": 240,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "h2-delete",
@@ -781,12 +794,13 @@
         {
           "id": "anim-hash",
           "type": "animation",
-          "html": "<div id='hash-demo'></div>",
-          "css": "#hash-demo{display:flex;gap:10px;padding:12px;} .bucket{width:60px;height:40px;background:#1e293b;color:#e5e7eb;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:monospace;} .active{background:#22c55e;color:#052e16;}",
-          "js": "const keys=['apple','banana','cat','dog']; const root=document.getElementById('hash-demo'); const buckets=[]; for(let i=0;i<6;i++){ const el=document.createElement('div'); el.className='bucket'; el.textContent=i; root.appendChild(el); buckets.push(el);} let i=0; const timer=setInterval(()=>{ if(i>=keys.length){clearInterval(timer);return;} const index=keys[i].length % buckets.length; buckets[index].classList.add('active'); buckets[index].textContent=index+': '+keys[i]; i++; },900);",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Ключ → индекс (учебная функция)</div><div class=\"viz-hint\" id=\"viz-hash-hint\"></div><div class=\"viz-row\" id=\"viz-hash\"></div></div>",
+          "css": "",
+          "js": "(function(){var keys=['apple','banana','cat','dog'];var root=document.getElementById('viz-hash');var hint=document.getElementById('viz-hash-hint');var buckets=[];for(var b=0;b<6;b++){var el=document.createElement('div');el.className='viz-cell';el.innerHTML='<span class=\"viz-cell__main\">'+b+'</span><span class=\"viz-cell__sub\">bucket</span>';root.appendChild(el);buckets.push(el);}var i=0;var timer=setInterval(function(){if(i>=keys.length){clearInterval(timer);hint.textContent='Готово';return;}var k=keys[i];var idx=k.length%buckets.length;buckets.forEach(function(n){n.classList.remove('viz-cell--active','viz-cell--success');});buckets[idx].classList.add('viz-cell--active');hint.textContent='«'+k+'» → индекс '+idx;buckets[idx].querySelector('.viz-cell__sub').textContent=k;i++;},900);})();",
           "width": "100%",
-          "height": 90,
-          "showPlayButton": false
+          "height": 240,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "p5",
@@ -975,11 +989,13 @@
         {
           "id": "anim-stack",
           "type": "animation",
-          "html": "<div id='stack-demo'></div>",
-          "css": "#stack-demo{display:flex;flex-direction:column-reverse;gap:6px;width:120px;padding:10px;} .box{background:#2563eb;color:white;text-align:center;padding:8px;border-radius:6px;font-family:monospace;}",
-          "js": "const root=document.getElementById('stack-demo'); let count=1; const timer=setInterval(()=>{ if(count>5){clearInterval(timer);return;} const el=document.createElement('div'); el.className='box'; el.textContent='Item '+count; root.appendChild(el); count++; },700);",
-          "width": "140px",
-          "height": 200
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Стек: push наверх</div><div class=\"viz-hint\" id=\"viz-st-hint\"></div><div class=\"viz-stack-v\" id=\"viz-st\"></div></div>",
+          "css": "",
+          "js": "(function(){var root=document.getElementById('viz-st');var hint=document.getElementById('viz-st-hint');var n=1;var timer=setInterval(function(){if(n>5){clearInterval(timer);hint.textContent='Вершина — последний push';return;}var el=document.createElement('div');el.className='viz-cell';el.innerHTML='<span class=\"viz-cell__main\">'+n+'</span><span class=\"viz-cell__sub\">push</span>';root.appendChild(el);hint.textContent='push('+n+')';n++;},700);})();",
+          "width": "100%",
+          "height": 260,
+          "showPlayButton": true,
+          "vizLayout": "tall"
         },
         {
           "id": "p6",
@@ -1035,11 +1051,13 @@
         {
           "id": "anim-queue",
           "type": "animation",
-          "html": "<div id='queue-demo'></div>",
-          "css": "#queue-demo{display:flex;gap:8px;padding:12px;} .box{background:#f59e0b;color:white;border-radius:6px;width:70px;height:36px;display:flex;align-items:center;justify-content:center;font-family:monospace;}",
-          "js": "const root=document.getElementById('queue-demo'); let count=1; const timer=setInterval(()=>{ if(count>5){clearInterval(timer);return;} const el=document.createElement('div'); el.className='box'; el.textContent='Item '+count; root.appendChild(el); count++; },700);",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Очередь: FIFO</div><div class=\"viz-hint\" id=\"viz-q-hint\"></div><div class=\"viz-row\" id=\"viz-q\"></div></div>",
+          "css": "",
+          "js": "(function(){var root=document.getElementById('viz-q');var hint=document.getElementById('viz-q-hint');var n=1;var timer=setInterval(function(){if(n>5){clearInterval(timer);hint.textContent='Слева — голова, новые элементы справа';return;}var el=document.createElement('div');el.className='viz-cell';el.innerHTML='<span class=\"viz-cell__main\">'+n+'</span><span class=\"viz-cell__sub\">enqueue</span>';root.appendChild(el);if(n===1)el.classList.add('viz-cell--success');hint.textContent='enqueue('+n+')';n++;},700);})();",
           "width": "100%",
-          "height": 100
+          "height": 240,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "p11",
@@ -1152,11 +1170,13 @@
         {
           "id": "anim-factorial-trace",
           "type": "animation",
-          "html": "<div id='fact-rec-wrap'><div id='fact-stack'></div><div id='fact-log'></div></div>",
-          "css": "#fact-rec-wrap{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;padding:8px 0;}#fact-stack{min-width:260px;display:flex;flex-direction:column;gap:6px;}#fact-stack .frame{padding:8px 10px;border-radius:10px;background:rgba(59,130,246,0.85);color:#fff;font-family:ui-monospace,monospace;font-size:12px;white-space:nowrap;}#fact-log{flex:1;min-width:240px;font-family:ui-monospace,monospace;}#fact-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#fact-log .stage{color:#93c5fd;font-weight:700;}",
-          "js": "const n=5;const stackEl=document.getElementById('fact-stack');const logEl=document.getElementById('fact-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));const stack=[];function render(){stackEl.innerHTML='';for(const fr of stack){const div=document.createElement('div');div.className='frame';div.innerHTML='<strong>f('+fr.k+')</strong>  ('+fr.phase+')';stackEl.appendChild(div);}}function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}async function factTrace(k){stack.push({k,phase:'push'});render();addLog('Вызов factorial('+k+')', 'CALL');await sleep(420);let res;if(k<=1){res=1;addLog('Базовый случай: factorial('+k+') = 1','BASE');}else{res=k*await factTrace(k-1);}stack.pop();render();addLog('Возврат: factorial('+k+') = '+res,'RETURN');await sleep(300);return res;}(async()=>{addLog('Запуск трассировки factorial('+n+')','START');render();const ans=await factTrace(n);addLog('Итог: factorial('+n+') = '+ans,'DONE');})();",
+          "html": "<div class=\"viz-split\"><div class=\"viz-panel\"><div class=\"viz-caption\">Стек вызовов</div><div class=\"viz-stack-v\" id=\"viz-f-stack\"></div></div><div class=\"viz-panel\"><div class=\"viz-caption\">Текущий шаг</div><p class=\"viz-hint\" id=\"viz-f-hint\"></p><div class=\"viz-badge\" id=\"viz-f-badge\">n = 5</div></div></div>",
+          "css": "",
+          "js": "(function(){var n=5;var stackEl=document.getElementById('viz-f-stack');var hint=document.getElementById('viz-f-hint');var badge=document.getElementById('viz-f-badge');function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}var stack=[];function render(){stackEl.innerHTML='';for(var i=stack.length-1;i>=0;i--){var fr=stack[i];var d=document.createElement('div');d.className='viz-cell'+(fr.phase==='base'?' viz-cell--success':'');d.innerHTML='<span class=\"viz-cell__main\">f('+fr.k+')</span><span class=\"viz-cell__sub\">'+(fr.phase==='base'?'база':'ожидание')+'</span>';stackEl.appendChild(d);}}function fact(k){return new Promise(function(resolve){hint.textContent='Вызов factorial('+k+')';stack.push({k:k,phase:'wait'});render();sleep(400).then(function(){if(k<=1){stack[stack.length-1].phase='base';hint.textContent='База: factorial('+k+') = 1';render();sleep(320).then(function(){stack.pop();render();resolve(1);});return;}fact(k-1).then(function(sub){var r=k*sub;hint.textContent=k+' × '+sub+' = '+r;sleep(300).then(function(){stack.pop();render();hint.textContent='Возврат factorial('+k+') = '+r;sleep(280).then(function(){resolve(r);});});});});});}fact(n).then(function(ans){badge.textContent='Итог: '+ans;hint.textContent='Готово';});})();",
           "width": "100%",
-          "height": 260
+          "height": 300,
+          "showPlayButton": true,
+          "vizLayout": "tall"
         },
         {
           "id": "h2-example",
@@ -1268,11 +1288,13 @@
         {
           "id": "anim-sum-trace",
           "type": "animation",
-          "html": "<div id='sum-rec-wrap'><div id='sum-stack'></div><div id='sum-log'></div></div>",
-          "css": "#sum-rec-wrap{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;padding:8px 0;}#sum-stack{min-width:260px;display:flex;flex-direction:column;gap:6px;}#sum-stack .frame{padding:8px 10px;border-radius:10px;background:rgba(59,130,246,0.85);color:#fff;font-family:ui-monospace,monospace;font-size:12px;white-space:nowrap;}#sum-log{flex:1;min-width:240px;font-family:ui-monospace,monospace;max-height:240px;overflow:auto;}#sum-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#sum-log .stage{color:#93c5fd;font-weight:700;}",
-          "js": "const arr=[1,2,3,4];const stackEl=document.getElementById('sum-stack');const logEl=document.getElementById('sum-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));const stack=[];function render(){stackEl.innerHTML='';for(const fr of stack){const div=document.createElement('div');div.className='frame';div.textContent='sumRec(i='+fr.i+')';stackEl.appendChild(div);}}function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}async function sumTrace(i){stack.push({i});render();addLog('Вызов sumRec('+i+')', 'CALL');await sleep(380);let res;if(i>=arr.length){res=0;addLog('Базовый случай: i='+i+' => 0', 'BASE');}else{res=arr[i]+await sumTrace(i+1);}stack.pop();render();addLog('Возврат: sumRec('+i+') = '+res,'RETURN');await sleep(260);return res;}(async()=>{addLog('Запуск трассировки sumRec(0)', 'START');render();const ans=await sumTrace(0);addLog('Итог: сумма = '+ans,'DONE');})();",
+          "html": "<div class=\"viz-split\"><div class=\"viz-panel\"><div class=\"viz-caption\">Активные вызовы</div><div class=\"viz-stack-v\" id=\"viz-s-stack\"></div></div><div class=\"viz-panel\"><div class=\"viz-caption\">Шаг</div><p class=\"viz-hint\" id=\"viz-s-hint\"></p><div class=\"viz-badge\" id=\"viz-s-badge\">sumRec</div></div></div>",
+          "css": "",
+          "js": "(function(){var arr=[1,2,3,4];var stackEl=document.getElementById('viz-s-stack');var hint=document.getElementById('viz-s-hint');var badge=document.getElementById('viz-s-badge');function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}var stack=[];function render(){stackEl.innerHTML='';for(var i=stack.length-1;i>=0;i--){var fr=stack[i];var d=document.createElement('div');d.className='viz-cell'+(fr.base?' viz-cell--success':'');d.innerHTML='<span class=\"viz-cell__main\">i = '+fr.i+'</span><span class=\"viz-cell__sub\">'+fr.note+'</span>';stackEl.appendChild(d);}}function sumTrace(i){return new Promise(function(res){hint.textContent='Заходим в sumRec('+i+')';stack.push({i:i,note:'сумма суффикса'});render();sleep(360).then(function(){if(i>=arr.length){stack[stack.length-1].base=true;stack[stack.length-1].note='пусто';render();hint.textContent='База: пустой суффикс → 0';sleep(260).then(function(){stack.pop();render();res(0);});return;}sumTrace(i+1).then(function(rest){var v=arr[i]+rest;hint.textContent='arr['+i+'] + '+rest+' = '+v;badge.textContent='Частично '+v;stack.pop();render();sleep(260).then(function(){res(v);});});});});}sumTrace(0).then(function(ans){hint.textContent='Итог';badge.textContent='Σ = '+ans;});})();",
           "width": "100%",
-          "height": 260
+          "height": 300,
+          "showPlayButton": true,
+          "vizLayout": "tall"
         },
         {
           "id": "h2-3",
@@ -1412,11 +1434,13 @@
         {
           "id": "anim-fib-memo",
           "type": "animation",
-          "html": "<div id='fib-memo-wrap'><div id='fib-memo-grid'></div><div id='fib-memo-log'></div></div>",
-          "css": "#fib-memo-wrap{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;padding:8px 0;}#fib-memo-grid{min-width:290px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}#fib-memo-grid .cell{padding:10px 10px;border-radius:12px;background:rgba(255,255,255,0.06);color:#cbd5f5;font-family:ui-monospace,monospace;font-size:12px;min-height:48px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;border:1px solid rgba(148,163,184,0.15);}#fib-memo-grid .cell.filled{background:rgba(139,92,246,0.22);border-color:rgba(167,139,250,0.45);color:#fff;}#fib-memo-grid .cell.current{box-shadow:0 0 0 2px rgba(147,197,253,0.55);}#fib-memo-log{flex:1;min-width:240px;max-height:240px;overflow:auto;font-family:ui-monospace,monospace;}#fib-memo-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#fib-memo-log .stage{color:#93c5fd;font-weight:700;}",
-          "js": "const n=8;const memo=new Array(n+1).fill(undefined);const grid=document.getElementById('fib-memo-grid');const logEl=document.getElementById('fib-memo-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));const stack=[];let current=-1;function render(){grid.innerHTML='';for(let i=0;i<=n;i++){const cell=document.createElement('div');cell.className='cell'+(memo[i]!==undefined?' filled':'')+(i===current?' current':'');const val=(memo[i]===undefined)?'?':String(memo[i]);cell.innerHTML='<div style=\"opacity:0.85;\">i='+i+'</div><div style=\"font-weight:700;\">'+val+'</div>';grid.appendChild(cell);}}function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}async function fibTrace(k){current=k;render();addLog('Запрос fib('+k+')','CALL');await sleep(320);if(k<=1){memo[k]=k;render();addLog('База: fib('+k+') = '+k,'BASE');await sleep(240);return memo[k];}if(memo[k]!==undefined){addLog('Из кэша: fib('+k+') = '+memo[k],'CACHE');await sleep(220);return memo[k];}addLog('Считаем: fib('+k+') = fib('+(k-1)+') + fib('+(k-2)+')','COMPUTE');await sleep(280);const a=await fibTrace(k-1);const b=await fibTrace(k-2);memo[k]=a+b;render();addLog('Сохраняем: fib('+k+') = '+memo[k],'SAVE');await sleep(280);return memo[k];}(async()=>{addLog('Старт мемоизированного fib('+n+')','START');render();const ans=await fibTrace(n);current=-1;render();addLog('Итог: fib('+n+') = '+ans,'DONE');})();",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Таблица memo[i]</div><div class=\"viz-hint\" id=\"viz-fib-hint\"></div><div class=\"viz-grid\" id=\"viz-fib-grid\"></div></div>",
+          "css": "",
+          "js": "(function(){var n=7;var memo=new Array(n+1);memo.fill(undefined);var grid=document.getElementById('viz-fib-grid');var hint=document.getElementById('viz-fib-hint');var cur=-1;function paint(){grid.innerHTML='';for(var i=0;i<=n;i++){var c=document.createElement('div');c.className='viz-cell'+(memo[i]!==undefined?' viz-cell--success':'')+(i===cur?' viz-cell--active':'');c.innerHTML='<span class=\"viz-cell__sub\">i='+i+'</span><span class=\"viz-cell__main\">'+(memo[i]===undefined?'?':String(memo[i]))+'</span>';grid.appendChild(c);}}function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}function fib(k){return sleep(280).then(function(){cur=k;paint();hint.textContent='Запрос F('+k+')';return sleep(280).then(function(){if(k<=1){memo[k]=k;paint();hint.textContent='База: F('+k+') = '+k;return sleep(240).then(function(){return memo[k];});}if(memo[k]!==undefined){hint.textContent='Уже в таблице: F('+k+') = '+memo[k];return sleep(220).then(function(){return memo[k];});}hint.textContent='F('+k+') = F('+(k-1)+') + F('+(k-2)+')';return fib(k-1).then(function(a){return fib(k-2).then(function(b){memo[k]=a+b;paint();hint.textContent='Записали F('+k+') = '+memo[k];return sleep(260).then(function(){return memo[k];});});});});});}paint();fib(n).then(function(){cur=-1;paint();hint.textContent='Готово: без повторных пересчётов';});})();",
           "width": "100%",
-          "height": 260
+          "height": 280,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "h2-memo",
@@ -1557,11 +1581,13 @@
         {
           "id": "anim-factorial-tail",
           "type": "animation",
-          "html": "<div id='tail-wrap'><div id='tail-frame'></div><div id='tail-steps'></div><div id='tail-log'></div></div>",
-          "css": "#tail-wrap{padding:10px 0;}#tail-frame{padding:12px 14px;border-radius:16px;background:rgba(59,130,246,0.18);border:1px solid rgba(59,130,246,0.35);color:#e5e7eb;font-family:ui-monospace,monospace;min-height:56px;margin-bottom:10px;}#tail-steps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}#tail-steps .stepBox{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(148,163,184,0.15);color:#e5e7eb;font-family:ui-monospace,monospace;font-size:12px;}#tail-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#tail-log .stage{color:#93c5fd;font-weight:700;}",
-          "js": "const n0=6;let n=n0;let acc=1;const frame=document.getElementById('tail-frame');const stepsEl=document.getElementById('tail-steps');const logEl=document.getElementById('tail-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));const render=()=>{frame.textContent='stack depth: 1 | factorialTail(n='+n+', acc='+acc+')';};function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}function addStep(text){const b=document.createElement('div');b.className='stepBox';b.textContent=text;stepsEl.appendChild(b);} (async()=>{render();addLog('Старт: передан acc=1', 'START');addStep('init acc=1');while(n>1){const nextAcc=acc*n;addLog('Шаг: acc = '+acc+' * '+n+' = '+nextAcc,'STEP');acc=nextAcc;n=n-1;addStep('acc='+acc);render();await sleep(520);}addLog('Базовый случай: n<=1, вернуть acc = '+acc,'BASE');await sleep(250);})();",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Хвостовая форма: аккумулятор</div><p class=\"viz-hint\" id=\"viz-t-hint\"></p><div class=\"viz-badge\" id=\"viz-t-state\"></div><div class=\"viz-row\" id=\"viz-t-steps\"></div></div>",
+          "css": "",
+          "js": "(function(){var n0=6;var n=n0;var acc=1;var hint=document.getElementById('viz-t-hint');var state=document.getElementById('viz-t-state');var steps=document.getElementById('viz-t-steps');function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}function addStep(label){var d=document.createElement('div');d.className='viz-cell';d.innerHTML='<span class=\"viz-cell__main\">'+label+'</span>';steps.appendChild(d);}function run(){state.textContent='n = '+n+', acc = '+acc;hint.textContent='Старт';return sleep(400).then(function loop(){if(n<=1){hint.textContent='База: возвращаем acc';state.textContent='ответ = '+acc;return sleep(300);}var next=acc*n;hint.textContent='Шаг: acc ← acc × n';addStep(acc+' × '+n+' = '+next);acc=next;n=n-1;state.textContent='n = '+n+', acc = '+acc;return sleep(520).then(loop);});}run();})();",
           "width": "100%",
-          "height": 260
+          "height": 280,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "h2-sum",
@@ -1720,11 +1746,13 @@
         {
           "id": "anim-merge-sort",
           "type": "animation",
-          "html": "<div id='ms-wrap'><div id='ms-title'></div><div id='ms-levels'></div><div id='ms-log'></div></div>",
-          "css": "#ms-wrap{padding:10px 0;}#ms-title{color:#93c5fd;font-weight:800;font-family:ui-monospace,monospace;margin-bottom:10px;}#ms-levels{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;min-height:90px;}#ms-levels .sub{padding:10px 10px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(148,163,184,0.15);display:flex;gap:8px;flex-wrap:wrap;}#ms-levels .el{width:40px;height:30px;border-radius:12px;background:rgba(59,130,246,0.85);display:flex;align-items:center;justify-content:center;color:#fff;font-family:ui-monospace,monospace;font-size:12px;}#ms-log{margin-top:10px;font-family:ui-monospace,monospace;max-height:140px;overflow:auto;}#ms-log .logLine{padding:6px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:#e5e7eb;font-size:12px;margin-bottom:6px;word-break:break-word;}#ms-log .stage{color:#93c5fd;font-weight:700;}",
-          "js": "const stages=[\n  {title:'Исходный массив', parts:[[5,3,8,1]], hint:'Divide не выполнялось ещё'},\n  {title:'Разделяем пополам', parts:[[5,3],[8,1]], hint:'На этом этапе recurse создаёт 2 подзадачи'},\n  {title:'Достигаем base case', parts:[[5],[3],[8],[1]], hint:'Каждая половина доходит до размера 1'},\n  {title:'Сливаем пары', parts:[[3,5],[1,8]], hint:'Combine берёт два отсортированных подмассива и сливает их'},\n  {title:'Финальное слияние', parts:[[1,3,5,8]], hint:'Объединяем результаты в один отсортированный массив'}\n];\nconst titleEl=document.getElementById('ms-title');const levelsEl=document.getElementById('ms-levels');const logEl=document.getElementById('ms-log');const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));function addLog(text,kind){const d=document.createElement('div');d.className='logLine';d.innerHTML=(kind?('<span class=\"stage\">'+kind+':</span> '):'')+text;logEl.appendChild(d);logEl.scrollTop=logEl.scrollHeight;}function render(parts){levelsEl.innerHTML='';for(const sub of parts){const subEl=document.createElement('div');subEl.className='sub';for(const x of sub){const el=document.createElement('div');el.className='el';el.textContent=String(x);subEl.appendChild(el);}levelsEl.appendChild(subEl);}}(async()=>{addLog('Старт merge sort для [5,3,8,1]','START');for(const s of stages){titleEl.textContent=s.title;render(s.parts);addLog(s.hint,'STEP');await sleep(650);}addLog('Готово: [1,3,5,8]','DONE');})();",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Merge sort — этапы</div><p class=\"viz-hint\" id=\"viz-ms-hint\"></p><div id=\"viz-ms-levels\"></div></div>",
+          "css": "#viz-ms-levels{display:flex;flex-direction:column;gap:10px;width:100%;max-width:100%;align-items:center;}",
+          "js": "(function(){var stages=[{hint:'Исходный массив',parts:[[5,3,8,1]]},{hint:'Делим пополам',parts:[[5,3],[8,1]]},{hint:'База: по одному элементу',parts:[[5],[3],[8],[1]]},{hint:'Сливаем пары',parts:[[3,5],[1,8]]},{hint:'Финальное слияние',parts:[[1,3,5,8]]}];var hintEl=document.getElementById('viz-ms-hint');var levelsEl=document.getElementById('viz-ms-levels');function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}function render(parts){levelsEl.innerHTML='';parts.forEach(function(sub){var g=document.createElement('div');g.className='viz-group';sub.forEach(function(x){var c=document.createElement('div');c.className='viz-cell';c.innerHTML='<span class=\"viz-cell__main\">'+x+'</span>';g.appendChild(c);});levelsEl.appendChild(g);});}(function run(){var i=0;function next(){if(i>=stages.length)return;var s=stages[i];hintEl.textContent=s.hint;render(s.parts);i++;return sleep(700).then(next);}return next();})();})();",
           "width": "100%",
-          "height": 300
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "tall"
         },
         {
           "id": "h2-recognize",

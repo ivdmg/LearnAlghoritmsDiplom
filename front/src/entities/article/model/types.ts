@@ -49,6 +49,11 @@ export interface AnimationBlock extends BaseContentBlock {
   height?: string | number;
   /** Нужна ли кнопка запуска/перезапуска анимации */
   showPlayButton?: boolean;
+  /**
+   * Раскладка внутри iframe: `default` — центр, `tall` — колонка для «высоких» схем (стек, дерево)
+   * без скролла (контент должен умещаться за счёт flex/clamp).
+   */
+  vizLayout?: 'default' | 'tall';
 }
 
 export type ContentBlock =

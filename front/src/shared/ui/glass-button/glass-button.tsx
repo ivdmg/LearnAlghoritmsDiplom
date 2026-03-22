@@ -9,6 +9,8 @@ interface GlassButtonProps {
   variant?: "default" | "close";
   className?: string; // можно передавать кастомный класс
   disabled?: boolean;
+  type?: "button" | "submit";
+  "aria-label"?: string;
 }
 
 export function GlassButton({
@@ -19,9 +21,13 @@ export function GlassButton({
   variant = "default",
   className = "",
   disabled = false,
+  type = "button",
+  "aria-label": ariaLabel,
 }: GlassButtonProps) {
   return (
     <motion.button
+      type={type}
+      aria-label={ariaLabel}
       className={`${styles.button} ${variant === "close" ? styles.close : ""} ${className}`}
       onClick={onClick}
       disabled={disabled}

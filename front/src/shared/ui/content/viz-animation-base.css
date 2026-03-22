@@ -1,0 +1,286 @@
+/**
+ * Базовые стили для iframe-визуализаций алгоритмов (статьи в сайдбаре).
+ * Подключаются автоматически в ContentRenderer; в db.json используйте классы .viz-*.
+ */
+:root {
+  --viz-bg: transparent;
+  --viz-surface: rgba(255, 255, 255, 0.06);
+  --viz-surface-strong: rgba(255, 255, 255, 0.1);
+  --viz-border: rgba(148, 163, 184, 0.28);
+  --viz-text: #e5e7eb;
+  --viz-muted: #94a3b8;
+  --viz-accent: #3b82f6;
+  --viz-accent-soft: rgba(59, 130, 246, 0.32);
+  --viz-warn: #f59e0b;
+  --viz-warn-soft: rgba(245, 158, 11, 0.32);
+  --viz-success: #22c55e;
+  --viz-success-soft: rgba(34, 197, 94, 0.28);
+  --viz-radius: 16px;
+  --viz-radius-sm: 12px;
+  --viz-gap: clamp(6px, 1.8vw, 12px);
+  --viz-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --viz-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  background: var(--viz-bg);
+  color: var(--viz-text);
+  font-family: var(--viz-font);
+  overflow: hidden;
+}
+
+/* Внешняя оболочка: центрирует сцену, запрещает скролл */
+.viz-viewport {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 2.2%, 14px);
+  overflow: hidden;
+}
+
+/* Вертикально «высокие» схемы: колонка, без скролла — уменьшаем за счёт flex + clamp */
+.viz-viewport[data-viz-layout="tall"] .viz-stage {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.viz-stage {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--viz-gap);
+  overflow: hidden;
+}
+
+.viz-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  gap: var(--viz-gap);
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.viz-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--viz-gap);
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Крупная «плашка» элемента данных */
+.viz-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: clamp(44px, 22vh, 92px);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 1.8vw, 14px);
+  border-radius: var(--viz-radius);
+  background: var(--viz-surface);
+  border: 1px solid var(--viz-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  font-family: var(--viz-mono);
+  font-size: clamp(13px, 2.6vw, 18px);
+  font-weight: 600;
+  color: var(--viz-text);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.viz-cell--active {
+  background: var(--viz-accent-soft);
+  border-color: rgba(59, 130, 246, 0.55);
+  box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.35);
+}
+
+.viz-cell--compare {
+  background: var(--viz-warn-soft);
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.viz-cell--success {
+  background: var(--viz-success-soft);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.viz-cell__main {
+  line-height: 1.1;
+}
+
+.viz-cell__sub {
+  font-size: 0.68em;
+  font-weight: 500;
+  color: var(--viz-muted);
+  margin-top: 4px;
+}
+
+.viz-caption {
+  width: 100%;
+  text-align: center;
+  font-size: clamp(10px, 2vw, 12px);
+  font-weight: 600;
+  color: var(--viz-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex: 0 0 auto;
+}
+
+.viz-hint {
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  font-size: clamp(11px, 2vw, 13px);
+  color: var(--viz-text);
+  opacity: 0.92;
+  flex: 0 0 auto;
+  padding: 0 6px;
+  line-height: 1.35;
+}
+
+.viz-badge {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--viz-surface-strong);
+  border: 1px solid var(--viz-border);
+  font-family: var(--viz-mono);
+  font-size: clamp(11px, 2.1vw, 13px);
+  color: var(--viz-text);
+  flex: 0 0 auto;
+  max-width: 100%;
+  text-align: center;
+  word-break: break-word;
+}
+
+.viz-split {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  gap: var(--viz-gap);
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.viz-panel {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--viz-gap);
+  overflow: hidden;
+}
+
+.viz-stack-v {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--viz-gap);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.viz-stack-v .viz-cell {
+  flex: 0 0 auto;
+  width: min(100%, 220px);
+  min-height: clamp(40px, 11vh, 58px);
+}
+
+.viz-bars {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--viz-gap);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 6px 0;
+}
+
+.viz-bar {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 56px;
+  border-radius: var(--viz-radius-sm);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.95), rgba(59, 130, 246, 0.35));
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  transition:
+    height 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.viz-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--viz-gap);
+  padding: var(--viz-gap);
+  border-radius: var(--viz-radius);
+  background: var(--viz-surface);
+  border: 1px dashed var(--viz-border);
+  align-items: stretch;
+  justify-content: center;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+  gap: var(--viz-gap);
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.viz-grid .viz-cell {
+  min-height: clamp(40px, 12vh, 64px);
+  flex: none;
+}
+
+.viz-grid .viz-cell.viz-cell--active {
+  box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.55);
+}

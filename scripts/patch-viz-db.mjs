@@ -27,7 +27,7 @@ const patches = [
         '<div class="viz-col"><div class="viz-caption">Массив: значение и индекс</div><div class="viz-chart" id="viz-array"></div></div>',
       js: `(function(){
   var root=document.getElementById('viz-array');
-  var values=[4,8,1,7,3,9];
+  var values=[4,8,1,7,3,9,12,5,18,2,11,6,15,9,14];
   var maxV=VizBars.maxOf(values);
   VizBars.render(root,values,{max:maxV});
 })();`,
@@ -42,7 +42,7 @@ const patches = [
       js: `(function(){
   var root=document.getElementById('viz-loop');
   var hint=document.getElementById('viz-loop-hint');
-  var values=[3,5,7,2,6];
+  var values=[3,5,7,2,6,9,1,8,4,11,13,2,6,10,12];
   var maxV=VizBars.maxOf(values);
   VizBars.render(root,values,{max:maxV});
   var i=0;
@@ -67,8 +67,8 @@ const patches = [
   var root=document.getElementById('viz-time-chart');
   var hint=document.getElementById('viz-bar-hint');
   var costs=[];
-  for(var i=1;i<=12;i++) costs.push(i);
-  VizBars.render(root,costs,{max:12});
+  for(var i=1;i<=15;i++) costs.push(i);
+  VizBars.render(root,costs,{max:15});
   hint.textContent='Высота столбца — относительная «стоимость» шагов при данном n';
 })();`,
     },
@@ -81,7 +81,7 @@ const patches = [
         '<div class="viz-col"><div class="viz-caption">Подряд в памяти</div><div class="viz-chart" id="viz-mem"></div></div>',
       js: `(function(){
   var root=document.getElementById('viz-mem');
-  var values=[10,14,7,3,8,21];
+  var values=[10,14,7,3,8,21,5,17,9,12,4,19,6,11,13];
   var maxV=VizBars.maxOf(values);
   VizBars.render(root,values,{max:maxV});
 })();`,
@@ -97,7 +97,7 @@ const patches = [
   var row=document.getElementById('viz-sum-row');
   var hint=document.getElementById('viz-sum-hint');
   var totalEl=document.getElementById('viz-sum-total');
-  var values=[4,7,1,9,3];
+  var values=[4,7,1,9,3,8,2,11,5,14,6,13,10,12,15];
   var maxV=VizBars.maxOf(values);
   VizBars.render(row,values,{max:maxV});
   var i=0;
@@ -121,10 +121,11 @@ const patches = [
     'anim-search',
     {
       html:
-        '<div class="viz-col"><div class="viz-caption">Линейный поиск</div><div class="viz-hint" id="viz-find-hint"></div><div class="viz-chart" id="viz-find"></div><div class="viz-badge" id="viz-find-badge">ищем: 9</div></div>',
+        '<div class="viz-col"><div class="viz-caption">Линейный поиск</div><div class="viz-hint" id="viz-find-hint"></div><div class="viz-chart" id="viz-find"></div><div class="viz-badge" id="viz-find-badge">ищем: 42</div></div>',
+      height: 320,
       js: `(function(){
-  var arr=[3,7,1,9,5];
-  var target=9;
+  var arr=[12,7,5,18,3,22,9,31,6,14,27,42,8,19,11];
+  var target=42;
   var root=document.getElementById('viz-find');
   var hint=document.getElementById('viz-find-hint');
   var maxV=VizBars.maxOf(arr);
@@ -159,19 +160,20 @@ const patches = [
     {
       html:
         '<div class="viz-col"><div class="viz-caption">Вставка в середину</div><div class="viz-hint" id="viz-ins-hint"></div><div class="viz-chart" id="viz-ins"></div></div>',
+      height: 320,
       js: `(function(){
   var root=document.getElementById('viz-ins');
   var hint=document.getElementById('viz-ins-hint');
-  var arr=[1,2,4,5];
+  var arr=[1,2,3,4,5,6,7,9,10,11,12,13,14,15];
   var maxV=VizBars.maxOf(arr);
   VizBars.render(root,arr,{max:maxV});
-  hint.textContent='До вставки 3 на позицию 2';
+  hint.textContent='До вставки 8 на индекс 7 (между 7 и 9)';
   setTimeout(function(){
-    arr.splice(2,0,3);
+    arr.splice(7,0,8);
     maxV=VizBars.maxOf(arr);
     VizBars.refresh(root,arr,{max:maxV});
     VizBars.clearStates(root);
-    VizBars.setState(root,2,'success');
+    VizBars.setState(root,7,'success');
     hint.textContent='После вставки: элементы сдвинулись вправо';
   },1400);
 })();`,
@@ -509,36 +511,35 @@ const patches = [
     {
       html:
         '<div class="viz-col"><div class="viz-caption">Пузырёк: сравнение и обмен соседей</div><div class="viz-hint" id="vb-h"></div><div class="viz-chart" id="vb-r"></div></div>',
+      height: 360,
       js: `(function(){
   var r=document.getElementById('vb-r');
   var h=document.getElementById('vb-h');
-  var a=[5,2,8,1];
+  var a=[38,12,5,41,19,8,27,3,44,15,22,9,31,6,14];
   var maxV=VizBars.maxOf(a);
   VizBars.render(r,a,{max:maxV});
   function sleep(ms){return new Promise(function(res){setTimeout(res,ms);});}
   async function bubble(){
     var n=a.length;
-    for(var i=0;i<n-1;i++){
-      for(var j=0;j<n-1-i;j++){
-        VizBars.clearStates(r);
-        VizBars.setState(r,j,'compare');
-        VizBars.setState(r,j+1,'compare');
-        h.textContent='Сравниваем '+a[j]+' и '+a[j+1];
-        await sleep(520);
-        if(a[j]>a[j+1]){
-          h.textContent='Меняем местами';
-          await new Promise(function(res){
-            VizBars.swap(r,a,j,j+1,maxV,function(){ res(); });
-          });
-          await sleep(220);
-        }
+    h.textContent='Пузырёк: первый проход (n = '+n+'), обмен — слайд столбцов';
+    for(var j=0;j<n-1;j++){
+      VizBars.clearStates(r);
+      VizBars.setState(r,j,'compare');
+      VizBars.setState(r,j+1,'compare');
+      h.textContent='Сравниваем ['+j+'] и ['+(j+1)+']: '+a[j]+' и '+a[j+1];
+      await sleep(260);
+      if(a[j]>a[j+1]){
+        h.textContent='Меняем местами (слайд)';
+        await new Promise(function(res){
+          VizBars.swapSlide(r,a,j,j+1,maxV,function(){ res(); });
+        });
+        await sleep(90);
       }
     }
     VizBars.clearStates(r);
     for(var k=0;k<n;k++) VizBars.setState(r,k,'success');
-    h.textContent='Отсортировано';
+    h.textContent='Конец 1-го прохода: крупнейший элемент сдвинут вправо';
   }
-  h.textContent='Пузырьковая сортировка';
   bubble();
 })();`,
     },
@@ -548,38 +549,32 @@ const patches = [
     'anim-insert',
     {
       html:
-        '<div class="viz-col"><div class="viz-caption">Вставки: отсортированный префикс</div><div class="viz-hint" id="vi-h"></div><div class="viz-chart" id="vi-r"></div></div>',
+        '<div class="viz-col"><div class="viz-caption">Вставки: ключ сдвигается влево (слайды)</div><div class="viz-hint" id="vi-h"></div><div class="viz-chart" id="vi-r"></div></div>',
+      height: 360,
       js: `(function(){
   var r=document.getElementById('vi-r');
   var h=document.getElementById('vi-h');
-  var steps=[
-    {a:[3,1,4,2],t:'Префикс [0] упорядочен, ключ arr[1]=1'},
-    {a:[1,3,4,2],t:'Вставили 1 в префикс'},
-    {a:[1,3,4,2],t:'Ключ 4 на месте'},
-    {a:[1,2,3,4],t:'Вставили 2 в отсортированный префикс'}
-  ];
-  var maxV=4;
+  var a=[11,12,13,14,3,15,16,17,18,19,20,21,22,23,24];
+  var maxV=VizBars.maxOf(a);
+  VizBars.render(r,a,{max:maxV});
   function sleep(ms){return new Promise(function(res){setTimeout(res,ms);});}
   async function run(){
-    VizBars.render(r,steps[0].a,{max:maxV});
-    h.textContent=steps[0].t;
-    await sleep(900);
-    for(var i=1;i<steps.length;i++){
-      VizBars.refresh(r,steps[i].a,{max:maxV});
+    h.textContent='Префикс слева от ключа отсортирован; вставляем 3 на место';
+    await sleep(700);
+    for(var k=4;k>=1;k--){
       VizBars.clearStates(r);
-      if(i===1){ VizBars.setState(r,0,'compare'); VizBars.setState(r,1,'compare'); }
-      if(i===steps.length-1){
-        VizBars.setState(r,0,'success');
-        VizBars.setState(r,1,'compare');
-        VizBars.setState(r,2,'compare');
-        VizBars.setState(r,3,'active');
-      }
-      h.textContent=steps[i].t;
-      await sleep(950);
+      VizBars.setState(r,k,'compare');
+      VizBars.setState(r,k-1,'compare');
+      h.textContent='Сравниваем с соседом слева и сдвигаем при необходимости';
+      await sleep(320);
+      await new Promise(function(res){
+        VizBars.swapSlide(r,a,k-1,k,maxV,function(){ res(); });
+      });
+      await sleep(100);
     }
     VizBars.clearStates(r);
-    for(var k=0;k<4;k++) VizBars.setState(r,k,'success');
-    h.textContent='Готово';
+    for(var i=0;i<a.length;i++) VizBars.setState(r,i,'success');
+    h.textContent='Ключ занял позицию в отсортированном префиксе';
   }
   run();
 })();`,
@@ -591,26 +586,27 @@ const patches = [
     {
       html:
         '<div class="viz-col"><div class="viz-caption">Разбиение вокруг опорного (идея)</div><div class="viz-hint" id="vq-h"></div><div class="viz-chart" id="vq-r"></div></div>',
+      height: 340,
       js: `(function(){
   var r=document.getElementById('vq-r');
   var h=document.getElementById('vq-h');
-  var a=[7,2,5,1,8,3];
+  var a=[25,6,18,32,9,14,28,3,21,11,7,30,12,5,19];
   var maxV=VizBars.maxOf(a);
   VizBars.render(r,a,{max:maxV});
   function sleep(ms){return new Promise(function(res){setTimeout(res,ms);});}
   async function run(){
-    h.textContent='Опорный — последний элемент';
+    h.textContent='Опорный — последний элемент (индекс '+(a.length-1)+')';
     VizBars.clearStates(r);
     VizBars.setState(r,a.length-1,'compare');
     await sleep(900);
     h.textContent='После partition (учебный кадр): pivot на месте';
-    var after=[2,1,3,7,8,5];
+    var after=[6,18,9,14,3,21,11,7,12,5,19,25,32,28,30];
     maxV=VizBars.maxOf(after);
     VizBars.refresh(r,after,{max:maxV});
     VizBars.clearStates(r);
-    VizBars.setState(r,2,'success');
+    VizBars.setState(r,11,'success');
     await sleep(400);
-    h.textContent='Слева от pivot — не больше, справа — не меньше';
+    h.textContent='Слева от pivot — не больше, справа — не меньше (упрощённый кадр)';
   }
   run();
 })();`,
@@ -667,8 +663,9 @@ const patches = [
     {
       html:
         '<div class="viz-col"><div class="viz-caption">Массив как куча: корень — максимум</div><div class="viz-hint" id="vh-h"></div><div class="viz-chart" id="vh-r"></div></div>',
+      height: 340,
       js: `(function(){
-  var a=[4,10,3,5,1];
+  var a=[42,18,33,12,25,9,30,5,15,8,22,7,11,6,14];
   var r=document.getElementById('vh-r');
   var h=document.getElementById('vh-h');
   var maxV=VizBars.maxOf(a);
@@ -676,7 +673,7 @@ const patches = [
   h.textContent='Индекс 0 — корень max-heap (идея)';
   VizBars.setState(r,0,'success');
   setTimeout(function(){
-    h.textContent='Дети узла i: индексы 2i+1 и 2i+2';
+    h.textContent='Дети узла 0: индексы 1 и 2';
     VizBars.clearStates(r);
     VizBars.setState(r,0,'compare');
     VizBars.setState(r,1,'compare');
@@ -690,14 +687,15 @@ const patches = [
     'anim-c',
     {
       html:
-        '<div class="viz-col"><div class="viz-caption">Подсчёт частот ключей 0..k</div><div class="viz-hint" id="vc-h"></div><div class="viz-chart" id="vc-r"></div></div>',
+        '<div class="viz-col"><div class="viz-caption">Подсчёт частот ключей 0..14</div><div class="viz-hint" id="vc-h"></div><div class="viz-chart" id="vc-r"></div></div>',
+      height: 320,
       js: `(function(){
-  var cnt=[0,2,1,0,1,0];
+  var cnt=[1,0,3,2,0,1,4,0,2,1,0,2,1,0,1];
   var r=document.getElementById('vc-r');
   var h=document.getElementById('vc-h');
   var maxV=Math.max(VizBars.maxOf(cnt),1);
   VizBars.render(r,cnt,{max:maxV});
-  h.textContent='Высота столбца — сколько раз встретился ключ (подпись — значение)';
+  h.textContent='Высота столбца — частота ключа; снизу — индекс ключа 0..14';
 })();`,
     },
   ],
@@ -707,9 +705,10 @@ const patches = [
     {
       html:
         '<div class="viz-col"><div class="viz-caption">Линейный поиск цели</div><div class="viz-hint" id="vl-h"></div><div class="viz-chart" id="vl-r"></div></div>',
+      height: 340,
       js: `(function(){
-  var arr=[3,7,1,9,5];
-  var target=9;
+  var arr=[12,7,5,18,3,22,9,31,6,14,27,37,8,19,11];
+  var target=37;
   var r=document.getElementById('vl-r');
   var h=document.getElementById('vl-h');
   var maxV=VizBars.maxOf(arr);
@@ -744,9 +743,10 @@ const patches = [
     {
       html:
         '<div class="viz-col"><div class="viz-caption">Бинарный поиск: сужение отрезка</div><div class="viz-hint" id="vb2-h"></div><div class="viz-chart" id="vb2-r"></div></div>',
+      height: 340,
       js: `(function(){
-  var arr=[1,3,4,7,9,12];
-  var target=7;
+  var arr=[2,5,8,11,14,18,22,25,29,33,37,40,44,48,52];
+  var target=33;
   var r=document.getElementById('vb2-r');
   var h=document.getElementById('vb2-h');
   var maxV=VizBars.maxOf(arr);
@@ -776,15 +776,16 @@ const patches = [
     'anim-bnd',
     {
       html:
-        '<div class="viz-col"><div class="viz-caption">Массив с повторениями: x = 2</div><div class="viz-hint" id="vbd-h"></div><div class="viz-chart" id="vbd-r"></div></div>',
+        '<div class="viz-col"><div class="viz-caption">Массив с повторениями: x = 22</div><div class="viz-hint" id="vbd-h"></div><div class="viz-chart" id="vbd-r"></div></div>',
+      height: 340,
       js: `(function(){
-  var arr=[1,2,2,2,5];
+  var arr=[5,11,18,22,22,22,25,30,33,37,40,44,48,50,55];
   var r=document.getElementById('vbd-r');
   var h=document.getElementById('vbd-h');
   var maxV=VizBars.maxOf(arr);
   VizBars.render(r,arr,{max:maxV});
-  for(var i=1;i<=3;i++) VizBars.setState(r,i,'success');
-  h.textContent='Индексы 1..3 — все равны 2; lower_bound → 1, upper_bound → 4';
+  for(var i=3;i<=5;i++) VizBars.setState(r,i,'success');
+  h.textContent='Индексы 3..5 — все равны 22; lower_bound → 3, upper_bound → 6';
 })();`,
     },
   ],

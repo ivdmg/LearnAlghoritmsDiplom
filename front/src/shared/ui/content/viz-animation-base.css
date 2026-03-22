@@ -29,7 +29,8 @@
   --viz-gap: clamp(6px, 1.5vw, 10px);
   --viz-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --viz-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  --viz-chart-min-h: clamp(100px, 28vh, 200px);
+  --viz-chart-min-h: clamp(120px, 32vh, 240px);
+  --viz-bar-col-max: min(48px, 6.2vw);
 }
 
 *,
@@ -140,33 +141,58 @@ body {
   overflow: hidden;
 }
 
-/* ========== Столбчатая диаграмма (массивы) ========== */
+/* Только диаграмма, без подписей в iframe (сортировки) */
+.viz-col--viz-only {
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  justify-content: center;
+  padding: 0;
+}
+
+/* ========== Столбчатая диаграмма (как в типичных sorting visualizer) ========== */
 .viz-chart {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
-  gap: var(--viz-gap);
+  gap: clamp(3px, 0.7vw, 8px);
   width: 100%;
   min-height: var(--viz-chart-min-h);
   max-height: 100%;
   flex: 1 1 auto;
-  padding: 8px 4px 0;
+  padding: 6px 4px 0;
+  border-bottom: 2px solid rgba(148, 163, 184, 0.65);
+  box-sizing: border-box;
 }
 
 .viz-bar-col {
   flex: 1 1 0;
   min-width: 0;
-  max-width: 72px;
+  max-width: var(--viz-bar-col-max);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-end;
   min-height: 0;
+  will-change: transform;
+  border-radius: 6px;
+  padding: 2px 1px 0;
+  box-sizing: border-box;
+  transition: background 0.2s ease;
+}
+
+.viz-bar-col--zone-a {
+  background: rgba(59, 130, 246, 0.14);
+}
+
+.viz-bar-col--zone-b {
+  background: rgba(168, 85, 247, 0.14);
 }
 
 .viz-bar-track {
-  width: 78%;
+  width: 100%;
   min-height: 0;
   flex: 1 1 auto;
   display: flex;
@@ -175,53 +201,72 @@ body {
   align-items: center;
 }
 
-.viz-bar-fill {
+/* Число над столбцом — всегда читаемо */
+.viz-bar-val-outer {
+  flex: 0 0 auto;
   width: 100%;
-  min-height: 4px;
-  border-radius: var(--viz-radius-sm) var(--viz-radius-sm) 4px 4px;
-  background: linear-gradient(180deg, var(--viz-blue-top) 0%, var(--viz-blue-bot) 100%);
-  border: 2px solid var(--viz-blue-border);
-  box-shadow: 0 0 14px var(--viz-blue-glow);
-  transition:
-    height 0.42s cubic-bezier(0.4, 0, 0.2, 1),
-    background 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.viz-bar-fill--compare,
-.viz-bar-fill--active {
-  background: linear-gradient(180deg, var(--viz-amber-top), var(--viz-amber-bot));
-  border-color: var(--viz-amber-border);
-  box-shadow: 0 0 18px rgba(217, 119, 6, 0.55);
-}
-
-.viz-bar-fill--success {
-  background: linear-gradient(180deg, var(--viz-green-top), var(--viz-green-bot));
-  border-color: var(--viz-green-border);
-  box-shadow: 0 0 16px rgba(22, 163, 74, 0.5);
-}
-
-.viz-bar-fill--fail {
-  background: linear-gradient(180deg, var(--viz-red-top), var(--viz-red-bot));
-  border-color: var(--viz-red-border);
-  box-shadow: 0 0 16px rgba(220, 38, 38, 0.45);
+  min-height: 1.15em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3px;
 }
 
 .viz-bar-val {
   font-family: var(--viz-mono);
-  font-size: clamp(11px, 2.4vw, 15px);
-  font-weight: 700;
+  font-size: clamp(8px, 1.5vw, 11px);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   color: var(--viz-text);
-  margin-top: 6px;
-  line-height: 1;
+  line-height: 1.1;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viz-bar-fill {
+  width: 100%;
+  min-height: 0;
+  flex: 0 0 auto;
+  align-self: stretch;
+  border-radius: 4px 4px 2px 2px;
+  background: #3b82f6;
+  border: 1px solid rgba(96, 165, 250, 0.95);
+  box-sizing: border-box;
+  /* без transition height — иначе «двойная» анимация и мигание */
+}
+
+.viz-bar-fill--compare,
+.viz-bar-fill--active {
+  background: #d97706;
+  border-color: #fbbf24;
+}
+
+.viz-bar-fill--success {
+  background: #16a34a;
+  border-color: #4ade80;
+}
+
+.viz-bar-fill--fail {
+  background: #dc2626;
+  border-color: #f87171;
+}
+
+.viz-bar-foot {
+  flex: 0 0 auto;
+  padding-top: 3px;
+  min-height: 1em;
 }
 
 .viz-bar-idx {
-  font-size: clamp(9px, 1.8vw, 11px);
+  font-family: var(--viz-mono);
+  font-size: clamp(7px, 1.2vw, 10px);
+  font-variant-numeric: tabular-nums;
   color: var(--viz-muted);
-  margin-top: 2px;
+  text-align: center;
+  line-height: 1;
 }
 
 /* ========== Ячейки стек / очередь / хеш (не столбцы) ========== */

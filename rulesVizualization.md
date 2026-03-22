@@ -8,7 +8,7 @@
 2. **Рантайм iframe** (пауза и скорость): `front/src/shared/ui/content/viz-iframe-runtime.ts` — выполняется **до** хелперов и пользовательского `js`, патчит `setTimeout` / `setInterval`. Родитель шлёт в iframe сообщения:
    - `{ __learnAlgoViz: 1, cmd: 'speed', value: 0.25 | 0.5 | 1 | 1.5 | 2 }`
    - `{ __learnAlgoViz: 1, cmd: 'pause' }` / `{ cmd: 'resume' }`
-3. **Хелперы для столбчатых диаграмм**: `front/src/shared/ui/content/viz-iframe-helpers.ts` → `VIZ_IFRAME_HELPERS_JS` подключается **после** рантайма, **до** `block.js`. В iframe доступен `window.VizBars`: `render`, `refresh`, `setState`, `clearStates`, `swap`, `maxOf` — для массивов чисел используйте контейнер `.viz-chart` и **не** рисуйте «плоские» `.viz-cell` для значений, если нужна шкала по высоте.
+3. **Хелперы для столбчатых диаграмм**: `front/src/shared/ui/content/viz-iframe-helpers.ts` → `VIZ_IFRAME_HELPERS_JS` подключается **после** рантайма, **до** `block.js`. В iframe доступен `window.VizBars`: `render`, `refresh`, `setState`, `clearStates`, `swap` / `swapSlide`, `maxOf`, **`heightPxForValue`** — высота столбца **линейно от значения** (базово `value * 10px`, параметр `opts.pxPerUnit`), с масштабом так, чтобы максимум по массиву помещался в область диаграммы. Для массивов чисел — контейнер `.viz-chart`.
 4. **Разметка iframe** всегда оборачивается в:
    - `.viz-viewport` — внешний контейнер: **центрирование**, `overflow: hidden`, без скролла.
    - `.viz-stage` — внутренняя сцена: **максимум площади**, `flex`, укладка контента.
@@ -44,7 +44,7 @@
 
 ## Компоновка
 
-- **Массив чисел (поиск, сортировка, сумма по элементам)**: `.viz-chart` + `VizBars.render` (столбцы `.viz-bar-col` / `.viz-bar-fill`); обмен при сортировке — `VizBars.swap`.
+- **Массив чисел**: `.viz-chart` + `VizBars.render` — **число над столбцом** (`.viz-bar-val-outer`), **прямоугольник** только цвет/высота, **индекс** под осью. Высота в px от значения: `heightPxForValue` (масштаб под контейнер; кэш `dataset.vizMaxBarPx` на `.viz-chart` стабилизирует высоту). Обмен соседей: **`swapSlide`**. Произвольные индексы (quicksort): **`swapValues`**. Зоны половин (merge): **`clearZones`**, **`setZone`** + классы `viz-bar-col--zone-a` / `zone-b`. Блок только с диаграммой: обёртка **`viz-col--viz-only`** без caption/hint.
 - Ряды: `.viz-row` + ячейки или `.viz-chart`.
 - Очередь (горизонтально): `.viz-row.viz-row--queue` + `.viz-cell` — фиксированная ширина ячеек, **enqueue**: классы `viz-cell--enter-right` → после кадра `viz-cell--shown`; **dequeue**: `viz-cell--exit-left` и удаление после `transition`.
 - Стек: `.viz-stack-v` + `.viz-cell`; **push**: `viz-cell--enter-right` → `viz-cell--shown`; **pop**: `viz-cell--exit-up`.

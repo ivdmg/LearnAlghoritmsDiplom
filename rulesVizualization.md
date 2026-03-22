@@ -5,14 +5,15 @@
 ## Инфраструктура
 
 1. **Базовые стили** подключаются автоматически: `front/src/shared/ui/content/viz-animation-base.css` (через `VIZ_ANIMATION_BASE_CSS` в `content-renderer.tsx`).
-2. **Рантайм iframe** (пауза и скорость): `front/src/shared/ui/content/viz-iframe-runtime.ts` — выполняется **до** пользовательского `js`, патчит `setTimeout` / `setInterval`. Родитель шлёт в iframe сообщения:
+2. **Рантайм iframe** (пауза и скорость): `front/src/shared/ui/content/viz-iframe-runtime.ts` — выполняется **до** хелперов и пользовательского `js`, патчит `setTimeout` / `setInterval`. Родитель шлёт в iframe сообщения:
    - `{ __learnAlgoViz: 1, cmd: 'speed', value: 0.25 | 0.5 | 1 | 1.5 | 2 }`
    - `{ __learnAlgoViz: 1, cmd: 'pause' }` / `{ cmd: 'resume' }`
-3. **Разметка iframe** всегда оборачивается в:
+3. **Хелперы для столбчатых диаграмм**: `front/src/shared/ui/content/viz-iframe-helpers.ts` → `VIZ_IFRAME_HELPERS_JS` подключается **после** рантайма, **до** `block.js`. В iframe доступен `window.VizBars`: `render`, `refresh`, `setState`, `clearStates`, `swap`, `maxOf` — для массивов чисел используйте контейнер `.viz-chart` и **не** рисуйте «плоские» `.viz-cell` для значений, если нужна шкала по высоте.
+4. **Разметка iframe** всегда оборачивается в:
    - `.viz-viewport` — внешний контейнер: **центрирование**, `overflow: hidden`, без скролла.
    - `.viz-stage` — внутренняя сцена: **максимум площади**, `flex`, укладка контента.
-4. **Вертикально «высокие» схемы** (стек, глубокая рекурсия, колонка этапов): `"vizLayout": "tall"` — компактнее ячейки стека (`clamp` в базе), контент должен **умещаться**; при нехватке места увеличить `"height"` блока в `db.json`.
-5. **Тулбар** над iframe: перезапуск ⟲, пауза ⏸, продолжить ▶, кнопки скорости **0.25× … 2×** (`GlassButton` с `variant="toolbar"`). Скрыть: `"showPlayButton": false`.
+5. **Вертикально «высокие» схемы** (стек, глубокая рекурсия, колонка этапов): `"vizLayout": "tall"` — компактнее ячейки стека (`clamp` в базе), контент должен **умещаться**; при нехватке места увеличить `"height"` блока в `db.json`.
+6. **Тулбар** над iframe: перезапуск ⟲, пауза ⏸, продолжить ▶, кнопки скорости **0.25× … 2×** (`GlassButton` с `variant="toolbar"`). Скрыть: `"showPlayButton": false`.
 
 ## Визуальный язык (4 цвета)
 
@@ -20,14 +21,15 @@
 
 | Смысл | Класс | Цвет |
 |--------|--------|------|
-| Нейтральная ячейка (элемент массива, кадр в стеке) | `.viz-cell` | голубой |
-| Текущий шаг, фокус, проверяемый индекс, вершина стека | `.viz-cell--active` | оранжевый |
-| То же для явного «сравниваем с этим» | `.viz-cell--compare` | оранжевый (как active) |
-| База рекурсии, успех, «да», найдено, заполнено в DP | `.viz-cell--success` | зелёный |
-| «Нет», не найдено, отрицательный исход сравнения | `.viz-cell--fail` | красный |
+| Нейтральная ячейка (кадр в стеке, хеш-бакет, DP-ячейка) | `.viz-cell` | голубой |
+| Нейтральный столбец массива (число как высота) | `.viz-bar-fill` внутри `.viz-chart` | голубой |
+| Текущий шаг, фокус, проверяемый индекс, вершина стека | `.viz-cell--active` / `.viz-bar-fill--active` | янтарь |
+| Явное «сравниваем с этим» | `.viz-cell--compare` / `.viz-bar-fill--compare` | янтарь |
+| База рекурсии, успех, «да», найдено, заполнено в DP | `.viz-cell--success` / `.viz-bar-fill--success` | зелёный |
+| «Нет», не найдено, отрицательный исход сравнения | `.viz-cell--fail` / `.viz-bar-fill--fail` | красный |
 
 - **Не вводить** произвольные hex в `css` блока статьи — расширять базу при необходимости.
-- У ячеек и групп **`box-shadow: none`** (без «внутренних» теней); градиенты — только из этих четырёх оттенков (см. `.viz-bar`, `.viz-group`).
+- У групп **`box-shadow: none`** (без «внутренних» теней); градиенты — из переменных `--viz-blue-*`, `--viz-amber-*`, `--viz-green-*`, `--viz-red-*` (см. `.viz-bar-fill`, `.viz-cell`, `.viz-group`).
 
 ## Оформление вне iframe
 
@@ -42,11 +44,13 @@
 
 ## Компоновка
 
-- Ряды: `.viz-row` + `.viz-cell`.
-- Стек: `.viz-stack-v` + `.viz-cell`.
+- **Массив чисел (поиск, сортировка, сумма по элементам)**: `.viz-chart` + `VizBars.render` (столбцы `.viz-bar-col` / `.viz-bar-fill`); обмен при сортировке — `VizBars.swap`.
+- Ряды: `.viz-row` + ячейки или `.viz-chart`.
+- Очередь (горизонтально): `.viz-row.viz-row--queue` + `.viz-cell` — фиксированная ширина ячеек, **enqueue**: классы `viz-cell--enter-right` → после кадра `viz-cell--shown`; **dequeue**: `viz-cell--exit-left` и удаление после `transition`.
+- Стек: `.viz-stack-v` + `.viz-cell`; **push**: `viz-cell--enter-right` → `viz-cell--shown`; **pop**: `viz-cell--exit-up`.
 - Две зоны: `.viz-split` + `.viz-panel`.
-- Группы (подмассивы): `.viz-group` + `.viz-cell`.
-- Столбцы: `.viz-bars` + `.viz-bar`.
+- Группы (этапы merge / D&C): `.viz-group` + внутри одна `.viz-chart` на подмассив.
+- Демо роста n (сложность): `.viz-bars` + `.viz-bar` или одна `.viz-chart` с искусственными высотами.
 - Сетка DP: `.viz-grid` + `.viz-cell`.
 
 ## Анимация и укладка
@@ -73,4 +77,4 @@
 
 ---
 
-Файлы: `db.json`, `viz-animation-base.css`, `viz-iframe-runtime.ts`, `content-renderer.tsx`, `content-renderer.module.css`.
+Файлы: `db.json`, `viz-animation-base.css`, `viz-iframe-runtime.ts`, `viz-iframe-helpers.ts`, `content-renderer.tsx`, `content-renderer.module.css`.

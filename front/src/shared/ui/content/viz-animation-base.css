@@ -1,35 +1,35 @@
 /**
- * Базовые стили для iframe-визуализаций алгоритмов (статьи в сайдбаре).
- * Палитра: голубой (нейтрал), оранжевый (фокус/сравнение), зелёный (успех/да), красный (нет/ошибка).
+ * Визуализации в iframe. Палитра — насыщенные «как в визуализаторах» (см. algo example.txt).
+ * Массивы чисел — через .viz-chart + .viz-bar-*; стек/очередь — .viz-cell с теми же оттенками.
  */
 :root {
   --viz-bg: transparent;
-  /* Нейтральная ячейка — голубой */
-  --viz-blue: #38bdf8;
-  --viz-blue-soft: rgba(56, 189, 248, 0.22);
-  --viz-blue-border: rgba(56, 189, 248, 0.45);
-  /* Фокус / текущий шаг / кандидат сравнения — оранжевый */
-  --viz-orange: #fb923c;
-  --viz-orange-soft: rgba(251, 146, 60, 0.24);
-  --viz-orange-border: rgba(251, 146, 60, 0.55);
-  /* Успех, база, «да» — зелёный */
-  --viz-green: #4ade80;
-  --viz-green-soft: rgba(74, 222, 128, 0.22);
-  --viz-green-border: rgba(74, 222, 128, 0.5);
-  /* «Нет», не найдено — красный */
-  --viz-red: #f87171;
-  --viz-red-soft: rgba(248, 113, 113, 0.22);
-  --viz-red-border: rgba(248, 113, 113, 0.55);
+  /* Нейтральный столбец / ячейка — насыщенный голубой (не «мыльный») */
+  --viz-blue-top: #60a5fa;
+  --viz-blue-bot: #2563eb;
+  --viz-blue-border: rgba(96, 165, 250, 0.95);
+  --viz-blue-glow: rgba(37, 99, 235, 0.45);
+  /* Сравнение / фокус — янтарь */
+  --viz-amber-top: #fbbf24;
+  --viz-amber-bot: #d97706;
+  --viz-amber-border: rgba(251, 191, 36, 0.95);
+  /* Успех — изумруд */
+  --viz-green-top: #4ade80;
+  --viz-green-bot: #16a34a;
+  --viz-green-border: rgba(74, 222, 128, 0.95);
+  /* Ошибка / нет — красный */
+  --viz-red-top: #f87171;
+  --viz-red-bot: #dc2626;
+  --viz-red-border: rgba(248, 113, 113, 0.95);
 
-  --viz-surface: var(--viz-blue-soft);
-  --viz-border: var(--viz-blue-border);
-  --viz-text: #e5e7eb;
+  --viz-text: #f1f5f9;
   --viz-muted: #94a3b8;
-  --viz-radius: 16px;
-  --viz-radius-sm: 12px;
-  --viz-gap: clamp(6px, 1.8vw, 12px);
+  --viz-radius: 12px;
+  --viz-radius-sm: 8px;
+  --viz-gap: clamp(6px, 1.5vw, 10px);
   --viz-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --viz-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --viz-chart-min-h: clamp(100px, 28vh, 200px);
 }
 
 *,
@@ -49,7 +49,6 @@ body {
   overflow: hidden;
 }
 
-/* Внешняя оболочка: центрирует сцену, запрещает скролл */
 .viz-viewport {
   width: 100%;
   height: 100%;
@@ -67,7 +66,6 @@ body {
   align-items: center;
 }
 
-/* В tall — компактнее стек, чтобы кадры вызовов влезали без скролла */
 .viz-viewport[data-viz-layout="tall"] .viz-stack-v {
   flex: 1 1 auto;
   min-height: 0;
@@ -115,6 +113,20 @@ body {
   flex: 1 1 auto;
 }
 
+/* Очередь: фиксированная ширина ячеек, новые элементы приезжают справа */
+.viz-row--queue {
+  align-items: flex-end;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.viz-row--queue .viz-cell {
+  flex: 0 0 auto;
+  width: min(20vw, 76px);
+  min-height: clamp(44px, 12vh, 72px);
+}
+
 .viz-col {
   display: flex;
   flex-direction: column;
@@ -128,7 +140,91 @@ body {
   overflow: hidden;
 }
 
-/* Крупная «плашка» элемента данных — нейтраль = голубой */
+/* ========== Столбчатая диаграмма (массивы) ========== */
+.viz-chart {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--viz-gap);
+  width: 100%;
+  min-height: var(--viz-chart-min-h);
+  max-height: 100%;
+  flex: 1 1 auto;
+  padding: 8px 4px 0;
+}
+
+.viz-bar-col {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 0;
+}
+
+.viz-bar-track {
+  width: 78%;
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.viz-bar-fill {
+  width: 100%;
+  min-height: 4px;
+  border-radius: var(--viz-radius-sm) var(--viz-radius-sm) 4px 4px;
+  background: linear-gradient(180deg, var(--viz-blue-top) 0%, var(--viz-blue-bot) 100%);
+  border: 2px solid var(--viz-blue-border);
+  box-shadow: 0 0 14px var(--viz-blue-glow);
+  transition:
+    height 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.viz-bar-fill--compare,
+.viz-bar-fill--active {
+  background: linear-gradient(180deg, var(--viz-amber-top), var(--viz-amber-bot));
+  border-color: var(--viz-amber-border);
+  box-shadow: 0 0 18px rgba(217, 119, 6, 0.55);
+}
+
+.viz-bar-fill--success {
+  background: linear-gradient(180deg, var(--viz-green-top), var(--viz-green-bot));
+  border-color: var(--viz-green-border);
+  box-shadow: 0 0 16px rgba(22, 163, 74, 0.5);
+}
+
+.viz-bar-fill--fail {
+  background: linear-gradient(180deg, var(--viz-red-top), var(--viz-red-bot));
+  border-color: var(--viz-red-border);
+  box-shadow: 0 0 16px rgba(220, 38, 38, 0.45);
+}
+
+.viz-bar-val {
+  font-family: var(--viz-mono);
+  font-size: clamp(11px, 2.4vw, 15px);
+  font-weight: 700;
+  color: var(--viz-text);
+  margin-top: 6px;
+  line-height: 1;
+}
+
+.viz-bar-idx {
+  font-size: clamp(9px, 1.8vw, 11px);
+  color: var(--viz-muted);
+  margin-top: 2px;
+}
+
+/* ========== Ячейки стек / очередь / хеш (не столбцы) ========== */
 .viz-cell {
   flex: 1 1 0;
   min-width: 0;
@@ -140,36 +236,62 @@ body {
   justify-content: center;
   padding: clamp(6px, 1.8vw, 14px);
   border-radius: var(--viz-radius);
-  background: var(--viz-surface);
-  border: 1px solid var(--viz-border);
-  box-shadow: none;
+  background: linear-gradient(180deg, rgba(96, 165, 250, 0.92), rgba(37, 99, 235, 0.88));
+  border: 2px solid var(--viz-blue-border);
+  box-shadow: 0 0 12px var(--viz-blue-glow);
   outline: none;
   font-family: var(--viz-mono);
   font-size: clamp(13px, 2.6vw, 18px);
   font-weight: 600;
-  color: var(--viz-text);
+  color: #fff;
   transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s ease;
 }
 
-/* Текущий элемент / вершина стека / проверяемый индекс — оранжевый */
 .viz-cell--active,
 .viz-cell--compare {
-  background: var(--viz-orange-soft);
-  border-color: var(--viz-orange-border);
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.95), rgba(217, 119, 6, 0.9));
+  border-color: var(--viz-amber-border);
+  box-shadow: 0 0 18px rgba(217, 119, 6, 0.5);
 }
 
-/* База, найдено, истина сравнения — зелёный */
 .viz-cell--success {
-  background: var(--viz-green-soft);
+  background: linear-gradient(180deg, rgba(74, 222, 128, 0.95), rgba(22, 163, 74, 0.9));
   border-color: var(--viz-green-border);
+  box-shadow: 0 0 16px rgba(22, 163, 74, 0.45);
 }
 
-/* Не найдено, ложь сравнения — красный */
 .viz-cell--fail {
-  background: var(--viz-red-soft);
+  background: linear-gradient(180deg, rgba(248, 113, 113, 0.95), rgba(220, 38, 38, 0.9));
   border-color: var(--viz-red-border);
+  box-shadow: 0 0 16px rgba(220, 38, 38, 0.45);
+}
+
+/* Въезд сбоку (push / enqueue) */
+.viz-cell--enter-right {
+  opacity: 0;
+  transform: translateX(120%);
+}
+
+.viz-cell--enter-right.viz-cell--shown {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Снятие со стека */
+.viz-cell--exit-up {
+  opacity: 0;
+  transform: translateY(-140%) scale(0.92);
+}
+
+/* Dequeue: уходит влево */
+.viz-cell--exit-left {
+  opacity: 0;
+  transform: translateX(-120%) scale(0.95);
 }
 
 .viz-cell__main {
@@ -179,7 +301,7 @@ body {
 .viz-cell__sub {
   font-size: 0.68em;
   font-weight: 500;
-  color: var(--viz-muted);
+  color: rgba(255, 255, 255, 0.82);
   margin-top: 4px;
 }
 
@@ -209,7 +331,7 @@ body {
 .viz-badge {
   padding: 8px 14px;
   border-radius: 999px;
-  background: var(--viz-blue-soft);
+  background: linear-gradient(180deg, rgba(96, 165, 250, 0.35), rgba(37, 99, 235, 0.25));
   border: 1px solid var(--viz-blue-border);
   box-shadow: none;
   font-family: var(--viz-mono);
@@ -264,6 +386,7 @@ body {
   min-height: clamp(40px, 11vh, 58px);
 }
 
+/* Старый API «рост n» (сложность): отдельные узкие столбики */
 .viz-bars {
   display: flex;
   flex-direction: row;
@@ -272,18 +395,18 @@ body {
   gap: var(--viz-gap);
   width: 100%;
   height: 100%;
-  min-height: 0;
+  min-height: min(var(--viz-chart-min-h), 100%);
   padding: 6px 0;
 }
 
-.viz-bar {
+.viz-bars .viz-bar {
   flex: 1 1 0;
   min-width: 0;
-  max-width: 56px;
+  max-width: 48px;
   border-radius: var(--viz-radius-sm);
-  background: linear-gradient(180deg, rgba(56, 189, 248, 0.95), rgba(56, 189, 248, 0.35));
-  border: 1px solid var(--viz-blue-border);
-  box-shadow: none;
+  background: linear-gradient(180deg, var(--viz-blue-top), var(--viz-blue-bot));
+  border: 2px solid var(--viz-blue-border);
+  box-shadow: 0 0 10px var(--viz-blue-glow);
   transition:
     height 0.35s ease,
     opacity 0.35s ease;
@@ -295,13 +418,19 @@ body {
   gap: var(--viz-gap);
   padding: var(--viz-gap);
   border-radius: var(--viz-radius);
-  background: var(--viz-blue-soft);
-  border: 1px solid var(--viz-blue-border);
+  background: rgba(30, 58, 138, 0.25);
+  border: 1px solid rgba(96, 165, 250, 0.35);
   box-shadow: none;
-  align-items: stretch;
+  align-items: flex-end;
   justify-content: center;
   max-width: 100%;
   overflow: hidden;
+}
+
+/* Одна строка баров внутри группы (merge sort) */
+.viz-group .viz-chart {
+  min-height: clamp(72px, 18vh, 120px);
+  flex: 1 1 100%;
 }
 
 .viz-grid {

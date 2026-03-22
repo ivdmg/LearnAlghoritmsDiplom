@@ -13,6 +13,7 @@ import glassTabStyles from '@/shared/ui/glass-tabs/glass-tabs.module.css';
 import { GlassButton } from '../glass-button/glass-button';
 import { VIZ_ANIMATION_BASE_CSS } from './viz-animation-base';
 import { VIZ_IFRAME_RUNTIME_JS } from './viz-iframe-runtime';
+import { VIZ_IFRAME_HELPERS_JS } from './viz-iframe-helpers';
 import styles from "./content-renderer.module.css";
 
 interface ContentRendererProps {
@@ -178,6 +179,9 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
     </div>
     <script>
       ${VIZ_IFRAME_RUNTIME_JS}
+    </script>
+    <script>
+      ${VIZ_IFRAME_HELPERS_JS}
     </script>
     <script>
       ${block.js ?? ""}

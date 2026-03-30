@@ -19,6 +19,8 @@ export function AppHeader() {
   const currentTaskTitle =
     isTasks && taskId ? TASKS.find((t) => t.id === taskId)?.title ?? 'Задачи' : null;
 
+  const isProfile = location.pathname === '/profile';
+
   let centerTitle: string;
   if (isRoadmap) {
     centerTitle = 'AlgoLearn — Roadmap';
@@ -26,6 +28,8 @@ export function AppHeader() {
     centerTitle = currentTaskTitle ?? 'Задачи';
   } else if (location.pathname.startsWith('/animation')) {
     centerTitle = 'Анимация фитиля';
+  } else if (isProfile) {
+    centerTitle = 'Личный кабинет';
   } else {
     centerTitle = 'AlgoLearn';
   }
@@ -62,6 +66,17 @@ export function AppHeader() {
               <span>Animation</span>
             </GlassButton>
             <ThemeToggle />
+            <button
+              className={styles.profileBtn}
+              onClick={() => navigate('/profile')}
+              aria-label="Личный кабинет"
+              type="button"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M20 21a8 8 0 0 0-16 0" />
+              </svg>
+            </button>
           </div>
         }
       />

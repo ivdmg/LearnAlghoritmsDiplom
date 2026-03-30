@@ -5239,5 +5239,28 @@
         }
       ]
     }
-  ]
+  ],
+  "users": [
+    {
+      "id": "c9bf",
+      "login": "123",
+      "password": "123"
+    },
+    {
+      "id": "b6e8",
+      "login": "123",
+      "password": "1234"
+    },
+    {
+      "id": "ec28",
+      "login": "123",
+      "password": "1234"
+    },
+    {
+      "id": "3f0e",
+      "login": "1234",
+      "password": "111"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ReactFlowRoadmapPage } from '@/pages/react-flow-roadmap';
 import { TaskPage } from '@/pages/task';
 import { AnimationPage } from '@/pages/animation';
+import { ProfilePage } from '@/pages/profile/profile-page';
 
 export function AppRouter() {
   return (
@@ -9,6 +10,7 @@ export function AppRouter() {
       <Route path="/" element={<ReactFlowRoadmapPage />} />
       <Route path="/task/:taskId" element={<TaskPage />} />
       <Route path="/animation" element={<AnimationPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
     </Routes>
   );
 }

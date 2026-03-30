@@ -3,18 +3,19 @@ import { ConfigProvider } from 'antd';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from '@/shared/store';
+import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import { AppRouter } from './router';
 import { ThemeProvider, useThemeConfig } from './providers/theme-provider';
 import { preloadPyodide } from '@/features/run-python';
+import { AuthPage } from '@/pages/auth/auth-page';
 
 function AppConfig() {
   const themeConfig = useThemeConfig();
+  const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
     const preload = () => {
-      preloadPyodide().catch(() => {
-        // тихо игнорируем ошибку предзагрузки, она всплывёт в usePyodide
-      });
+      preloadPyodide().catch(() => {});
     };
 
     if ('requestIdleCallback' in window) {
@@ -24,6 +25,14 @@ function AppConfig() {
       return () => window.clearTimeout(id);
     }
   }, []);
+
+  if (!user) {
+    return (
+      <ConfigProvider theme={themeConfig}>
+        <AuthPage />
+      </ConfigProvider>
+    );
+  }
 
   return (
     <ConfigProvider theme={themeConfig}>

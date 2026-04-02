@@ -7,6 +7,11 @@
   overflow: hidden;
 }
 
+[data-theme='light'] .layout {
+  /* в стиле Roadmap: светлый фон, glass поверх */
+  background: #f4f7fb;
+}
+
 .cursorGlow {
   position: fixed;
   inset: 0;
@@ -25,6 +30,24 @@
       rgba(52, 211, 153, 0.07) 0%,
       rgba(52, 211, 153, 0.07) 1%,
       transparent 40%
+    );
+}
+
+/* На светлом фоне glow должен быть заметнее (оставляем зелёный, как в dark) */
+[data-theme='light'] .cursorGlow {
+  background:
+    radial-gradient(
+      circle at var(--task-glow-x, 50%) var(--task-glow-y, 30%),
+      rgba(34, 197, 94, 0.16) 0%,
+      rgba(34, 197, 94, 0.12) 12%,
+      transparent 48%
+    ),
+    radial-gradient(
+      circle at calc(var(--task-glow-x, 50%) + 120px)
+        calc(var(--task-glow-y, 30%) + 160px),
+      rgba(52, 211, 153, 0.20) 0%,
+      rgba(52, 211, 153, 0.16) 14%,
+      transparent 55%
     );
 }
 /* ---------- HEADER ---------- */
@@ -53,6 +76,10 @@
   font-weight: 600;
   margin: 0;
   font-size: 18px;
+}
+
+[data-theme='light'] .taskTitle {
+  color: #0b1220;
 }
 
 /* ---------- MAIN LAYOUT ---------- */
@@ -103,6 +130,17 @@
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
 }
 
+[data-theme='light'] .panelContent {
+  color: #0b1220;
+  background: rgba(255, 255, 255, 0.40);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow:
+    0 12px 28px rgba(2, 6, 23, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+}
+
 /* ---------- LEFT PANEL (SCROLL ONLY HERE) ---------- */
 
 .leftScrollPanel {
@@ -118,8 +156,22 @@
   min-height: 0;
 }
 
+[data-theme='light'] .leftScrollPanel {
+  color: #0b1220;
+  background: rgba(255, 255, 255, 0.40);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow:
+    0 12px 28px rgba(2, 6, 23, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+}
+
 .leftScrollViewport {
   padding: 20px 22px;
+  /* Windows overlay scrollbars часто прячутся. Делаем место под полосу всегда. */
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
 }
 
 /* ---------- LEFT PANEL HEADER ---------- */
@@ -156,12 +208,20 @@
   margin-bottom: 8px;
 }
 
+[data-theme='light'] .sectionSubtitle {
+  color: #64748b;
+}
+
 .text {
   font-size: 14px;
   line-height: 1.6;
   color: #e5e7eb;
   position: relative;
   z-index: 1;
+}
+
+[data-theme='light'] .text {
+  color: #334155;
 }
 
 /* ---------- EDITOR ---------- */
@@ -204,6 +264,14 @@
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.35),
     0 0 0 1px rgba(148, 163, 184, 0.2);
+}
+
+[data-theme='light'] .output {
+  color: #0b1220;
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 12px 28px rgba(2, 6, 23, 0.10),
+    0 0 0 1px rgba(15, 23, 42, 0.10);
 }
 
 /* ---------- CODEMIRROR OVERRIDES (transparent background) ---------- */
@@ -259,6 +327,10 @@
   cursor: pointer;
 }
 
+[data-theme='light'] .hintItem summary {
+  color: #0b1220;
+}
+
 .hintTitle {
   flex: 1;
 }
@@ -288,10 +360,18 @@
   background: rgba(31,41,55,0.1);
 }
 
+[data-theme='light'] .hintItem[open] {
+  background: rgba(15, 23, 42, 0.04);
+}
+
 .hintItem p {
   margin-top: 6px;
   font-size: 13px;
   color: #cbd5f5;
+}
+
+[data-theme='light'] .hintItem p {
+  color: #334155;
 }
 
 /* ---------- INFO BOX ---------- */
@@ -312,9 +392,17 @@
   margin-bottom: 4px;
 }
 
+[data-theme='light'] .infoTitle {
+  color: #0369a1;
+}
+
 .infoText {
   font-size: 13px;
   color: #e5e7eb;
+}
+
+[data-theme='light'] .infoText {
+  color: #334155;
 }
 
 /* ---------- PILLS ---------- */
@@ -385,4 +473,22 @@
   .panelContent {
     border-radius: 20px;
   }
+}
+
+/* ---------- LIGHT THEME: CodeMirror text visibility ---------- */
+
+[data-theme='light'] :global(.cm-transparent .cm-content) {
+  color: #0b1220;
+}
+
+[data-theme='light'] :global(.cm-transparent .cm-gutters) {
+  color: rgba(15, 23, 42, 0.55) !important;
+}
+
+[data-theme='light'] :global(.cm-transparent .cm-cursor) {
+  border-left-color: rgba(15, 23, 42, 0.65) !important;
+}
+
+[data-theme='light'] :global(.cm-transparent .cm-selectionBackground) {
+  background: rgba(34, 197, 94, 0.22) !important;
 }

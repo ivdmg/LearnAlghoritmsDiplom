@@ -17,13 +17,15 @@ export const TaskExpectedOutput: React.FC<TaskExpectedOutputProps> = ({
     return null;
   }
 
+  const isLightTheme = document.documentElement.getAttribute('data-theme') === 'light';
+
   return (
     <div className={styles.root}>
       {description && <p className={styles.text}>{description}</p>}
 
       {code && (
         <div className={styles.codeWrapper}>
-          <Highlight theme={themes.nightOwl} code={code.trimEnd()} language={language as any}>
+          <Highlight theme={isLightTheme ? themes.vsLight : themes.nightOwl} code={code.trimEnd()} language={language as any}>
             {({ className, style, tokens, getLineProps, getTokenProps }) => (
               <pre
                 className={`${styles.codeBlock} ${className}`}

@@ -1,0 +1,126 @@
+/**
+ * Общие стили строки задачи (страница «Задачи» и сайдбар).
+ */
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.taskItem {
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 10px 10px 12px;
+  border-radius: 30px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.taskItem:hover {
+  background: rgba(255, 255, 255, 0.034);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.089),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='light'] .taskItem:hover {
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.55),
+    0 0 0 1px rgba(15, 23, 42, 0.048);
+}
+
+.taskItem:active {
+  transform: translateY(0.5px);
+}
+
+.taskItem:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.4);
+  outline-offset: 2px;
+}
+
+.taskLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.taskTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5e7eb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme='light'] .taskTitle {
+  color: #0b1220;
+}
+
+.diffBadge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+}
+
+.diff_easy {
+  background: rgba(34, 197, 94, 0.18);
+  color: #4ade80;
+}
+
+.diff_medium {
+  background: rgba(251, 191, 36, 0.18);
+  color: #fbbf24;
+}
+
+.diff_hard {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+}
+
+[data-theme='light'] .diff_easy {
+  background: rgba(22, 163, 74, 0.22);
+  color: #14532dc4;
+}
+
+[data-theme='light'] .diff_medium {
+  background: rgba(245, 159, 11, 0.514);
+  color: #92410ed3;
+}
+
+[data-theme='light'] .diff_hard {
+  background: rgba(220, 38, 38, 0.18);
+  color: #991b1bc5;
+}
+
+.empty {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #9ca3af;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='light'] .empty {
+  background: rgba(255, 255, 255, 0.3);
+  color: #64748b;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.45),
+    0 0 0 1px rgba(15, 23, 42, 0.08);
+}

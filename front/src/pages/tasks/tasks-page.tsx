@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
-import { ScrollArea } from '@/shared/ui';
+import { ScrollArea, TaskRowList } from '@/shared/ui';
 import { ROADMAP } from '@/entities/roadmap';
 import { TASKS } from '@/entities/task';
 import styles from './tasks-page.module.css';
@@ -113,28 +113,12 @@ export function TasksPage() {
                           {it.taskIds.length === 0 ? (
                             <div className={styles.empty}>Пока нет задач в этом блоке.</div>
                           ) : (
-                            <div className={styles.tasks}>
-                              {it.taskIds.map((taskId) => {
-                                const task = taskById.get(taskId);
-                                if (!task) return null;
-                                const diff = task.difficulty ?? 'easy';
-                                return (
-                                  <button
-                                    key={task.id}
-                                    className={styles.taskItem}
-                                    type="button"
-                                    onClick={() => navigate(`/task/${task.id}`)}
-                                  >
-                                    <div className={styles.taskLeft}>
-                                      <div className={styles.taskTitle}>{task.title}</div>
-                                    </div>
-                                    <span className={`${styles.diffBadge} ${styles[`diff_${diff}`]}`}>
-                                      {diff === 'easy' ? 'Easy' : diff === 'medium' ? 'Medium' : 'Hard'}
-                                    </span>
-                                  </button>
-                                );
-                              })}
-                            </div>
+                            <TaskRowList
+                              tasks={it.taskIds
+                                .map((id) => taskById.get(id))
+                                .filter((t): t is NonNullable<typeof t> => t != null)}
+                              onTaskSelect={(task) => navigate(`/task/${task.id}`)}
+                            />
                           )}
                         </div>
                       ))}

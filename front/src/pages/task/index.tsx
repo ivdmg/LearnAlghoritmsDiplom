@@ -8,6 +8,7 @@ import { getOrderedTaskIds, useTaskById } from '@/entities/task';
 import { usePyodide } from '@/features/run-python';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
+import { ScrollArea } from '@/shared/ui';
 import { TaskExpectedOutput } from '@/entities/task/ui/task-expected-output';
 import styles from './task-page.module.css';
 
@@ -141,7 +142,7 @@ export function TaskPage() {
 
       <div className={styles.mainLayout}>
         <div className={styles.leftPanel}>
-          <div className={styles.panelContent}>
+          <ScrollArea className={styles.leftScrollPanel} viewportClassName={styles.leftScrollViewport}>
             <div className={styles.leftTopRow}>
               <div className={styles.leftNavButtons}>
                 <GlassButton onClick={handleBack} className={styles.iconButton}>
@@ -185,7 +186,7 @@ export function TaskPage() {
                   'Напишите функцию с именем solution и нужными аргументами. Pyodide вызовет её и вернёт результат.'}
               </p>
             </div>
-          </div>
+          </ScrollArea>
         </div>
         <div className={styles.rightPanel}>
           <div className={styles.rightColumn}>

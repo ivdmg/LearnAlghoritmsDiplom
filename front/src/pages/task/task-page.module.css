@@ -1,5 +1,5 @@
 .layout {
-  min-height: 100vh;
+  height: 100vh;
   background: #050607;
   display: flex;
   flex-direction: column;
@@ -65,6 +65,7 @@
   min-height: 0;
   margin-top: 88px;
   padding-bottom: 20px;
+  overflow: hidden;
 }
 
 .leftPanel,
@@ -100,6 +101,25 @@
   backdrop-filter: blur(30px) saturate(150%);
   -webkit-backdrop-filter: blur(30px) saturate(150%);
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- LEFT PANEL (SCROLL ONLY HERE) ---------- */
+
+.leftScrollPanel {
+  flex: 1;
+  margin-top: 16px;
+  border-radius: 24px;
+  color: #f9fafb;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+  min-height: 0;
+}
+
+.leftScrollViewport {
+  padding: 20px 22px;
 }
 
 /* ---------- LEFT PANEL HEADER ---------- */

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
+import { ScrollArea } from '@/shared/ui';
 import { ROADMAP } from '@/entities/roadmap';
 import { TASKS } from '@/entities/task';
 import styles from './tasks-page.module.css';
@@ -73,7 +74,7 @@ export function TasksPage() {
         </div>
 
         <div className={styles.rightPanel}>
-          <div className={styles.panelContent}>
+          <ScrollArea className={styles.panelContent} viewportClassName={styles.panelViewport}>
             {groups.length === 0 ? (
               <div className={styles.empty}>
                 Пока нет задач. Добавьте их в `entities/task/model/data.ts`.
@@ -138,7 +139,7 @@ export function TasksPage() {
                 ))}
               </div>
             )}
-          </div>
+          </ScrollArea>
         </div>
       </div>
 

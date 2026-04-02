@@ -4,8 +4,6 @@ import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selec
 import { setTheme } from '@/shared/store/slices/theme-slice';
 import styles from './theme-toggle.module.css';
 
-const ICON_SIZE = 18;
-
 const layoutTransition = {
   type: 'spring' as const,
   stiffness: 140,
@@ -13,14 +11,20 @@ const layoutTransition = {
   mass: 1.05,
 };
 
-export function ThemeToggle() {
+export type ThemeToggleProps = {
+  /** Компактный вид для хедера: без отступа снизу и без подсветки под блоком */
+  compact?: boolean;
+};
+
+export function ThemeToggle({ compact = false }: ThemeToggleProps) {
   const dispatch = useAppDispatch();
   const mode = useAppSelector((state) => state.theme.mode);
+  const iconSize = compact ? 16 : 18;
 
   return (
     <LayoutGroup>
-      <div className={styles.wrap}>
-        <div className={styles.underGlow} aria-hidden />
+      <div className={`${styles.wrap} ${compact ? styles.wrapCompact : ''}`}>
+        {!compact && <div className={styles.underGlow} aria-hidden />}
         <div className={styles.root} role="group" aria-label="Переключение темы">
           <div className={styles.track}>
             <div className={styles.slot}>
@@ -33,12 +37,12 @@ export function ThemeToggle() {
               )}
               <button
                 type="button"
-                className={`${styles.btn} ${mode === 'light' ? styles.btnActive : ''}`}
+                className={`${styles.btn} ${styles.btnSun} ${mode === 'light' ? styles.btnActive : ''}`}
                 onClick={() => dispatch(setTheme('light'))}
                 aria-pressed={mode === 'light'}
                 aria-label="Светлая тема"
               >
-                <Sun size={ICON_SIZE} strokeWidth={2} aria-hidden />
+                <Sun size={iconSize} strokeWidth={2} aria-hidden />
               </button>
             </div>
             <div className={styles.slot}>
@@ -51,12 +55,12 @@ export function ThemeToggle() {
               )}
               <button
                 type="button"
-                className={`${styles.btn} ${mode === 'dark' ? styles.btnActive : ''}`}
+                className={`${styles.btn} ${styles.btnMoon} ${mode === 'dark' ? styles.btnActive : ''}`}
                 onClick={() => dispatch(setTheme('dark'))}
                 aria-pressed={mode === 'dark'}
                 aria-label="Тёмная тема"
               >
-                <Moon size={ICON_SIZE} strokeWidth={2} aria-hidden />
+                <Moon size={iconSize} strokeWidth={2} aria-hidden />
               </button>
             </div>
           </div>

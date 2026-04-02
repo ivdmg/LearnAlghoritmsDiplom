@@ -1824,7 +1824,7 @@ export function getOrderedTaskIds(): string[] {
   return ids;
 }
 
-/** Flat list of topics + subtopics with taskIds (e.g. for animation page) */
+/** Flat list of topics + subtopics with taskIds */
 export const ROADMAP_TOPICS = ROADMAP.flatMap((t) => [
   { id: t.id, title: t.title, theory: `theory-${t.id}` as const, taskIds: TASKS.filter((x) => x.topicId === t.id).map((x) => x.id) },
   ...t.subtopics.map((s) => ({

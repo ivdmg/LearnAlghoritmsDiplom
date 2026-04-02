@@ -8,6 +8,25 @@
   padding-bottom: 10px;
 }
 
+.wrapCompact {
+  padding-bottom: 0;
+  align-self: center;
+}
+
+.wrapCompact .root {
+  padding: 3px;
+}
+
+.wrapCompact .track {
+  min-width: 84px;
+}
+
+.wrapCompact .btn {
+  min-height: 30px;
+  min-width: 36px;
+  padding: 5px 8px;
+}
+
 .underGlow {
   position: absolute;
   left: 50%;
@@ -92,17 +111,15 @@
 [data-theme='light'] .indicator {
   background: linear-gradient(
     155deg,
-    rgba(253, 230, 138, 0.72) 0%,
-    rgba(250, 204, 21, 0.58) 45%,
-    rgba(234, 179, 8, 0.52) 100%
+    rgba(253, 230, 138, 0.92) 0%,
+    rgba(250, 204, 21, 0.78) 45%,
+    rgba(234, 179, 8, 0.72) 100%
   );
-  border: 1px solid rgba(180, 154, 9, 0.35);
   box-shadow:
     0 0 14px rgba(250, 204, 21, 0.55),
     0 0 28px rgba(234, 179, 8, 0.32),
     0 4px 12px rgba(180, 83, 9, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    inset 0 -1px 0 rgba(146, 64, 14, 0.12);
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 [data-theme='dark'] .indicator {
@@ -112,13 +129,11 @@
     rgba(34, 197, 94, 0.32) 50%,
     rgba(22, 163, 74, 0.28) 100%
   );
-  border: 1px solid rgba(74, 222, 128, 0.45);
   box-shadow:
     0 0 16px rgba(34, 197, 94, 0.55),
     0 0 32px rgba(34, 197, 94, 0.28),
     0 4px 14px rgba(21, 128, 61, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(6, 78, 59, 0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .btn {
@@ -135,37 +150,34 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #e5e7eb;
-  opacity: 0.55;
+  color: rgba(229, 231, 235, 0.42);
   transition:
-    opacity 0.28s ease,
     color 0.28s ease,
     transform 0.2s ease;
 }
 
-.btn:hover:not(:disabled) {
-  opacity: 0.85;
+.btn:hover:not(:disabled):not(.btnActive) {
+  color: rgba(229, 231, 235, 0.72);
 }
 
 .btn:active:not(:disabled) {
   transform: scale(0.96);
 }
 
-.btnActive {
-  opacity: 1;
-  color: #f9fafb;
-}
-
-[data-theme='dark'] .btnActive {
-  color: #c4f8e0;
-}
-
 [data-theme='light'] .btn {
-  color: #64748b;
+  color: rgba(15, 23, 42, 0.38);
 }
 
-[data-theme='light'] .btnActive {
-  color: #420606b0;
+[data-theme='light'] .btn:hover:not(:disabled):not(.btnActive) {
+  color: rgba(15, 23, 42, 0.58);
+}
+
+.btnActive.btnSun {
+  color: #78350f;
+}
+
+.btnActive.btnMoon {
+  color: #d4fce8;
 }
 
 .btn:focus-visible {

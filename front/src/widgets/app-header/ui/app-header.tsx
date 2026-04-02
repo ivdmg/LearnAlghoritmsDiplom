@@ -1,10 +1,15 @@
-import { ThunderboltOutlined } from '@ant-design/icons';
+import { LayoutGroup, motion } from 'framer-motion';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ThemeToggle } from '@/widgets/theme-toggle';
 import { GlassTopbar } from '@/shared/ui';
-import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { TASKS } from '@/entities/task';
 import styles from './app-header.module.css';
+
+const navSpring = {
+  type: 'spring' as const,
+  stiffness: 320,
+  damping: 32,
+};
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -27,8 +32,6 @@ export function AppHeader() {
     centerTitle = 'Задачи';
   } else if (isTaskDetails) {
     centerTitle = currentTaskTitle ?? 'Задачи';
-  } else if (location.pathname.startsWith('/animation')) {
-    centerTitle = 'Анимация фитиля';
   } else {
     centerTitle = 'AlgoLearn';
   }
@@ -37,31 +40,51 @@ export function AppHeader() {
     <header className={styles.headerShell}>
       <GlassTopbar
         left={
-          <div className={styles.navTabs}>
-            <GlassButton
-              active={activeTab === 'roadmap'}
-              layoutId="header-tab-highlight"
-              onClick={() => navigate('/')}
-            >
-              Roadmap
-            </GlassButton>
-            <GlassButton
-              active={activeTab === 'tasks'}
-              layoutId="header-tab-highlight"
-              onClick={() => navigate('/tasks')}
-            >
-              Tasks
-            </GlassButton>
-          </div>
+          <LayoutGroup>
+            <nav className={styles.navPill} aria-label="Основная навигация">
+              <div className={styles.navTrack}>
+                <div className={styles.navSlot}>
+                  {activeTab === 'roadmap' && (
+                    <motion.div
+                      className={styles.navIndicator}
+                      layoutId="header-main-nav-pill"
+                      transition={navSpring}
+                    />
+                  )}
+                  <button
+                    type="button"
+                    className={`${styles.navBtn} ${activeTab === 'roadmap' ? styles.navBtnActive : ''}`}
+                    onClick={() => navigate('/')}
+                    aria-current={activeTab === 'roadmap' ? 'page' : undefined}
+                  >
+                    Roadmap
+                  </button>
+                </div>
+                <div className={styles.navSlot}>
+                  {activeTab === 'tasks' && (
+                    <motion.div
+                      className={styles.navIndicator}
+                      layoutId="header-main-nav-pill"
+                      transition={navSpring}
+                    />
+                  )}
+                  <button
+                    type="button"
+                    className={`${styles.navBtn} ${activeTab === 'tasks' ? styles.navBtnActive : ''}`}
+                    onClick={() => navigate('/tasks')}
+                    aria-current={activeTab === 'tasks' ? 'page' : undefined}
+                  >
+                    Tasks
+                  </button>
+                </div>
+              </div>
+            </nav>
+          </LayoutGroup>
         }
         center={<span className={styles.title}>{centerTitle}</span>}
         right={
           <div className={styles.headerRight}>
-            <GlassButton onClick={() => navigate('/animation')}>
-              <ThunderboltOutlined />
-              <span>Animation</span>
-            </GlassButton>
-            <ThemeToggle />
+            <ThemeToggle compact />
           </div>
         }
       />

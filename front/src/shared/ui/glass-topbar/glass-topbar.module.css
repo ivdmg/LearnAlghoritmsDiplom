@@ -6,11 +6,11 @@
   /* width: min(1120px, 100% - 32px); */
   width: calc(100% - 40px);
   margin: 0 20px;
-  padding: 10px 20px;
+  padding: 7px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   z-index: 1000;
 
   border-radius: 50px;
@@ -52,7 +52,7 @@
 }
 
 .title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: #f9fafb;

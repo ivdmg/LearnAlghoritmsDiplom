@@ -12,13 +12,125 @@
 .headerRight {
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: flex-end;
+  gap: 12px;
+  min-height: 0;
 }
 
-.navTabs {
+/* Roadmap / Tasks: без отдельной подложки — кнопки на фоне хедера; скользит только .navIndicator (как в GlassTabs сайдбара) */
+
+.navPill {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.navTrack {
+  display: flex;
+  align-items: stretch;
+}
+
+.navSlot {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 5px 8px;
+  margin: 0 2px;
+}
+
+.navSlot:first-child {
+  margin-left: 0;
+}
+
+.navSlot:last-child {
+  margin-right: 0;
+}
+
+/* Как .indicator в shared/ui/glass-tabs/glass-tabs.module.css — нейтральный glass, без зелёного */
+.navIndicator {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 9px;
+  right: 9px;
+  border-radius: 999px;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.08),
+    inset 3px 5px 2px -4.75px rgba(255, 255, 255, 0.08),
+    inset 1.25px 1.5px 0px rgba(0, 0, 0, 0.04),
+    inset 0px 4.75px 0.25px -2.5px rgba(255, 255, 255, 0.08),
+    inset 1px 1px 3px 3px rgba(245, 245, 245, 0.08),
+    inset 0px -3px 1px rgba(0, 0, 0, 0.04),
+    inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
+    inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
+}
+
+[data-theme='light'] .navIndicator {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.35),
+    inset 1px 1px 3px 3px rgba(255, 255, 255, 0.25),
+    0 8px 22px rgba(2, 6, 23, 0.08);
+}
+
+.navBtn {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 96px;
+  padding: 9px 20px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(229, 231, 235, 0.45);
+  transition: color 0.2s ease;
+}
+
+.navBtn:hover {
+  color: rgba(229, 231, 235, 0.75);
+}
+
+.navBtnActive {
+  color: #f9fafb;
+}
+
+[data-theme='light'] .navBtn {
+  color: rgba(15, 23, 42, 0.38);
+}
+
+[data-theme='light'] .navBtn:hover {
+  color: rgba(15, 23, 42, 0.62);
+}
+
+[data-theme='light'] .navBtnActive {
+  color: #0b1220;
+}
+
+.navBtn:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.45);
+  outline-offset: 2px;
+}
+
+[data-theme='light'] .navBtn:focus-visible {
+  outline-color: rgba(217, 119, 6, 0.5);
 }
 
 .logo {
@@ -29,7 +141,7 @@
 }
 
 .title {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #e5e7eb;
 }

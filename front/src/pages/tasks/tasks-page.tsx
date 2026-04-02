@@ -119,23 +119,19 @@ export function TasksPage() {
                                 if (!task) return null;
                                 const diff = task.difficulty ?? 'easy';
                                 return (
-                                  <div key={task.id} className={styles.taskItem}>
+                                  <button
+                                    key={task.id}
+                                    className={styles.taskItem}
+                                    type="button"
+                                    onClick={() => navigate(`/task/${task.id}`)}
+                                  >
                                     <div className={styles.taskLeft}>
-                                      <div className={styles.taskTitleRow}>
-                                        <span className={styles.taskTitle}>{task.title}</span>
-                                        <span className={`${styles.diffBadge} ${styles[`diff_${diff}`]}`}>
-                                          {diff === 'easy' ? 'Easy' : diff === 'medium' ? 'Medium' : 'Hard'}
-                                        </span>
-                                      </div>
-                                      <div className={styles.taskMeta}>{task.description}</div>
+                                      <div className={styles.taskTitle}>{task.title}</div>
                                     </div>
-                                    <GlassButton
-                                      className={styles.openBtn}
-                                      onClick={() => navigate(`/task/${task.id}`)}
-                                    >
-                                      Открыть
-                                    </GlassButton>
-                                  </div>
+                                    <span className={`${styles.diffBadge} ${styles[`diff_${diff}`]}`}>
+                                      {diff === 'easy' ? 'Easy' : diff === 'medium' ? 'Medium' : 'Hard'}
+                                    </span>
+                                  </button>
                                 );
                               })}
                             </div>

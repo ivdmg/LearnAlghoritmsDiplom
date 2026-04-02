@@ -86,7 +86,9 @@ export function TasksPage() {
                     <summary className={styles.blockSummary}>
                       <div className={styles.blockTitleRow}>
                         <span className={styles.blockTitle}>{g.topicTitle}</span>
-                        <span className={styles.countPill}>{g.totalTasks}</span>
+                        <GlassButton className={styles.countPillBtn} disabled>
+                          {g.totalTasks}
+                        </GlassButton>
                       </div>
                       <span className={styles.chevron} aria-hidden>
                         <svg

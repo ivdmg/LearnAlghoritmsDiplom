@@ -22,3 +22,7 @@
 .resolveBtn{
   flex-shrink: 0;
 }
+
+[data-theme='light'] .taskTitle {
+  color: #0f172a;
+}

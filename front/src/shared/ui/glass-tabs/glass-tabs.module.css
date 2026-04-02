@@ -21,6 +21,13 @@
     0 4px 30px rgba(0, 0, 0, 0.25);
 }
 
+[data-theme='light'] .root {
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.55),
+    0 0 0 1px rgba(15, 23, 42, 0.08),
+    0 10px 26px rgba(2, 6, 23, 0.12);
+}
+
 .tabWrapper {
   position: relative;
   padding: 2px 5px;
@@ -63,6 +70,14 @@
   z-index: 0;
 }
 
+[data-theme='light'] .indicator {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.35),
+    inset 1px 1px 3px 3px rgba(255, 255, 255, 0.25),
+    0 8px 22px rgba(2, 6, 23, 0.08);
+}
+
 /* Тонкая настройка под табовые GlassButton */
 .tabButton {
   width: 120px;
@@ -77,6 +92,15 @@
   border-radius: 567.293px;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+[data-theme='light'] .root .tabButton {
+  /* Important: the sliding indicator is the background.
+     If the button has its own background, the indicator becomes invisible. */
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: #0b1220;
 }
 
 .iconTabButton {
@@ -95,6 +119,12 @@
     inset 0px -3px 1px rgba(0, 0, 0, 0.04),
     inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
     inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
+}
+
+[data-theme='light'] .iconTabButton {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #0b1220;
 }
 
 .spacer {

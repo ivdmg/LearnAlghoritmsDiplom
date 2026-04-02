@@ -66,6 +66,8 @@ function LinkBlock({ block }: { block: LinkBlock }) {
 }
 
 function CodeBlockView({ block }: { block: CodeBlock }) {
+  const isLightTheme = document.documentElement.getAttribute('data-theme') === 'light';
+
   if (block.editable) {
     return (
       <div className={styles.codeWrapper}>
@@ -82,7 +84,7 @@ function CodeBlockView({ block }: { block: CodeBlock }) {
   return (
     <div className={styles.codeWrapper}>
       <Highlight
-        theme={themes.nightOwl}
+        theme={isLightTheme ? themes.vsLight : themes.nightOwl}
         code={block.code.trimEnd()}
         language={block.language as any}
       >
@@ -92,8 +94,15 @@ function CodeBlockView({ block }: { block: CodeBlock }) {
             style={{
               ...style,
               ...block.style,
-              //цвет фона блока менять тут
-              background: "rgba(255, 255, 255, 0.05)"
+                // Keep code readable in both themes (glass, but with enough contrast)
+                background:
+                  isLightTheme
+                    ? 'rgba(15, 23, 42, 0.06)'
+                    : 'rgba(255, 255, 255, 0.05)',
+                border:
+                  isLightTheme
+                    ? '1px solid rgba(15, 23, 42, 0.12)'
+                    : '1px solid rgba(148, 163, 184, 0.18)',
             }}
           >
             {tokens.map((line, i) => {

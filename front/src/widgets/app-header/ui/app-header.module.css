@@ -33,3 +33,8 @@
   font-weight: 600;
   color: #e5e7eb;
 }
+
+[data-theme='light'] .logo,
+[data-theme='light'] .title {
+  color: #0b1220;
+}

@@ -51,3 +51,16 @@
 [data-theme='dark'] .codeBlock {
   background: rgba(255, 255, 255, 0.06);
 }
+
+[data-theme='light'] .container {
+  color: #0f172a;
+}
+
+[data-theme='light'] .li::before {
+  color: #0369a1;
+}
+
+[data-theme='light'] .codeBlock {
+  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+}

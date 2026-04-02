@@ -1,6 +1,6 @@
 import { ThunderboltOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ThemeToggle } from '@/widgets/theme-toggle/ui/theme-toggle';
+import { ThemeToggle } from '@/widgets/theme-toggle';
 import { GlassTopbar } from '@/shared/ui';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { TASKS } from '@/entities/task';

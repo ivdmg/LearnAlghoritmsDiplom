@@ -12,17 +12,20 @@ export function AppHeader() {
   const { taskId } = useParams<{ taskId?: string }>();
 
   const isRoadmap = location.pathname === '/';
-  const isTasks = location.pathname.startsWith('/task');
+  const isTasksList = location.pathname === '/tasks';
+  const isTaskDetails = location.pathname.startsWith('/task');
 
-  const activeTab = isTasks ? 'tasks' : 'roadmap';
+  const activeTab = isTasksList || isTaskDetails ? 'tasks' : 'roadmap';
 
   const currentTaskTitle =
-    isTasks && taskId ? TASKS.find((t) => t.id === taskId)?.title ?? 'Задачи' : null;
+    isTaskDetails && taskId ? TASKS.find((t) => t.id === taskId)?.title ?? 'Задачи' : null;
 
   let centerTitle: string;
   if (isRoadmap) {
     centerTitle = 'AlgoLearn — Roadmap';
-  } else if (isTasks) {
+  } else if (isTasksList) {
+    centerTitle = 'Задачи';
+  } else if (isTaskDetails) {
     centerTitle = currentTaskTitle ?? 'Задачи';
   } else if (location.pathname.startsWith('/animation')) {
     centerTitle = 'Анимация фитиля';
@@ -45,10 +48,7 @@ export function AppHeader() {
             <GlassButton
               active={activeTab === 'tasks'}
               layoutId="header-tab-highlight"
-              onClick={() => {
-                const firstTaskId = TASKS[0]?.id;
-                if (firstTaskId) navigate(`/task/${firstTaskId}`);
-              }}
+              onClick={() => navigate('/tasks')}
             >
               Tasks
             </GlassButton>

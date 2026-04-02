@@ -5260,6 +5260,11 @@
       "id": "3f0e",
       "login": "1234",
       "password": "111"
+    },
+    {
+      "id": "680b",
+      "login": "123",
+      "password": "123"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

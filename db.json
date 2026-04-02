@@ -210,6 +210,522 @@
           "text": "Вот как отличаются алгоритмы при обработке разного количества данных (n — количество элементов):\n\n• O(1): n=10 → 1, n=1000 → 1, n=1 000 000 → 1\n• O(log n): n=10 → 3, n=1000 → 10, n=1 000 000 → 20\n• O(n): n=10 → 10, n=1000 → 1000, n=1 000 000 → 1 000 000\n• O(n²): n=10 → 100, n=1000 → 1 000 000, n=1 000 000 → 1 000 000 000 000\n\nВидите разницу? При миллионе элементов O(log n) делает 20 операций, а O(n²) — триллион!"
         },
         {
+          "id": "chart-complexity",
+          "type": "chart",
+          "title": "Скорости роста алгоритмов",
+          "columns": 3,
+          "charts": [
+            {
+              "title": "O(1) — константа",
+              "data": [
+                {
+                  "n": 0,
+                  "ops": 1
+                },
+                {
+                  "n": 5,
+                  "ops": 1
+                },
+                {
+                  "n": 10,
+                  "ops": 1
+                },
+                {
+                  "n": 15,
+                  "ops": 1
+                },
+                {
+                  "n": 20,
+                  "ops": 1
+                },
+                {
+                  "n": 25,
+                  "ops": 1
+                },
+                {
+                  "n": 30,
+                  "ops": 1
+                },
+                {
+                  "n": 35,
+                  "ops": 1
+                },
+                {
+                  "n": 40,
+                  "ops": 1
+                },
+                {
+                  "n": 45,
+                  "ops": 1
+                },
+                {
+                  "n": 50,
+                  "ops": 1
+                }
+              ],
+              "xKey": "n",
+              "lines": [
+                {
+                  "dataKey": "ops",
+                  "label": "O(1)",
+                  "color": "#60a5fa"
+                }
+              ],
+              "height": 160
+            },
+            {
+              "title": "O(log n) — логарифм",
+              "data": [
+                {
+                  "n": 0,
+                  "ops": 0
+                },
+                {
+                  "n": 2,
+                  "ops": 1
+                },
+                {
+                  "n": 4,
+                  "ops": 2
+                },
+                {
+                  "n": 6,
+                  "ops": 2.58
+                },
+                {
+                  "n": 8,
+                  "ops": 3
+                },
+                {
+                  "n": 10,
+                  "ops": 3.32
+                },
+                {
+                  "n": 12,
+                  "ops": 3.58
+                },
+                {
+                  "n": 14,
+                  "ops": 3.81
+                },
+                {
+                  "n": 16,
+                  "ops": 4
+                },
+                {
+                  "n": 18,
+                  "ops": 4.17
+                },
+                {
+                  "n": 20,
+                  "ops": 4.32
+                },
+                {
+                  "n": 22,
+                  "ops": 4.46
+                },
+                {
+                  "n": 24,
+                  "ops": 4.58
+                },
+                {
+                  "n": 26,
+                  "ops": 4.7
+                },
+                {
+                  "n": 28,
+                  "ops": 4.81
+                },
+                {
+                  "n": 30,
+                  "ops": 4.91
+                },
+                {
+                  "n": 32,
+                  "ops": 5
+                },
+                {
+                  "n": 34,
+                  "ops": 5.09
+                },
+                {
+                  "n": 36,
+                  "ops": 5.17
+                },
+                {
+                  "n": 38,
+                  "ops": 5.25
+                },
+                {
+                  "n": 40,
+                  "ops": 5.32
+                },
+                {
+                  "n": 42,
+                  "ops": 5.39
+                },
+                {
+                  "n": 44,
+                  "ops": 5.46
+                },
+                {
+                  "n": 46,
+                  "ops": 5.52
+                },
+                {
+                  "n": 48,
+                  "ops": 5.58
+                },
+                {
+                  "n": 50,
+                  "ops": 5.64
+                }
+              ],
+              "xKey": "n",
+              "lines": [
+                {
+                  "dataKey": "ops",
+                  "label": "O(log n)",
+                  "color": "#a78bfa"
+                }
+              ],
+              "height": 160
+            },
+            {
+              "title": "O(n) — линейная",
+              "data": [
+                {
+                  "n": 0,
+                  "ops": 0
+                },
+                {
+                  "n": 5,
+                  "ops": 5
+                },
+                {
+                  "n": 10,
+                  "ops": 10
+                },
+                {
+                  "n": 15,
+                  "ops": 15
+                },
+                {
+                  "n": 20,
+                  "ops": 20
+                },
+                {
+                  "n": 25,
+                  "ops": 25
+                },
+                {
+                  "n": 30,
+                  "ops": 30
+                },
+                {
+                  "n": 35,
+                  "ops": 35
+                },
+                {
+                  "n": 40,
+                  "ops": 40
+                },
+                {
+                  "n": 45,
+                  "ops": 45
+                },
+                {
+                  "n": 50,
+                  "ops": 50
+                }
+              ],
+              "xKey": "n",
+              "lines": [
+                {
+                  "dataKey": "ops",
+                  "label": "O(n)",
+                  "color": "#4ade80"
+                }
+              ],
+              "height": 160
+            },
+            {
+              "title": "O(n log n)",
+              "data": [
+                {
+                  "n": 0,
+                  "ops": 0
+                },
+                {
+                  "n": 2,
+                  "ops": 2
+                },
+                {
+                  "n": 4,
+                  "ops": 8
+                },
+                {
+                  "n": 6,
+                  "ops": 15.51
+                },
+                {
+                  "n": 8,
+                  "ops": 24
+                },
+                {
+                  "n": 10,
+                  "ops": 33.22
+                },
+                {
+                  "n": 12,
+                  "ops": 43.02
+                },
+                {
+                  "n": 14,
+                  "ops": 53.3
+                },
+                {
+                  "n": 16,
+                  "ops": 64
+                },
+                {
+                  "n": 18,
+                  "ops": 75.06
+                },
+                {
+                  "n": 20,
+                  "ops": 86.44
+                },
+                {
+                  "n": 22,
+                  "ops": 98.11
+                },
+                {
+                  "n": 24,
+                  "ops": 110.04
+                },
+                {
+                  "n": 26,
+                  "ops": 122.21
+                },
+                {
+                  "n": 28,
+                  "ops": 134.61
+                },
+                {
+                  "n": 30,
+                  "ops": 147.21
+                },
+                {
+                  "n": 32,
+                  "ops": 160
+                },
+                {
+                  "n": 34,
+                  "ops": 172.97
+                },
+                {
+                  "n": 36,
+                  "ops": 186.12
+                },
+                {
+                  "n": 38,
+                  "ops": 199.42
+                },
+                {
+                  "n": 40,
+                  "ops": 212.88
+                },
+                {
+                  "n": 42,
+                  "ops": 226.48
+                },
+                {
+                  "n": 44,
+                  "ops": 240.21
+                },
+                {
+                  "n": 46,
+                  "ops": 254.08
+                },
+                {
+                  "n": 48,
+                  "ops": 268.08
+                },
+                {
+                  "n": 50,
+                  "ops": 282.19
+                }
+              ],
+              "xKey": "n",
+              "lines": [
+                {
+                  "dataKey": "ops",
+                  "label": "O(n log n)",
+                  "color": "#fbbf24"
+                }
+              ],
+              "height": 160
+            },
+            {
+              "title": "O(n²) — квадратичная",
+              "data": [
+                {
+                  "n": 0,
+                  "ops": 0
+                },
+                {
+                  "n": 5,
+                  "ops": 25
+                },
+                {
+                  "n": 10,
+                  "ops": 100
+                },
+                {
+                  "n": 15,
+                  "ops": 225
+                },
+                {
+                  "n": 20,
+                  "ops": 400
+                },
+                {
+                  "n": 25,
+                  "ops": 625
+                },
+                {
+                  "n": 30,
+                  "ops": 900
+                },
+                {
+                  "n": 35,
+                  "ops": 1225
+                },
+                {
+                  "n": 40,
+                  "ops": 1600
+                },
+                {
+                  "n": 45,
+                  "ops": 2025
+                },
+                {
+                  "n": 50,
+                  "ops": 2500
+                }
+              ],
+              "xKey": "n",
+              "lines": [
+                {
+                  "dataKey": "ops",
+                  "label": "O(n²)",
+                  "color": "#f87171"
+                }
+              ],
+              "height": 160
+            },
+            {
+              "title": "O(2ⁿ) — экспоненциальная",
+              "data": [
+                {
+                  "n": 0,
+                  "ops": 1
+                },
+                {
+                  "n": 1,
+                  "ops": 2
+                },
+                {
+                  "n": 2,
+                  "ops": 4
+                },
+                {
+                  "n": 3,
+                  "ops": 8
+                },
+                {
+                  "n": 4,
+                  "ops": 16
+                },
+                {
+                  "n": 5,
+                  "ops": 32
+                },
+                {
+                  "n": 6,
+                  "ops": 64
+                },
+                {
+                  "n": 7,
+                  "ops": 128
+                },
+                {
+                  "n": 8,
+                  "ops": 256
+                },
+                {
+                  "n": 9,
+                  "ops": 512
+                },
+                {
+                  "n": 10,
+                  "ops": 1024
+                },
+                {
+                  "n": 11,
+                  "ops": 2048
+                },
+                {
+                  "n": 12,
+                  "ops": 4096
+                },
+                {
+                  "n": 13,
+                  "ops": 8192
+                },
+                {
+                  "n": 14,
+                  "ops": 16384
+                },
+                {
+                  "n": 15,
+                  "ops": 32768
+                },
+                {
+                  "n": 16,
+                  "ops": 65536
+                },
+                {
+                  "n": 17,
+                  "ops": 131072
+                },
+                {
+                  "n": 18,
+                  "ops": 262144
+                },
+                {
+                  "n": 19,
+                  "ops": 524288
+                },
+                {
+                  "n": 20,
+                  "ops": 1000000
+                }
+              ],
+              "xKey": "n",
+              "lines": [
+                {
+                  "dataKey": "ops",
+                  "label": "O(2ⁿ)",
+                  "color": "#fb923c"
+                }
+              ],
+              "height": 160
+            }
+          ]
+        },
+        {
           "id": "h2-space",
           "type": "heading",
           "level": 2,
@@ -279,6 +795,17 @@
           "language": "python",
           "editable": false,
           "code": "# Создание массива (списка) в Python\ntemperatures = [22, 25, 19, 30, 17]\n\n# Индексация начинается с 0!\nprint(temperatures[0])   # 22 (первый элемент)\nprint(temperatures[2])   # 19 (третий элемент)\nprint(temperatures[-1])  # 17 (последний элемент)"
+        },
+        {
+          "id": "anim-array-basics",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Массив: значение и индекс</div><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-row\" id=\"arr\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr=[4,8,1,7,3,9];\nvar root=document.getElementById('arr');\nvar hint=document.getElementById('hint');\nvar nodes=[];\narr.forEach(function(v,i){\nvar el=document.createElement('div');\nel.className='viz-cell';\nel.innerHTML='<span class=\"viz-cell__main\">'+v+'</span><span class=\"viz-cell__sub\">i = '+i+'</span>';\nroot.appendChild(el);\nnodes.push(el);\n});\nhint.textContent='Линейный проход по элементам';\nvar i=0;\nfunction tick(){\nnodes.forEach(function(n){n.classList.remove('viz-cell--active');});\nnodes[i].classList.add('viz-cell--active');\nhint.textContent='Шаг '+(i+1)+'/'+arr.length+' — элемент '+arr[i]+' (индекс '+i+')';\ni=(i+1)%arr.length;\n}\ntick();\nsetInterval(tick, 2000);\n})();",
+          "width": "100%",
+          "height": 220,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "h2-memory",
@@ -531,6 +1058,17 @@
           "code": "# Python имеет встроенную хэш-функцию\nprint(hash(\"Алиса\"))   # Какое-то большое число\nprint(hash(\"Боб\"))     # Другое число\nprint(hash(\"Алиса\"))   # То же число, что и раньше!\n\n# Хэш-функция всегда возвращает одинаковый результат\n# для одинакового входа — это её ключевое свойство"
         },
         {
+          "id": "anim-hash-table",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-row\" id=\"buckets\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar SIZE = 7;\nvar keys = ['cat','dog','bird','fish','ant','bee','fox','owl'];\nvar buckets = document.getElementById('buckets');\nvar hint = document.getElementById('hint');\nvar bucketData = [];\nfor(var b=0;b<SIZE;b++){\nvar el = document.createElement('div');\nel.className = 'viz-cell';\nel.innerHTML = '<span class=\"viz-cell__main\">'+b+'</span><span class=\"viz-cell__sub\">—</span>';\nbuckets.appendChild(el);\nbucketData.push({el:el, items:[]});\n}\nfunction hash(s){var h=0;for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))%SIZE;return h;}\nhint.textContent = 'Хеш-таблица: size='+SIZE+', hash = (key × 31) mod '+SIZE;\nvar ki=0;\nfunction step(){\nif(ki>=keys.length){hint.textContent='Все ключи вставлены';return;}\nvar k=keys[ki]; ki++;\nvar idx=hash(k);\nbucketData.forEach(function(b){b.el.classList.remove('viz-cell--active','viz-cell--compare');});\nbucketData[idx].el.classList.add('viz-cell--active');\nbucketData[idx].items.push(k);\nbucketData[idx].el.querySelector('.viz-cell__sub').textContent=bucketData[idx].items.join(', ');\nhint.textContent='hash(\"'+k+'\") = '+idx+(bucketData[idx].items.length>1?' (коллизия!)':'');\nsetTimeout(function(){\nbucketData[idx].el.classList.remove('viz-cell--active');\nbucketData[idx].el.classList.add('viz-cell--success');\nsetTimeout(step, 750);\n}, 1250);\n}\nsetTimeout(step, 1500);\n})();",
+          "width": "100%",
+          "height": 240,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-dict",
           "type": "heading",
           "level": 2,
@@ -656,6 +1194,17 @@
           "code": "# Стек на основе списка Python\nstack = []\n\n# Кладём элементы на вершину стека (push)\nstack.append(\"тарелка 1\")\nstack.append(\"тарелка 2\")\nstack.append(\"тарелка 3\")\nprint(stack)  # ['тарелка 1', 'тарелка 2', 'тарелка 3']\n\n# Снимаем с вершины (pop)\ntop = stack.pop()\nprint(top)    # 'тарелка 3' — последняя положенная\nprint(stack)  # ['тарелка 1', 'тарелка 2']\n\n# Смотрим на вершину, не снимая (peek)\nprint(stack[-1])  # 'тарелка 2'"
         },
         {
+          "id": "anim-stack-ops",
+          "type": "animation",
+          "html": "<div class=\"viz-split\"><div class=\"viz-panel\"><div class=\"viz-caption\">Стек</div><div class=\"viz-stack-v\" id=\"stack\"></div></div><div class=\"viz-panel\"><div class=\"viz-caption\">Операция</div><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-badge\" id=\"badge\">top: —</div></div></div>",
+          "css": "",
+          "js": "(function(){\nvar stackEl=document.getElementById('stack');\nvar hint=document.getElementById('hint');\nvar badge=document.getElementById('badge');\nvar ops=[{op:'push',v:10},{op:'push',v:20},{op:'push',v:30},{op:'push',v:40},{op:'pop'},{op:'pop'},{op:'push',v:50},{op:'pop'},{op:'pop'},{op:'pop'}];\nvar stack=[];\nfunction render(){\nstackEl.innerHTML='';\nfor(var i=stack.length-1;i>=0;i--){\nvar el=document.createElement('div');\nel.className='viz-cell'+(i===stack.length-1?' viz-cell--active':'');\nel.innerHTML='<span class=\"viz-cell__main\">'+stack[i]+'</span>';\nstackEl.appendChild(el);\n}\nbadge.textContent='top: '+(stack.length?stack[stack.length-1]:'—');\n}\nvar oi=0;\nfunction step(){\nif(oi>=ops.length){hint.textContent='Стек пуст, операции завершены';return;}\nvar o=ops[oi]; oi++;\nif(o.op==='push'){\nstack.push(o.v);\nhint.textContent='push('+o.v+')';\n} else {\nvar v=stack.pop();\nhint.textContent='pop() → '+v;\n}\nrender();\nsetTimeout(step, 1500);\n}\nrender();\nsetTimeout(step, 1250);\n})();",
+          "width": "100%",
+          "height": 300,
+          "showPlayButton": true,
+          "vizLayout": "tall"
+        },
+        {
           "id": "h2-stack-use",
           "type": "heading",
           "level": 2,
@@ -690,6 +1239,17 @@
           "language": "python",
           "editable": false,
           "code": "from collections import deque\n\n# Очередь на основе deque (эффективнее, чем list)\nqueue = deque()\n\n# Встаём в конец очереди (enqueue)\nqueue.append(\"Покупатель 1\")\nqueue.append(\"Покупатель 2\")\nqueue.append(\"Покупатель 3\")\nprint(queue)  # deque(['Покупатель 1', 'Покупатель 2', 'Покупатель 3'])\n\n# Обслуживаем первого (dequeue)\nfirst = queue.popleft()\nprint(first)  # 'Покупатель 1' — первый пришёл, первый ушёл\nprint(queue)  # deque(['Покупатель 2', 'Покупатель 3'])"
+        },
+        {
+          "id": "anim-queue-ops",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Очередь (FIFO)</div><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-row viz-row--queue\" id=\"queue\"></div><div class=\"viz-badge\" id=\"badge\">front: — | back: —</div></div>",
+          "css": "",
+          "js": "(function(){\nvar queueEl=document.getElementById('queue');\nvar hint=document.getElementById('hint');\nvar badge=document.getElementById('badge');\nvar ops=[{op:'enqueue',v:'A'},{op:'enqueue',v:'B'},{op:'enqueue',v:'C'},{op:'dequeue'},{op:'enqueue',v:'D'},{op:'enqueue',v:'E'},{op:'dequeue'},{op:'dequeue'},{op:'enqueue',v:'F'},{op:'dequeue'}];\nvar q=[];\nfunction render(){\nqueueEl.innerHTML='';\nq.forEach(function(v,i){\nvar el=document.createElement('div');\nel.className='viz-cell'+(i===0?' viz-cell--success':'');\nel.innerHTML='<span class=\"viz-cell__main\">'+v+'</span>';\nqueueEl.appendChild(el);\n});\nbadge.textContent='front: '+(q.length?q[0]:'—')+' | back: '+(q.length?q[q.length-1]:'—');\n}\nvar oi=0;\nfunction step(){\nif(oi>=ops.length){hint.textContent='Операции завершены';return;}\nvar o=ops[oi]; oi++;\nif(o.op==='enqueue'){\nq.push(o.v);\nhint.textContent='enqueue(\"'+o.v+'\")';\n} else {\nvar v=q.shift();\nhint.textContent='dequeue() → \"'+v+'\"';\n}\nrender();\nsetTimeout(step, 1500);\n}\nrender();\nsetTimeout(step, 1250);\n})();",
+          "width": "100%",
+          "height": 240,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "h2-queue-use",
@@ -903,6 +1463,17 @@
           "code": "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\n# Пошаговый разбор factorial(5):\n# factorial(5) = 5 * factorial(4)\n# factorial(4) = 4 * factorial(3)\n# factorial(3) = 3 * factorial(2)\n# factorial(2) = 2 * factorial(1)\n# factorial(1) = 1              ← базовый случай!\n# Теперь сворачиваемся обратно:\n# factorial(2) = 2 * 1 = 2\n# factorial(3) = 3 * 2 = 6\n# factorial(4) = 4 * 6 = 24\n# factorial(5) = 5 * 24 = 120\n\nprint(factorial(5))  # 120"
         },
         {
+          "id": "anim-recursion-stack",
+          "type": "animation",
+          "html": "<div class=\"viz-split\"><div class=\"viz-panel\"><div class=\"viz-caption\">Стек вызовов</div><div class=\"viz-stack-v\" id=\"stack\"></div></div><div class=\"viz-panel\"><div class=\"viz-caption\">Рекурсия</div><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-badge\" id=\"badge\">factorial(5)</div></div></div>",
+          "css": "",
+          "js": "(function(){\nvar stackEl=document.getElementById('stack');\nvar hint=document.getElementById('hint');\nvar badge=document.getElementById('badge');\nfunction sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}\nvar frames=[];\nfunction render(){\nstackEl.innerHTML='';\nfor(var i=frames.length-1;i>=0;i--){\nvar f=frames[i];\nvar el=document.createElement('div');\nel.className='viz-cell'+(f.done?' viz-cell--success':i===frames.length-1?' viz-cell--active':'');\nel.innerHTML='<span class=\"viz-cell__main\">f('+f.n+')</span><span class=\"viz-cell__sub\">'+(f.done?'= '+f.result:'ожидание')+'</span>';\nstackEl.appendChild(el);\n}\n}\nfunction fact(n){\nframes.push({n:n,done:false,result:null});\nrender();\nhint.textContent='Вызов factorial('+n+')';\nreturn sleep(1125).then(function(){\nif(n<=1){\nframes[frames.length-1].done=true;\nframes[frames.length-1].result=1;\nhint.textContent='База: factorial('+n+') = 1';\nrender();\nreturn sleep(875).then(function(){frames.pop();render();return 1;});\n}\nreturn fact(n-1).then(function(sub){\nvar r=n*sub;\nframes[frames.length-1].done=true;\nframes[frames.length-1].result=r;\nhint.textContent=n+' × '+sub+' = '+r;\nrender();\nreturn sleep(875).then(function(){frames.pop();render();return r;});\n});\n});\n}\nfact(5).then(function(ans){badge.textContent='Результат: '+ans;hint.textContent='Готово!';});\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "tall"
+        },
+        {
           "id": "h2-sum",
           "type": "heading",
           "level": 2,
@@ -1056,6 +1627,17 @@
           "language": "python",
           "editable": false,
           "code": "# Мемоизация вручную\ndef fib_memo(n, cache={}):\n    if n in cache:\n        return cache[n]  # Уже считали — берём из блокнота\n    if n <= 0:\n        return 0\n    if n == 1:\n        return 1\n    cache[n] = fib_memo(n - 1, cache) + fib_memo(n - 2, cache)\n    return cache[n]\n\nprint(fib_memo(50))   # 12586269025 — мгновенно!\nprint(fib_memo(100))  # 354224848179261915075 — тоже мгновенно!"
+        },
+        {
+          "id": "anim-fib-memo",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Мемоизация Фибоначчи</div><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-grid\" id=\"grid\" style=\"grid-template-columns:repeat(8,1fr);max-width:400px;\"></div></div>",
+          "css": ".viz-grid .viz-cell{min-height:48px;}",
+          "js": "(function(){\nvar n=7;\nvar memo=new Array(n+1).fill(undefined);\nvar grid=document.getElementById('grid');\nvar hint=document.getElementById('hint');\nvar cur=-1;\nfunction paint(){\ngrid.innerHTML='';\nfor(var i=0;i<=n;i++){\nvar c=document.createElement('div');\nc.className='viz-cell'+(memo[i]!==undefined?' viz-cell--success':'')+(i===cur?' viz-cell--active':'');\nc.innerHTML='<span class=\"viz-cell__sub\">i='+i+'</span><span class=\"viz-cell__main\">'+(memo[i]===undefined?'?':memo[i])+'</span>';\ngrid.appendChild(c);\n}\n}\nfunction sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}\nfunction fib(k){\nreturn sleep(700).then(function(){\ncur=k; paint();\nhint.textContent='Запрос F('+k+')';\nreturn sleep(700).then(function(){\nif(k<=1){memo[k]=k;paint();hint.textContent='База: F('+k+') = '+k;return sleep(600).then(function(){return memo[k];});}\nif(memo[k]!==undefined){hint.textContent='В таблице: F('+k+') = '+memo[k];return sleep(550).then(function(){return memo[k];});}\nhint.textContent='F('+k+') = F('+(k-1)+') + F('+(k-2)+')';\nreturn fib(k-1).then(function(a){return fib(k-2).then(function(b){\nmemo[k]=a+b;paint();hint.textContent='F('+k+') = '+memo[k];\nreturn sleep(650).then(function(){return memo[k];});\n});});\n});\n});\n}\npaint();\nfib(n).then(function(){cur=-1;paint();hint.textContent='Готово: F('+n+') = '+memo[n];});\n})();",
+          "width": "100%",
+          "height": 280,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "p5",
@@ -1296,6 +1878,17 @@
           "code": "def merge_sort(arr):\n    # Базовый случай: массив из 0-1 элементов уже отсортирован\n    if len(arr) <= 1:\n        return arr\n\n    # 1. Разделяй\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])   # Сортируем левую половину\n    right = merge_sort(arr[mid:])  # Сортируем правую половину\n\n    # 3. Объединяй\n    return merge(left, right)\n\ndef merge(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i])\n            i += 1\n        else:\n            result.append(right[j])\n            j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result\n\nprint(merge_sort([38, 27, 43, 3, 9, 82, 10]))\n# [3, 9, 10, 27, 38, 43, 82]"
         },
         {
+          "id": "anim-divide-conquer",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-caption\">Merge Sort — деление и слияние</div><div class=\"viz-hint\" id=\"hint\"></div><div id=\"levels\" style=\"display:flex;flex-direction:column;gap:10px;width:100%;align-items:center;\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar stages=[\n{hint:'Исходный массив',parts:[[5,3,8,1,4,7,2,6]]},\n{hint:'Делим пополам',parts:[[5,3,8,1],[4,7,2,6]]},\n{hint:'Делим ещё',parts:[[5,3],[8,1],[4,7],[2,6]]},\n{hint:'Одиночные элементы',parts:[[5],[3],[8],[1],[4],[7],[2],[6]]},\n{hint:'Сливаем пары',parts:[[3,5],[1,8],[4,7],[2,6]]},\n{hint:'Сливаем четвёрки',parts:[[1,3,5,8],[2,4,6,7]]},\n{hint:'Финальное слияние',parts:[[1,2,3,4,5,6,7,8]]}\n];\nvar hint=document.getElementById('hint');\nvar levelsEl=document.getElementById('levels');\nfunction sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}\nfunction render(parts){\nlevelsEl.innerHTML='';\nvar row=document.createElement('div');\nrow.style.cssText='display:flex;gap:8px;justify-content:center;flex-wrap:wrap;';\nparts.forEach(function(sub){\nvar g=document.createElement('div');g.className='viz-group';\nsub.forEach(function(x){\nvar c=document.createElement('div');c.className='viz-cell';\nc.innerHTML='<span class=\"viz-cell__main\">'+x+'</span>';\ng.appendChild(c);\n});\nrow.appendChild(g);\n});\nlevelsEl.appendChild(row);\n}\nvar i=0;\nfunction next(){\nif(i>=stages.length) return;\nhint.textContent=stages[i].hint;\nrender(stages[i].parts);\ni++;\nreturn sleep(1750).then(next);\n}\nnext();\n})();",
+          "width": "100%",
+          "height": 300,
+          "showPlayButton": true,
+          "vizLayout": "tall"
+        },
+        {
           "id": "h2-trace",
           "type": "heading",
           "level": 2,
@@ -1495,6 +2088,17 @@
           "code": "def bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        swapped = False\n        for j in range(n - 1 - i):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n                swapped = True\n        if not swapped:\n            break  # массив уже отсортирован\n    return arr\n\nprint(bubble_sort([5, 3, 8, 1, 2]))  # [1, 2, 3, 5, 8]"
         },
         {
+          "id": "anim-bubble-sort",
+          "type": "animation",
+          "html": "<div class=\"viz-col viz-col--viz-only\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-chart\" id=\"chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr = [38, 27, 43, 3, 9, 82, 10, 45, 17, 62];\nvar chart = document.getElementById('chart');\nvar hint = document.getElementById('hint');\nvar B = window.VizBars;\nB.render(chart, arr);\nvar n = arr.length, i = 0, j = 0, maxV = B.maxOf(arr);\nfunction step() {\nif (i >= n - 1) { hint.textContent = 'Массив отсортирован!'; B.clearStates(chart); for(var k=0;k<n;k++) B.setState(chart,k,'success'); return; }\nif (j >= n - 1 - i) { j = 0; i++; step(); return; }\nB.clearStates(chart);\nB.setState(chart, j, 'compare');\nB.setState(chart, j+1, 'compare');\nhint.textContent = 'Сравниваем arr['+j+'] = '+arr[j]+' и arr['+(j+1)+'] = '+arr[j+1];\nif (arr[j] > arr[j+1]) {\nsetTimeout(function(){\nhint.textContent = 'Меняем '+arr[j]+' ↔ '+arr[j+1];\nB.swapSlide(chart, arr, j, j+1, maxV, function(){ j++; setTimeout(step, 500); });\n}, 750);\n} else {\nj++;\nsetTimeout(step, 750);\n}\n}\nsetTimeout(step, 1250);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-selection",
           "type": "heading",
           "level": 2,
@@ -1516,6 +2120,17 @@
           "language": "python",
           "editable": false,
           "code": "def selection_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        min_idx = i\n        for j in range(i + 1, n):\n            if arr[j] < arr[min_idx]:\n                min_idx = j\n        arr[i], arr[min_idx] = arr[min_idx], arr[i]\n    return arr\n\nprint(selection_sort([29, 10, 14, 37, 13]))  # [10, 13, 14, 29, 37]"
+        },
+        {
+          "id": "anim-selection-sort",
+          "type": "animation",
+          "html": "<div class=\"viz-col viz-col--viz-only\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-chart\" id=\"chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr = [29, 10, 14, 37, 13, 45, 8, 22, 50, 33];\nvar chart = document.getElementById('chart');\nvar hint = document.getElementById('hint');\nvar B = window.VizBars;\nB.render(chart, arr);\nvar n = arr.length, maxV = B.maxOf(arr);\nvar i = 0;\nfunction step() {\nif (i >= n - 1) { B.clearStates(chart); for(var k=0;k<n;k++) B.setState(chart,k,'success'); hint.textContent='Отсортировано!'; return; }\nvar minIdx = i, j = i + 1;\nB.clearStates(chart);\nfor(var k=0;k<i;k++) B.setState(chart,k,'success');\nB.setState(chart, i, 'active');\nhint.textContent = 'Ищем минимум с позиции '+i;\nfunction scan() {\nif (j >= n) {\nif (minIdx !== i) {\nhint.textContent = 'Минимум '+arr[minIdx]+' → позиция '+i;\nB.swapValues(chart, arr, i, minIdx, maxV, function(){ i++; setTimeout(step, 625); });\n} else { i++; setTimeout(step, 625); }\nreturn;\n}\nB.clearStates(chart);\nfor(var k=0;k<i;k++) B.setState(chart,k,'success');\nB.setState(chart, minIdx, 'active');\nB.setState(chart, j, 'compare');\nhint.textContent = 'Сравниваем: минимум='+arr[minIdx]+', текущий='+arr[j];\nif (arr[j] < arr[minIdx]) minIdx = j;\nj++;\nsetTimeout(scan, 700);\n}\nsetTimeout(scan, 750);\n}\nsetTimeout(step, 1250);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "h2-insertion",
@@ -1541,10 +2156,103 @@
           "code": "def insertion_sort(arr):\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i - 1\n        while j >= 0 and arr[j] > key:\n            arr[j + 1] = arr[j]\n            j -= 1\n        arr[j + 1] = key\n    return arr\n\nprint(insertion_sort([7, 3, 5, 1, 9]))  # [1, 3, 5, 7, 9]"
         },
         {
+          "id": "anim-insertion-sort",
+          "type": "animation",
+          "html": "<div class=\"viz-col viz-col--viz-only\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-chart\" id=\"chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr = [12, 31, 25, 8, 32, 17, 40, 5, 28, 19];\nvar chart = document.getElementById('chart');\nvar hint = document.getElementById('hint');\nvar B = window.VizBars;\nB.render(chart, arr);\nvar n = arr.length, maxV = B.maxOf(arr), i = 1;\nfunction step() {\nif (i >= n) { B.clearStates(chart); for(var k=0;k<n;k++) B.setState(chart,k,'success'); hint.textContent='Отсортировано!'; return; }\nvar key = arr[i], j = i;\nB.clearStates(chart);\nB.setState(chart, i, 'active');\nhint.textContent = 'Вставляем элемент '+key+' (позиция '+i+')';\nfunction shift() {\nif (j > 0 && arr[j-1] > key) {\nB.setState(chart, j-1, 'compare');\nhint.textContent = arr[j-1]+' > '+key+' → сдвиг вправо';\narr[j] = arr[j-1];\nj--;\nB.refresh(chart, arr);\nsetTimeout(shift, 750);\n} else {\narr[j] = key;\nB.refresh(chart, arr);\nB.setState(chart, j, 'success');\nhint.textContent = 'Вставили '+key+' на позицию '+j;\ni++;\nsetTimeout(step, 875);\n}\n}\nsetTimeout(shift, 875);\n}\nsetTimeout(step, 1250);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-compare",
           "type": "heading",
           "level": 2,
           "text": "Когда какой алгоритм выбрать?"
+        },
+        {
+          "id": "chart-complexity-sortirovki-n2-simple",
+          "type": "chart",
+          "title": "Время выполнения: O(n²)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 2,
+              "ops": 4
+            },
+            {
+              "n": 4,
+              "ops": 16
+            },
+            {
+              "n": 6,
+              "ops": 36
+            },
+            {
+              "n": 8,
+              "ops": 64
+            },
+            {
+              "n": 10,
+              "ops": 100
+            },
+            {
+              "n": 12,
+              "ops": 144
+            },
+            {
+              "n": 14,
+              "ops": 196
+            },
+            {
+              "n": 16,
+              "ops": 256
+            },
+            {
+              "n": 18,
+              "ops": 324
+            },
+            {
+              "n": 20,
+              "ops": 400
+            },
+            {
+              "n": 22,
+              "ops": 484
+            },
+            {
+              "n": 24,
+              "ops": 576
+            },
+            {
+              "n": 26,
+              "ops": 676
+            },
+            {
+              "n": 28,
+              "ops": 784
+            },
+            {
+              "n": 30,
+              "ops": 900
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(n²)",
+              "color": "#f87171"
+            }
+          ],
+          "height": 220
         },
         {
           "id": "p8",
@@ -1604,6 +2312,17 @@
           "code": "def quicksort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[-1]\n    left = [x for x in arr[:-1] if x <= pivot]\n    right = [x for x in arr[:-1] if x > pivot]\n    return quicksort(left) + [pivot] + quicksort(right)\n\nprint(quicksort([6, 3, 8, 1, 5, 2, 7, 4]))\n# [1, 2, 3, 4, 5, 6, 7, 8]"
         },
         {
+          "id": "anim-quicksort",
+          "type": "animation",
+          "html": "<div class=\"viz-col viz-col--viz-only\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-chart\" id=\"chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr = [35, 10, 65, 25, 50, 15, 40, 55, 20, 45];\nvar chart = document.getElementById('chart');\nvar hint = document.getElementById('hint');\nvar B = window.VizBars;\nB.render(chart, arr);\nvar maxV = B.maxOf(arr);\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nfunction paint(lo, hi, pivotIdx, iIdx, jIdx) {\nB.clearStates(chart);\nfor(var k=lo;k<=hi;k++){\nif(k===pivotIdx) B.setState(chart,k,'active');\nelse if(k===iIdx||k===jIdx) B.setState(chart,k,'compare');\n}\n}\nfunction qs(lo, hi) {\nif(lo>=hi) {\nif(lo===hi) B.setState(chart,lo,'success');\nreturn Promise.resolve();\n}\nvar pivot=arr[hi], i=lo;\nhint.textContent='Pivot='+pivot+' (позиция '+hi+'), раздел ['+lo+'..'+hi+']';\npaint(lo,hi,hi,-1,-1);\nvar j=lo;\nfunction partition(){\nif(j>=hi){\nreturn sleep(500).then(function(){\nB.swapValues(chart,arr,i,hi,maxV);\npaint(lo,hi,i,-1,-1);\nhint.textContent='Pivot '+pivot+' на позиции '+i;\nreturn sleep(750).then(function(){\nB.setState(chart,i,'success');\nreturn qs(lo,i-1).then(function(){ return qs(i+1,hi); });\n});\n});\n}\npaint(lo,hi,hi,i,j);\nhint.textContent='Сравниваем arr['+j+']='+arr[j]+' с pivot='+pivot;\nif(arr[j]<pivot){\nreturn sleep(625).then(function(){\nif(i!==j) B.swapValues(chart,arr,i,j,maxV);\ni++; j++;\nreturn partition();\n});\n} else {\nj++;\nreturn sleep(500).then(partition);\n}\n}\nreturn sleep(875).then(partition);\n}\nsetTimeout(function(){ qs(0,arr.length-1).then(function(){ hint.textContent='Отсортировано!'; for(var k=0;k<arr.length;k++) B.setState(chart,k,'success'); }); }, 1250);\n})();",
+          "width": "100%",
+          "height": 340,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-complexity",
           "type": "heading",
           "level": 2,
@@ -1618,6 +2337,159 @@
           "id": "p5",
           "type": "paragraph",
           "text": "Это как если бы вы делили стопку работ, но каждый раз одна стопка получалась бы пустой — вы бы просто откладывали по одной работе за раз. Никакого выигрыша от разделения!"
+        },
+        {
+          "id": "chart-complexity-sortirovki-quicksort",
+          "type": "chart",
+          "title": "Время выполнения: O(n log n) — средний случай",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0,
+              "O(n²) худший": 0
+            },
+            {
+              "n": 2,
+              "ops": 2,
+              "O(n²) худший": 4
+            },
+            {
+              "n": 4,
+              "ops": 8,
+              "O(n²) худший": 16
+            },
+            {
+              "n": 6,
+              "ops": 15.51,
+              "O(n²) худший": 36
+            },
+            {
+              "n": 8,
+              "ops": 24,
+              "O(n²) худший": 64
+            },
+            {
+              "n": 10,
+              "ops": 33.22,
+              "O(n²) худший": 100
+            },
+            {
+              "n": 12,
+              "ops": 43.02,
+              "O(n²) худший": 144
+            },
+            {
+              "n": 14,
+              "ops": 53.3,
+              "O(n²) худший": 196
+            },
+            {
+              "n": 16,
+              "ops": 64,
+              "O(n²) худший": 256
+            },
+            {
+              "n": 18,
+              "ops": 75.06,
+              "O(n²) худший": 324
+            },
+            {
+              "n": 20,
+              "ops": 86.44,
+              "O(n²) худший": 400
+            },
+            {
+              "n": 22,
+              "ops": 98.11,
+              "O(n²) худший": 484
+            },
+            {
+              "n": 24,
+              "ops": 110.04,
+              "O(n²) худший": 576
+            },
+            {
+              "n": 26,
+              "ops": 122.21,
+              "O(n²) худший": 676
+            },
+            {
+              "n": 28,
+              "ops": 134.61,
+              "O(n²) худший": 784
+            },
+            {
+              "n": 30,
+              "ops": 147.21,
+              "O(n²) худший": 900
+            },
+            {
+              "n": 32,
+              "ops": 160,
+              "O(n²) худший": 1024
+            },
+            {
+              "n": 34,
+              "ops": 172.97,
+              "O(n²) худший": 1156
+            },
+            {
+              "n": 36,
+              "ops": 186.12,
+              "O(n²) худший": 1296
+            },
+            {
+              "n": 38,
+              "ops": 199.42,
+              "O(n²) худший": 1444
+            },
+            {
+              "n": 40,
+              "ops": 212.88,
+              "O(n²) худший": 1600
+            },
+            {
+              "n": 42,
+              "ops": 226.48,
+              "O(n²) худший": 1764
+            },
+            {
+              "n": 44,
+              "ops": 240.21,
+              "O(n²) худший": 1936
+            },
+            {
+              "n": 46,
+              "ops": 254.08,
+              "O(n²) худший": 2116
+            },
+            {
+              "n": 48,
+              "ops": 268.08,
+              "O(n²) худший": 2304
+            },
+            {
+              "n": 50,
+              "ops": 282.19,
+              "O(n²) худший": 2500
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(n log n)",
+              "color": "#fbbf24"
+            },
+            {
+              "dataKey": "O(n²) худший",
+              "label": "O(n²) худший",
+              "color": "#f87171"
+            }
+          ],
+          "height": 220
         },
         {
           "id": "h2-pivot",
@@ -1725,6 +2597,17 @@
           "code": "def merge(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i])\n            i += 1\n        else:\n            result.append(right[j])\n            j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result\n\n# Пример: сливаем два отсортированных массива\nprint(merge([1, 5, 8], [2, 4, 9]))  # [1, 2, 4, 5, 8, 9]"
         },
         {
+          "id": "anim-mergesort",
+          "type": "animation",
+          "html": "<div class=\"viz-col viz-col--viz-only\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-chart\" id=\"chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr = [38, 27, 43, 3, 9, 82, 10, 17];\nvar chart = document.getElementById('chart');\nvar hint = document.getElementById('hint');\nvar B = window.VizBars;\nB.render(chart, arr);\nvar maxV = B.maxOf(arr);\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nfunction merge(lo, mid, hi) {\nvar left = arr.slice(lo, mid+1), right = arr.slice(mid+1, hi+1);\nvar i=0, j=0, k=lo;\nhint.textContent = 'Слияние ['+lo+'..'+mid+'] и ['+(mid+1)+'..'+hi+']';\nB.clearZones(chart);\nB.setZone(chart, lo, mid, 'viz-bar-col--zone-a');\nB.setZone(chart, mid+1, hi, 'viz-bar-col--zone-b');\nfunction step(){\nif(i>=left.length && j>=right.length) {\nB.clearZones(chart);\nfor(var x=lo;x<=hi;x++) B.setState(chart,x,'success');\nreturn sleep(625);\n}\nvar pick;\nif(i>=left.length){ pick=right[j]; j++; }\nelse if(j>=right.length){ pick=left[i]; i++; }\nelse if(left[i]<=right[j]){ pick=left[i]; i++; }\nelse { pick=right[j]; j++; }\narr[k]=pick;\nB.refresh(chart, arr);\nB.setState(chart, k, 'active');\nhint.textContent='Ставим '+pick+' на позицию '+k;\nk++;\nreturn sleep(800).then(step);\n}\nreturn sleep(750).then(step);\n}\nfunction mergeSort(lo,hi){\nif(lo>=hi) return Promise.resolve();\nvar mid = Math.floor((lo+hi)/2);\nhint.textContent='Делим ['+lo+'..'+hi+'] → ['+lo+'..'+mid+'] + ['+(mid+1)+'..'+hi+']';\nreturn sleep(875).then(function(){\nreturn mergeSort(lo,mid).then(function(){ return mergeSort(mid+1,hi); }).then(function(){ return merge(lo,mid,hi); });\n});\n}\nsetTimeout(function(){ mergeSort(0,arr.length-1).then(function(){ B.clearStates(chart); for(var k=0;k<arr.length;k++) B.setState(chart,k,'success'); hint.textContent='Отсортировано!'; }); }, 1250);\n})();",
+          "width": "100%",
+          "height": 360,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-full",
           "type": "heading",
           "level": 2,
@@ -1758,6 +2641,128 @@
           "id": "p7",
           "type": "paragraph",
           "text": "Время: всегда O(n log n) — мы делим массив log n раз, и на каждом уровне выполняем O(n) работы по слиянию. Память: O(n) дополнительно — нам нужен временный массив для хранения результата слияния. Это главный недостаток по сравнению с quicksort, который может работать in-place."
+        },
+        {
+          "id": "chart-complexity-sortirovki-merge",
+          "type": "chart",
+          "title": "Время выполнения: O(n log n)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 2,
+              "ops": 2
+            },
+            {
+              "n": 4,
+              "ops": 8
+            },
+            {
+              "n": 6,
+              "ops": 15.51
+            },
+            {
+              "n": 8,
+              "ops": 24
+            },
+            {
+              "n": 10,
+              "ops": 33.22
+            },
+            {
+              "n": 12,
+              "ops": 43.02
+            },
+            {
+              "n": 14,
+              "ops": 53.3
+            },
+            {
+              "n": 16,
+              "ops": 64
+            },
+            {
+              "n": 18,
+              "ops": 75.06
+            },
+            {
+              "n": 20,
+              "ops": 86.44
+            },
+            {
+              "n": 22,
+              "ops": 98.11
+            },
+            {
+              "n": 24,
+              "ops": 110.04
+            },
+            {
+              "n": 26,
+              "ops": 122.21
+            },
+            {
+              "n": 28,
+              "ops": 134.61
+            },
+            {
+              "n": 30,
+              "ops": 147.21
+            },
+            {
+              "n": 32,
+              "ops": 160
+            },
+            {
+              "n": 34,
+              "ops": 172.97
+            },
+            {
+              "n": 36,
+              "ops": 186.12
+            },
+            {
+              "n": 38,
+              "ops": 199.42
+            },
+            {
+              "n": 40,
+              "ops": 212.88
+            },
+            {
+              "n": 42,
+              "ops": 226.48
+            },
+            {
+              "n": 44,
+              "ops": 240.21
+            },
+            {
+              "n": 46,
+              "ops": 254.08
+            },
+            {
+              "n": 48,
+              "ops": 268.08
+            },
+            {
+              "n": 50,
+              "ops": 282.19
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(n log n)",
+              "color": "#fbbf24"
+            }
+          ],
+          "height": 220
         },
         {
           "id": "h2-when",
@@ -1847,6 +2852,17 @@
           "code": "def heap_sort(arr):\n    n = len(arr)\n\n    # Строим max-heap (начинаем с последнего внутреннего узла)\n    for i in range(n // 2 - 1, -1, -1):\n        heapify(arr, n, i)\n\n    # Извлекаем элементы по одному\n    for i in range(n - 1, 0, -1):\n        arr[0], arr[i] = arr[i], arr[0]  # макс. элемент — в конец\n        heapify(arr, i, 0)  # восстанавливаем кучу\n    return arr\n\nprint(heap_sort([12, 11, 13, 5, 6, 7]))\n# [5, 6, 7, 11, 12, 13]"
         },
         {
+          "id": "anim-heapsort",
+          "type": "animation",
+          "html": "<div class=\"viz-col viz-col--viz-only\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-chart\" id=\"chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr = [4, 10, 3, 5, 1, 8, 7, 2, 9, 6];\nvar chart = document.getElementById('chart');\nvar hint = document.getElementById('hint');\nvar B = window.VizBars;\nB.render(chart, arr);\nvar maxV = B.maxOf(arr);\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nfunction heapify(n, i) {\nvar largest = i, l = 2*i+1, r = 2*i+2;\nif (l<n && arr[l]>arr[largest]) largest = l;\nif (r<n && arr[r]>arr[largest]) largest = r;\nif (largest !== i) {\nB.clearStates(chart);\nB.setState(chart, i, 'compare');\nB.setState(chart, largest, 'compare');\nhint.textContent = 'Heapify: меняем '+arr[i]+' ↔ '+arr[largest];\nreturn sleep(700).then(function(){\nB.swapValues(chart, arr, i, largest, maxV);\nreturn sleep(500).then(function(){ return heapify(n, largest); });\n});\n}\nreturn Promise.resolve();\n}\nfunction run() {\nvar n = arr.length;\nvar i = Math.floor(n/2) - 1;\nhint.textContent = 'Строим max-heap...';\nfunction buildHeap() {\nif (i < 0) return Promise.resolve();\nreturn heapify(n, i).then(function(){ i--; return buildHeap(); });\n}\nreturn buildHeap().then(function() {\nvar size = n - 1;\nfunction extract() {\nif (size <= 0) return Promise.resolve();\nhint.textContent = 'Извлекаем max: '+arr[0]+' → конец';\nB.swapValues(chart, arr, 0, size, maxV);\nB.setState(chart, size, 'success');\nreturn sleep(750).then(function(){\nreturn heapify(size, 0).then(function(){ size--; return extract(); });\n});\n}\nreturn extract();\n});\n}\nsetTimeout(function(){ run().then(function(){ B.clearStates(chart); for(var k=0;k<arr.length;k++) B.setState(chart,k,'success'); hint.textContent='Отсортировано!'; }); }, 1250);\n})();",
+          "width": "100%",
+          "height": 340,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-heapq",
           "type": "heading",
           "level": 2,
@@ -1874,6 +2890,128 @@
           "id": "p8",
           "type": "paragraph",
           "text": "Heap sort гарантирует O(n log n) и работает in-place (O(1) доп. памяти). Она не стабильна — элементы с одинаковыми ключами могут поменять порядок. На практике уступает quicksort по скорости, но выигрывает в предсказуемости. Главная ценность кучи — это очередь с приоритетом, которую мы будем использовать в алгоритмах графов (Dijkstra, Prim) и многих других задачах."
+        },
+        {
+          "id": "chart-complexity-sortirovki-heapsort",
+          "type": "chart",
+          "title": "Время выполнения: O(n log n)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 2,
+              "ops": 2
+            },
+            {
+              "n": 4,
+              "ops": 8
+            },
+            {
+              "n": 6,
+              "ops": 15.51
+            },
+            {
+              "n": 8,
+              "ops": 24
+            },
+            {
+              "n": 10,
+              "ops": 33.22
+            },
+            {
+              "n": 12,
+              "ops": 43.02
+            },
+            {
+              "n": 14,
+              "ops": 53.3
+            },
+            {
+              "n": 16,
+              "ops": 64
+            },
+            {
+              "n": 18,
+              "ops": 75.06
+            },
+            {
+              "n": 20,
+              "ops": 86.44
+            },
+            {
+              "n": 22,
+              "ops": 98.11
+            },
+            {
+              "n": 24,
+              "ops": 110.04
+            },
+            {
+              "n": 26,
+              "ops": 122.21
+            },
+            {
+              "n": 28,
+              "ops": 134.61
+            },
+            {
+              "n": 30,
+              "ops": 147.21
+            },
+            {
+              "n": 32,
+              "ops": 160
+            },
+            {
+              "n": 34,
+              "ops": 172.97
+            },
+            {
+              "n": 36,
+              "ops": 186.12
+            },
+            {
+              "n": 38,
+              "ops": 199.42
+            },
+            {
+              "n": 40,
+              "ops": 212.88
+            },
+            {
+              "n": 42,
+              "ops": 226.48
+            },
+            {
+              "n": 44,
+              "ops": 240.21
+            },
+            {
+              "n": 46,
+              "ops": 254.08
+            },
+            {
+              "n": 48,
+              "ops": 268.08
+            },
+            {
+              "n": 50,
+              "ops": 282.19
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(n log n)",
+              "color": "#fbbf24"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -1923,6 +3061,17 @@
           "code": "def counting_sort(arr):\n    if not arr:\n        return arr\n    min_val, max_val = min(arr), max(arr)\n    count = [0] * (max_val - min_val + 1)\n\n    for x in arr:\n        count[x - min_val] += 1\n\n    result = []\n    for i, c in enumerate(count):\n        result.extend([i + min_val] * c)\n    return result\n\nprint(counting_sort([4, 2, 2, 8, 3, 3, 1]))\n# [1, 2, 2, 3, 3, 4, 8]"
         },
         {
+          "id": "anim-counting-sort",
+          "type": "animation",
+          "html": "<div class=\"viz-col viz-col--viz-only\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-chart\" id=\"chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr = [4, 2, 2, 8, 3, 3, 1, 7, 5, 4];\nvar chart = document.getElementById('chart');\nvar hint = document.getElementById('hint');\nvar B = window.VizBars;\nB.render(chart, arr);\nvar maxVal = B.maxOf(arr);\nvar count = new Array(maxVal+1).fill(0);\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nfunction run(){\nvar i = 0;\nfunction countPhase(){\nif(i>=arr.length){\nhint.textContent='Подсчёт завершён. Восстанавливаем массив...';\nreturn sleep(1000).then(reconstruct);\n}\nB.clearStates(chart);\nB.setState(chart, i, 'active');\ncount[arr[i]]++;\nhint.textContent='count['+arr[i]+']++ → '+count[arr[i]];\ni++;\nreturn sleep(875).then(countPhase);\n}\nvar idx=0, val=0;\nfunction reconstruct(){\nif(val>maxVal){ B.clearStates(chart); for(var k=0;k<arr.length;k++) B.setState(chart,k,'success'); hint.textContent='Отсортировано!'; return; }\nif(count[val]<=0){ val++; return reconstruct(); }\narr[idx]=val;\ncount[val]--;\nB.refresh(chart,arr);\nB.setState(chart,idx,'active');\nhint.textContent='Ставим '+val+' на позицию '+idx;\nidx++;\nreturn sleep(700).then(reconstruct);\n}\nreturn countPhase();\n}\nsetTimeout(function(){ run(); }, 1250);\n})();",
+          "width": "100%",
+          "height": 360,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-when-counting",
           "type": "heading",
           "level": 2,
@@ -1932,6 +3081,68 @@
           "id": "p5",
           "type": "paragraph",
           "text": "Сортировка подсчётом идеальна, когда диапазон значений k сопоставим с количеством элементов n. Например, сортировка оценок (1–100), возрастов (0–150) или символов ASCII (0–127). Но если значения могут быть от 0 до миллиарда, а элементов всего тысяча — counting sort создаст гигантский пустой массив и проиграет обычной сортировке."
+        },
+        {
+          "id": "chart-complexity-sortirovki-counting-radix",
+          "type": "chart",
+          "title": "Время выполнения: O(n + k)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 5
+            },
+            {
+              "n": 10,
+              "ops": 10
+            },
+            {
+              "n": 15,
+              "ops": 15
+            },
+            {
+              "n": 20,
+              "ops": 20
+            },
+            {
+              "n": 25,
+              "ops": 25
+            },
+            {
+              "n": 30,
+              "ops": 30
+            },
+            {
+              "n": 35,
+              "ops": 35
+            },
+            {
+              "n": 40,
+              "ops": 40
+            },
+            {
+              "n": 45,
+              "ops": 45
+            },
+            {
+              "n": 50,
+              "ops": 50
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(n + k)",
+              "color": "#4ade80"
+            }
+          ],
+          "height": 220
         },
         {
           "id": "h2-radix",
@@ -2090,6 +3301,17 @@
           "code": "def linear_search(arr, target):\n    for i in range(len(arr)):\n        if arr[i] == target:\n            return i\n    return -1\n\nfruits = [\"яблоко\", \"банан\", \"вишня\", \"дыня\", \"ежевика\"]\nprint(linear_search(fruits, \"вишня\"))  # 2\nprint(linear_search(fruits, \"манго\"))  # -1"
         },
         {
+          "id": "anim-linear-search",
+          "type": "animation",
+          "html": "<div class=\"viz-col viz-col--viz-only\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-chart\" id=\"chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr = [15, 42, 8, 23, 4, 16, 33, 51, 27, 9];\nvar target = 33;\nvar chart = document.getElementById('chart');\nvar hint = document.getElementById('hint');\nvar B = window.VizBars;\nB.render(chart, arr);\nhint.textContent = 'Ищем значение '+target;\nvar i = 0;\nfunction step() {\nif (i >= arr.length) { hint.textContent = 'Не найдено!'; return; }\nB.clearStates(chart);\nB.setState(chart, i, 'compare');\nhint.textContent = 'Проверяем arr['+i+'] = '+arr[i]+' == '+target+'?';\nif (arr[i] === target) {\nsetTimeout(function(){\nB.setState(chart, i, 'success');\nhint.textContent = 'Найдено! arr['+i+'] = '+target;\n}, 750);\nreturn;\n}\nsetTimeout(function(){ B.setState(chart, i, 'fail'); i++; setTimeout(step, 625); }, 875);\n}\nsetTimeout(step, 1500);\n})();",
+          "width": "100%",
+          "height": 300,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-complexity",
           "type": "heading",
           "level": 2,
@@ -2099,6 +3321,68 @@
           "id": "p3",
           "type": "paragraph",
           "text": "В лучшем случае элемент найдётся первым — O(1). В среднем нужно проверить половину массива — O(n/2), что всё равно O(n). В худшем случае элемент последний или его нет — проверяем все n элементов. Итого: O(n). Для 100 элементов это терпимо. Для миллиона — уже заметно. Для миллиарда — неприемлемо медленно."
+        },
+        {
+          "id": "chart-complexity-poisk-linear",
+          "type": "chart",
+          "title": "Время выполнения: O(n)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 5
+            },
+            {
+              "n": 10,
+              "ops": 10
+            },
+            {
+              "n": 15,
+              "ops": 15
+            },
+            {
+              "n": 20,
+              "ops": 20
+            },
+            {
+              "n": 25,
+              "ops": 25
+            },
+            {
+              "n": 30,
+              "ops": 30
+            },
+            {
+              "n": 35,
+              "ops": 35
+            },
+            {
+              "n": 40,
+              "ops": 40
+            },
+            {
+              "n": 45,
+              "ops": 45
+            },
+            {
+              "n": 50,
+              "ops": 50
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(n)",
+              "color": "#4ade80"
+            }
+          ],
+          "height": 220
         },
         {
           "id": "h2-when",
@@ -2213,6 +3497,17 @@
           "code": "def binary_search(arr, target):\n    lo, hi = 0, len(arr) - 1\n\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n\n    return -1\n\narr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]\nprint(binary_search(arr, 23))  # 5\nprint(binary_search(arr, 10))  # -1"
         },
         {
+          "id": "anim-binary-search",
+          "type": "animation",
+          "html": "<div class=\"viz-col viz-col--viz-only\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-chart\" id=\"chart\"></div></div>",
+          "css": "",
+          "js": "(function(){\nvar arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];\nvar target = 23;\nvar chart = document.getElementById('chart');\nvar hint = document.getElementById('hint');\nvar B = window.VizBars;\nB.render(chart, arr);\nvar lo = 0, hi = arr.length - 1;\nfunction step() {\nif (lo > hi) { hint.textContent = 'Не найдено!'; return; }\nvar mid = Math.floor((lo + hi) / 2);\nB.clearStates(chart);\nfor(var k=lo;k<=hi;k++) B.setState(chart,k,'active');\nB.setState(chart, mid, 'compare');\nhint.textContent = 'lo='+lo+' hi='+hi+' mid='+mid+' → arr['+mid+']='+arr[mid];\nsetTimeout(function(){\nif (arr[mid] === target) {\nB.clearStates(chart);\nB.setState(chart, mid, 'success');\nhint.textContent = 'Найдено! arr['+mid+'] = '+target;\nreturn;\n}\nif (arr[mid] < target) {\nhint.textContent = arr[mid]+' < '+target+' → ищем правее';\nfor(var k=lo;k<=mid;k++) B.setState(chart,k,'fail');\nlo = mid + 1;\n} else {\nhint.textContent = arr[mid]+' > '+target+' → ищем левее';\nfor(var k=mid;k<=hi;k++) B.setState(chart,k,'fail');\nhi = mid - 1;\n}\nsetTimeout(step, 1250);\n}, 1125);\n}\nsetTimeout(step, 1500);\n})();",
+          "width": "100%",
+          "height": 300,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-recursive",
           "type": "heading",
           "level": 2,
@@ -2240,6 +3535,134 @@
           "id": "p5",
           "type": "paragraph",
           "text": "На каждом шаге мы уменьшаем область поиска вдвое. Начали с n элементов → n/2 → n/4 → ... → 1. Сколько раз нужно разделить n пополам, чтобы дойти до 1? Это log₂(n). Для n = 1024 это всего 10 шагов. Для n = 1 000 000 — около 20. Для n = 1 000 000 000 — около 30. Логарифмическая сложность — одна из лучших, что можно получить."
+        },
+        {
+          "id": "chart-complexity-poisk-binary",
+          "type": "chart",
+          "title": "Время выполнения: O(log n)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0,
+              "O(n) линейный": 0
+            },
+            {
+              "n": 5,
+              "ops": 2.32,
+              "O(n) линейный": 5
+            },
+            {
+              "n": 10,
+              "ops": 3.32,
+              "O(n) линейный": 10
+            },
+            {
+              "n": 15,
+              "ops": 3.91,
+              "O(n) линейный": 15
+            },
+            {
+              "n": 20,
+              "ops": 4.32,
+              "O(n) линейный": 20
+            },
+            {
+              "n": 25,
+              "ops": 4.64,
+              "O(n) линейный": 25
+            },
+            {
+              "n": 30,
+              "ops": 4.91,
+              "O(n) линейный": 30
+            },
+            {
+              "n": 35,
+              "ops": 5.13,
+              "O(n) линейный": 35
+            },
+            {
+              "n": 40,
+              "ops": 5.32,
+              "O(n) линейный": 40
+            },
+            {
+              "n": 45,
+              "ops": 5.49,
+              "O(n) линейный": 45
+            },
+            {
+              "n": 50,
+              "ops": 5.64,
+              "O(n) линейный": 50
+            },
+            {
+              "n": 55,
+              "ops": 5.78,
+              "O(n) линейный": 55
+            },
+            {
+              "n": 60,
+              "ops": 5.91,
+              "O(n) линейный": 60
+            },
+            {
+              "n": 65,
+              "ops": 6.02,
+              "O(n) линейный": 65
+            },
+            {
+              "n": 70,
+              "ops": 6.13,
+              "O(n) линейный": 70
+            },
+            {
+              "n": 75,
+              "ops": 6.23,
+              "O(n) линейный": 75
+            },
+            {
+              "n": 80,
+              "ops": 6.32,
+              "O(n) линейный": 80
+            },
+            {
+              "n": 85,
+              "ops": 6.41,
+              "O(n) линейный": 85
+            },
+            {
+              "n": 90,
+              "ops": 6.49,
+              "O(n) линейный": 90
+            },
+            {
+              "n": 95,
+              "ops": 6.57,
+              "O(n) линейный": 95
+            },
+            {
+              "n": 100,
+              "ops": 6.64,
+              "O(n) линейный": 100
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(log n)",
+              "color": "#a78bfa"
+            },
+            {
+              "dataKey": "O(n) линейный",
+              "label": "O(n) линейный",
+              "color": "rgba(148,163,184,0.4)"
+            }
+          ],
+          "height": 220
         },
         {
           "id": "h2-mistakes",
@@ -2380,6 +3803,108 @@
           "type": "heading",
           "level": 2,
           "text": "Итоги"
+        },
+        {
+          "id": "chart-complexity-poisk-binary-answer",
+          "type": "chart",
+          "title": "Время выполнения: O(log n × f)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 2.32
+            },
+            {
+              "n": 10,
+              "ops": 3.32
+            },
+            {
+              "n": 15,
+              "ops": 3.91
+            },
+            {
+              "n": 20,
+              "ops": 4.32
+            },
+            {
+              "n": 25,
+              "ops": 4.64
+            },
+            {
+              "n": 30,
+              "ops": 4.91
+            },
+            {
+              "n": 35,
+              "ops": 5.13
+            },
+            {
+              "n": 40,
+              "ops": 5.32
+            },
+            {
+              "n": 45,
+              "ops": 5.49
+            },
+            {
+              "n": 50,
+              "ops": 5.64
+            },
+            {
+              "n": 55,
+              "ops": 5.78
+            },
+            {
+              "n": 60,
+              "ops": 5.91
+            },
+            {
+              "n": 65,
+              "ops": 6.02
+            },
+            {
+              "n": 70,
+              "ops": 6.13
+            },
+            {
+              "n": 75,
+              "ops": 6.23
+            },
+            {
+              "n": 80,
+              "ops": 6.32
+            },
+            {
+              "n": 85,
+              "ops": 6.41
+            },
+            {
+              "n": 90,
+              "ops": 6.49
+            },
+            {
+              "n": 95,
+              "ops": 6.57
+            },
+            {
+              "n": 100,
+              "ops": 6.64
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(log n)",
+              "color": "#a78bfa"
+            }
+          ],
+          "height": 220
         },
         {
           "id": "p9",
@@ -2681,6 +4206,17 @@
           "code": "#       1           Шаг 1: создаём корень\n#      / \\          Шаг 2: добавляем левого потомка (2)\n#     2   3         Шаг 3: добавляем правого потомка (3)\n#    / \\     \\      Шаг 4: у узла 2 добавляем потомков (4, 5)\n#   4   5     6    Шаг 5: у узла 3 добавляем правого потомка (6)\n\nroot = BinaryNode(1)\nroot.left = BinaryNode(2)\nroot.right = BinaryNode(3)\nroot.left.left = BinaryNode(4)\nroot.left.right = BinaryNode(5)\nroot.right.right = BinaryNode(6)\n\nprint(root.value)            # 1\nprint(root.left.value)       # 2\nprint(root.right.right.value) # 6"
         },
         {
+          "id": "anim-bst",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"tree\" width=\"100%\" height=\"280\" viewBox=\"0 0 440 260\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('tree');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nfunction drawTreeEdge(px,py,cx,cy){\nvar l=svgEl('line',{x1:px,y1:py,x2:cx,y2:cy,class:'g-edge'});\nsvg.insertBefore(l,svg.firstChild);\nreturn l;\n}\nfunction drawTreeNode(id,x,y,val){\nvar c=svgEl('circle',{id:'tn-'+id,cx:x,cy:y,r:18,class:'g-node'});\nsvg.appendChild(c);\nvar t=svgEl('text',{x:x,y:y});\nt.textContent=val;\nsvg.appendChild(t);\n}\nfunction setTNodeClass(id,cls){\nvar el=document.getElementById('tn-'+id);\nif(el) el.setAttribute('class','g-node'+(cls?' g-node--'+cls:''));\n}\nvar vals=[8,3,10,1,6,14,4,7,13];\nvar tree=null;\nvar positions={};\nfunction insert(node,v,x,y,dx){\nif(!node){\nvar n={v:v,left:null,right:null,id:'n'+v};\npositions[n.id]={x:x,y:y};\nreturn n;\n}\nif(v<node.v){\nif(!node.left) drawTreeEdge(positions[node.id].x,positions[node.id].y,x-dx,y+50);\nnode.left=insert(node.left,v,x-dx,y+50,dx*0.55);\n} else {\nif(!node.right) drawTreeEdge(positions[node.id].x,positions[node.id].y,x+dx,y+50);\nnode.right=insert(node.right,v,x+dx,y+50,dx*0.55);\n}\nreturn node;\n}\nvar vi=0;\nfunction buildStep(){\nif(vi>=vals.length){\nhint.textContent='BST построено! Ищем значение 6...';\nreturn sleep(1500).then(function(){return searchStep(tree,6);});\n}\nvar v=vals[vi]; vi++;\ntree=insert(tree,v,220,30,100);\nvar nid='n'+v;\ndrawTreeNode(nid,positions[nid].x,positions[nid].y,v);\nsetTNodeClass(nid,'active');\nhint.textContent='Вставляем '+v;\nreturn sleep(1000).then(function(){setTNodeClass(nid,'');return buildStep();});\n}\nfunction searchStep(node,target){\nif(!node){hint.textContent='Не найдено!';return Promise.resolve();}\nvar nid=node.id;\nsetTNodeClass(nid,'active');\nhint.textContent='Сравниваем с '+node.v;\nreturn sleep(1125).then(function(){\nif(target===node.v){setTNodeClass(nid,'done');hint.textContent='Найдено: '+target+'!';return Promise.resolve();}\nsetTNodeClass(nid,'fail');\nif(target<node.v){hint.textContent=target+' < '+node.v+' → идём влево';return sleep(750).then(function(){return searchStep(node.left,target);});}\nhint.textContent=target+' > '+node.v+' → идём вправо';return sleep(750).then(function(){return searchStep(node.right,target);});\n});\n}\nsetTimeout(function(){buildStep();}, 1250);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-traversal",
           "type": "heading",
           "level": 2,
@@ -2731,6 +4267,108 @@
           "id": "p8",
           "type": "paragraph",
           "text": "Обратите внимание, как естественно рекурсия подходит для работы с деревьями. Дерево само по себе рекурсивная структура: каждое поддерево — тоже дерево. Поэтому большинство операций с деревьями записываются рекурсивно: обработай текущий узел, затем рекурсивно обработай левое и правое поддерево. Теперь, когда мы знаем основы, давайте детально разберём два главных способа обхода — BFS и DFS."
+        },
+        {
+          "id": "chart-complexity-der-basic",
+          "type": "chart",
+          "title": "Время выполнения: O(log n) — средний случай",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 2.32
+            },
+            {
+              "n": 10,
+              "ops": 3.32
+            },
+            {
+              "n": 15,
+              "ops": 3.91
+            },
+            {
+              "n": 20,
+              "ops": 4.32
+            },
+            {
+              "n": 25,
+              "ops": 4.64
+            },
+            {
+              "n": 30,
+              "ops": 4.91
+            },
+            {
+              "n": 35,
+              "ops": 5.13
+            },
+            {
+              "n": 40,
+              "ops": 5.32
+            },
+            {
+              "n": 45,
+              "ops": 5.49
+            },
+            {
+              "n": 50,
+              "ops": 5.64
+            },
+            {
+              "n": 55,
+              "ops": 5.78
+            },
+            {
+              "n": 60,
+              "ops": 5.91
+            },
+            {
+              "n": 65,
+              "ops": 6.02
+            },
+            {
+              "n": 70,
+              "ops": 6.13
+            },
+            {
+              "n": 75,
+              "ops": 6.23
+            },
+            {
+              "n": 80,
+              "ops": 6.32
+            },
+            {
+              "n": 85,
+              "ops": 6.41
+            },
+            {
+              "n": 90,
+              "ops": 6.49
+            },
+            {
+              "n": 95,
+              "ops": 6.57
+            },
+            {
+              "n": 100,
+              "ops": 6.64
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(log n)",
+              "color": "#a78bfa"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -2792,6 +4430,17 @@
           "code": "#       1              Дерево\n#      / \\\n#     2   3\n#    / \\    \\\n#   4   5    6\n#\n# Шаг 0: Очередь: [1]           | Посещено: []\n# Шаг 1: Достаём 1, добавляем 2,3\n#         Очередь: [2, 3]       | Посещено: [1]\n# Шаг 2: Достаём 2, добавляем 4,5\n#         Очередь: [3, 4, 5]    | Посещено: [1, 2]\n# Шаг 3: Достаём 3, добавляем 6\n#         Очередь: [4, 5, 6]    | Посещено: [1, 2, 3]\n# Шаг 4: Достаём 4 (нет потомков)\n#         Очередь: [5, 6]       | Посещено: [1, 2, 3, 4]\n# Шаг 5: Достаём 5 (нет потомков)\n#         Очередь: [6]          | Посещено: [1, 2, 3, 4, 5]\n# Шаг 6: Достаём 6 (нет потомков)\n#         Очередь: []           | Посещено: [1, 2, 3, 4, 5, 6]\n#\n# Результат BFS: 1, 2, 3, 4, 5, 6"
         },
         {
+          "id": "anim-tree-bfs",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"tree\" width=\"100%\" height=\"280\" viewBox=\"0 0 440 260\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('tree');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nfunction drawTreeEdge(px,py,cx,cy){\nvar l=svgEl('line',{x1:px,y1:py,x2:cx,y2:cy,class:'g-edge'});\nsvg.insertBefore(l,svg.firstChild);\nreturn l;\n}\nfunction drawTreeNode(id,x,y,val){\nvar c=svgEl('circle',{id:'tn-'+id,cx:x,cy:y,r:18,class:'g-node'});\nsvg.appendChild(c);\nvar t=svgEl('text',{x:x,y:y});\nt.textContent=val;\nsvg.appendChild(t);\n}\nfunction setTNodeClass(id,cls){\nvar el=document.getElementById('tn-'+id);\nif(el) el.setAttribute('class','g-node'+(cls?' g-node--'+cls:''));\n}\nvar layout=[\n{id:0,v:1,x:220,y:30},\n{id:1,v:2,x:120,y:90},{id:2,v:3,x:320,y:90},\n{id:3,v:4,x:70,y:150},{id:4,v:5,x:170,y:150},{id:5,v:6,x:270,y:150},{id:6,v:7,x:370,y:150}\n];\nvar edges=[[0,1],[0,2],[1,3],[1,4],[2,5],[2,6]];\nedges.forEach(function(e){drawTreeEdge(layout[e[0]].x,layout[e[0]].y,layout[e[1]].x,layout[e[1]].y);});\nlayout.forEach(function(n){drawTreeNode(n.id,n.x,n.y,n.v);});\nvar children={0:[1,2],1:[3,4],2:[5,6],3:[],4:[],5:[],6:[]};\nvar queue=[0], result=[];\nhint.textContent='BFS (обход в ширину): уровень за уровнем';\nfunction step(){\nif(queue.length===0){hint.textContent='BFS порядок: '+result.map(function(id){return layout[id].v;}).join(' → ');return;}\nvar cur=queue.shift();\nsetTNodeClass(cur,'active');\nhint.textContent='Посещаем узел '+layout[cur].v;\nreturn sleep(1000).then(function(){\nsetTNodeClass(cur,'done');\nresult.push(cur);\nchildren[cur].forEach(function(c){queue.push(c);setTNodeClass(c,'active');});\nreturn sleep(750).then(step);\n});\n}\nsetTimeout(function(){step();}, 1500);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-code",
           "type": "heading",
           "level": 2,
@@ -2837,6 +4486,68 @@
           "id": "p7",
           "type": "paragraph",
           "text": "Сложность BFS: O(n) по времени и O(n) по памяти, где n — количество узлов. В худшем случае очередь может содержать целый уровень дерева. Для сбалансированного дерева самый широкий уровень имеет примерно n/2 узлов — это и есть пик потребления памяти."
+        },
+        {
+          "id": "chart-complexity-der-bfs",
+          "type": "chart",
+          "title": "Время выполнения: O(V + E)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 5
+            },
+            {
+              "n": 10,
+              "ops": 10
+            },
+            {
+              "n": 15,
+              "ops": 15
+            },
+            {
+              "n": 20,
+              "ops": 20
+            },
+            {
+              "n": 25,
+              "ops": 25
+            },
+            {
+              "n": 30,
+              "ops": 30
+            },
+            {
+              "n": 35,
+              "ops": 35
+            },
+            {
+              "n": 40,
+              "ops": 40
+            },
+            {
+              "n": 45,
+              "ops": 45
+            },
+            {
+              "n": 50,
+              "ops": 50
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(V + E)",
+              "color": "#4ade80"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -2917,6 +4628,17 @@
           "code": "def inorder(node):\n    \"\"\"In-order: Лево -> Узел -> Право\"\"\"\n    if node is None:\n        return []\n    result = inorder(node.left)\n    result += [node.value]\n    result += inorder(node.right)\n    return result\n\nprint(inorder(root))  # [4, 2, 5, 1, 3, 6]"
         },
         {
+          "id": "anim-tree-dfs",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"tree\" width=\"100%\" height=\"280\" viewBox=\"0 0 440 260\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('tree');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nfunction drawTreeEdge(px,py,cx,cy){\nvar l=svgEl('line',{x1:px,y1:py,x2:cx,y2:cy,class:'g-edge'});\nsvg.insertBefore(l,svg.firstChild);\nreturn l;\n}\nfunction drawTreeNode(id,x,y,val){\nvar c=svgEl('circle',{id:'tn-'+id,cx:x,cy:y,r:18,class:'g-node'});\nsvg.appendChild(c);\nvar t=svgEl('text',{x:x,y:y});\nt.textContent=val;\nsvg.appendChild(t);\n}\nfunction setTNodeClass(id,cls){\nvar el=document.getElementById('tn-'+id);\nif(el) el.setAttribute('class','g-node'+(cls?' g-node--'+cls:''));\n}\nvar layout=[\n{id:0,v:4,x:220,y:30},\n{id:1,v:2,x:120,y:90},{id:2,v:6,x:320,y:90},\n{id:3,v:1,x:70,y:150},{id:4,v:3,x:170,y:150},{id:5,v:5,x:270,y:150},{id:6,v:7,x:370,y:150}\n];\nvar edges=[[0,1],[0,2],[1,3],[1,4],[2,5],[2,6]];\nedges.forEach(function(e){drawTreeEdge(layout[e[0]].x,layout[e[0]].y,layout[e[1]].x,layout[e[1]].y);});\nlayout.forEach(function(n){drawTreeNode(n.id,n.x,n.y,n.v);});\nvar tree={id:0,left:{id:1,left:{id:3,left:null,right:null},right:{id:4,left:null,right:null}},right:{id:2,left:{id:5,left:null,right:null},right:{id:6,left:null,right:null}}};\nvar result=[];\nhint.textContent='DFS inorder: лево → корень → право';\nfunction inorder(node){\nif(!node) return Promise.resolve();\nsetTNodeClass(node.id,'active');\nhint.textContent='Заходим в узел '+layout[node.id].v;\nreturn sleep(750).then(function(){\nreturn inorder(node.left).then(function(){\nsetTNodeClass(node.id,'done');\nresult.push(layout[node.id].v);\nhint.textContent='Посещаем '+layout[node.id].v+' → ['+result.join(', ')+']';\nreturn sleep(875);\n}).then(function(){\nreturn inorder(node.right);\n});\n});\n}\nsetTimeout(function(){inorder(tree).then(function(){hint.textContent='Inorder: '+result.join(' → ');});}, 1500);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-post",
           "type": "heading",
           "level": 2,
@@ -2969,6 +4691,68 @@
           "id": "p8",
           "type": "paragraph",
           "text": "Сложность DFS: O(n) по времени (посещаем каждый узел ровно раз) и O(h) по памяти, где h — высота дерева (максимальная глубина стека рекурсии). Для сбалансированного дерева h = log(n), для вырожденного (цепочки) h = n. В следующей статье мы используем эти обходы для построения мощной структуры — бинарного дерева поиска."
+        },
+        {
+          "id": "chart-complexity-der-dfs",
+          "type": "chart",
+          "title": "Время выполнения: O(V + E)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 5
+            },
+            {
+              "n": 10,
+              "ops": 10
+            },
+            {
+              "n": 15,
+              "ops": 15
+            },
+            {
+              "n": 20,
+              "ops": 20
+            },
+            {
+              "n": 25,
+              "ops": 25
+            },
+            {
+              "n": 30,
+              "ops": 30
+            },
+            {
+              "n": 35,
+              "ops": 35
+            },
+            {
+              "n": 40,
+              "ops": 40
+            },
+            {
+              "n": 45,
+              "ops": 45
+            },
+            {
+              "n": 50,
+              "ops": 50
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(V + E)",
+              "color": "#4ade80"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -3703,6 +5487,17 @@
           "code": "def bfs_shortest_path(graph, start, target):\n    \"\"\"Кратчайший путь в невзвешенном графе.\"\"\"\n    visited = {start}\n    queue = deque([(start, [start])])\n\n    while queue:\n        vertex, path = queue.popleft()\n        if vertex == target:\n            return path\n\n        for neighbor in graph[vertex]:\n            if neighbor not in visited:\n                visited.add(neighbor)\n                queue.append((neighbor, path + [neighbor]))\n\n    return None  # путь не найден\n\npath = bfs_shortest_path(friends, \"Аня\", \"Гена\")\nprint(path)  # ['Аня', 'Боб', 'Гена']"
         },
         {
+          "id": "anim-graph-bfs",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"graph\" width=\"100%\" height=\"280\" viewBox=\"0 0 460 260\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('graph');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction drawEdge(id, x1, y1, x2, y2, w) {\nvar line = svgEl('line', {id:'e-'+id, x1:x1, y1:y1, x2:x2, y2:y2, class:'g-edge'});\nsvg.insertBefore(line, svg.firstChild);\nif (w !== undefined) {\nvar mx=(x1+x2)/2, my=(y1+y2)/2;\nvar t = svgEl('text', {x:mx, y:my-8, class:'g-weight'});\nt.textContent = w;\nsvg.appendChild(t);\n}\nreturn line;\n}\nfunction drawNode(id, x, y, label) {\nvar c = svgEl('circle', {id:'n-'+id, cx:x, cy:y, r:18, class:'g-node'});\nsvg.appendChild(c);\nvar t = svgEl('text', {x:x, y:y});\nt.textContent = label;\nsvg.appendChild(t);\nreturn c;\n}\nfunction setNodeClass(id, cls) {\nvar el = document.getElementById('n-'+id);\nif(el) el.setAttribute('class', 'g-node' + (cls ? ' g-node--'+cls : ''));\n}\nfunction setEdgeClass(id, cls) {\nvar el = document.getElementById('e-'+id);\nif(el) el.setAttribute('class', 'g-edge' + (cls ? ' g-edge--'+cls : ''));\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nvar nodes = [{id:0,x:60,y:50,l:'A'},{id:1,x:160,y:50,l:'B'},{id:2,x:260,y:50,l:'C'},{id:3,x:60,y:150,l:'D'},{id:4,x:160,y:150,l:'E'},{id:5,x:260,y:150,l:'F'},{id:6,x:360,y:100,l:'G'}];\nvar edges = [[0,1,'01'],[0,3,'03'],[1,2,'12'],[1,4,'14'],[2,6,'26'],[3,4,'34'],[4,5,'45'],[5,6,'56']];\nvar adj = {};\nnodes.forEach(function(n){ adj[n.id] = []; });\nedges.forEach(function(e){\nadj[e[0]].push(e[1]);\nadj[e[1]].push(e[0]);\ndrawEdge(e[2], nodes[e[0]].x, nodes[e[0]].y, nodes[e[1]].x, nodes[e[1]].y);\n});\nnodes.forEach(function(n){ drawNode(n.id, n.x, n.y, n.l); });\nvar visited = {};\nvar queue = [0];\nvisited[0] = true;\nsetNodeClass(0, 'active');\nhint.textContent = 'BFS: начинаем с вершины A';\nfunction step() {\nif (queue.length === 0) { hint.textContent = 'BFS завершён — все вершины посещены'; return; }\nvar cur = queue.shift();\nsetNodeClass(cur, 'done');\nhint.textContent = 'Посещаем ' + nodes[cur].l + ', смотрим соседей';\nvar neighbors = adj[cur].slice();\nvar ni = 0;\nfunction visitNeighbor() {\nif (ni >= neighbors.length) { return sleep(750).then(step); }\nvar nb = neighbors[ni];\nvar eId = edges.find(function(e){ return (e[0]===cur&&e[1]===nb)||(e[0]===nb&&e[1]===cur); });\nif (eId) setEdgeClass(eId[2], 'active');\nif (!visited[nb]) {\nvisited[nb] = true;\nqueue.push(nb);\nsetNodeClass(nb, 'active');\nhint.textContent = 'Добавляем ' + nodes[nb].l + ' в очередь';\n}\nni++;\nreturn sleep(1000).then(visitNeighbor);\n}\nreturn sleep(875).then(visitNeighbor);\n}\nsetTimeout(function(){ step(); }, 1500);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-dfs",
           "type": "heading",
           "level": 2,
@@ -3719,6 +5514,17 @@
           "language": "python",
           "editable": false,
           "code": "def dfs_recursive(graph, vertex, visited=None):\n    \"\"\"Рекурсивный обход в глубину.\"\"\"\n    if visited is None:\n        visited = set()\n    visited.add(vertex)\n    print(vertex, end=\" \")\n\n    for neighbor in graph[vertex]:\n        if neighbor not in visited:\n            dfs_recursive(graph, neighbor, visited)\n    return visited\n\ndef dfs_iterative(graph, start):\n    \"\"\"Итеративный обход в глубину (со стеком).\"\"\"\n    visited = set()\n    stack = [start]\n    order = []\n\n    while stack:\n        vertex = stack.pop()\n        if vertex not in visited:\n            visited.add(vertex)\n            order.append(vertex)\n            for neighbor in reversed(graph[vertex]):\n                if neighbor not in visited:\n                    stack.append(neighbor)\n    return order\n\nmaze = {\n    \"Вход\": [\"Комната1\", \"Комната2\"],\n    \"Комната1\": [\"Вход\", \"Комната3\"],\n    \"Комната2\": [\"Вход\", \"Комната4\"],\n    \"Комната3\": [\"Комната1\", \"Выход\"],\n    \"Комната4\": [\"Комната2\"],\n    \"Выход\": [\"Комната3\"]\n}\n\nprint(dfs_iterative(maze, \"Вход\"))\n# ['Вход', 'Комната1', 'Комната3', 'Выход', 'Комната2', 'Комната4']"
+        },
+        {
+          "id": "anim-graph-dfs",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"graph\" width=\"100%\" height=\"280\" viewBox=\"0 0 460 260\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('graph');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction drawEdge(id, x1, y1, x2, y2, w) {\nvar line = svgEl('line', {id:'e-'+id, x1:x1, y1:y1, x2:x2, y2:y2, class:'g-edge'});\nsvg.insertBefore(line, svg.firstChild);\nif (w !== undefined) {\nvar mx=(x1+x2)/2, my=(y1+y2)/2;\nvar t = svgEl('text', {x:mx, y:my-8, class:'g-weight'});\nt.textContent = w;\nsvg.appendChild(t);\n}\nreturn line;\n}\nfunction drawNode(id, x, y, label) {\nvar c = svgEl('circle', {id:'n-'+id, cx:x, cy:y, r:18, class:'g-node'});\nsvg.appendChild(c);\nvar t = svgEl('text', {x:x, y:y});\nt.textContent = label;\nsvg.appendChild(t);\nreturn c;\n}\nfunction setNodeClass(id, cls) {\nvar el = document.getElementById('n-'+id);\nif(el) el.setAttribute('class', 'g-node' + (cls ? ' g-node--'+cls : ''));\n}\nfunction setEdgeClass(id, cls) {\nvar el = document.getElementById('e-'+id);\nif(el) el.setAttribute('class', 'g-edge' + (cls ? ' g-edge--'+cls : ''));\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nvar nodes = [{id:0,x:60,y:50,l:'A'},{id:1,x:160,y:50,l:'B'},{id:2,x:260,y:50,l:'C'},{id:3,x:60,y:150,l:'D'},{id:4,x:160,y:150,l:'E'},{id:5,x:260,y:150,l:'F'},{id:6,x:360,y:100,l:'G'}];\nvar edges = [[0,1,'01'],[0,3,'03'],[1,2,'12'],[1,4,'14'],[2,6,'26'],[3,4,'34'],[4,5,'45'],[5,6,'56']];\nvar adj = {};\nnodes.forEach(function(n){ adj[n.id] = []; });\nedges.forEach(function(e){\nadj[e[0]].push(e[1]);\nadj[e[1]].push(e[0]);\ndrawEdge(e[2], nodes[e[0]].x, nodes[e[0]].y, nodes[e[1]].x, nodes[e[1]].y);\n});\nnodes.forEach(function(n){ drawNode(n.id, n.x, n.y, n.l); });\nvar visited = {};\nhint.textContent = 'DFS: начинаем с вершины A';\nfunction dfs(cur) {\nvisited[cur] = true;\nsetNodeClass(cur, 'active');\nhint.textContent = 'Заходим в ' + nodes[cur].l;\nvar neighbors = adj[cur].slice();\nvar ni = 0;\nfunction visit() {\nif (ni >= neighbors.length) {\nsetNodeClass(cur, 'done');\nhint.textContent = 'Вершина '+nodes[cur].l+' полностью обработана';\nreturn sleep(625);\n}\nvar nb = neighbors[ni];\nni++;\nvar eId = edges.find(function(e){ return (e[0]===cur&&e[1]===nb)||(e[0]===nb&&e[1]===cur); });\nif (eId) setEdgeClass(eId[2], 'active');\nif (!visited[nb]) {\nreturn sleep(875).then(function(){ return dfs(nb).then(visit); });\n}\nreturn sleep(375).then(visit);\n}\nreturn sleep(875).then(visit);\n}\nsetTimeout(function(){ dfs(0).then(function(){ hint.textContent='DFS завершён'; }); }, 1500);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
         },
         {
           "id": "h2-compare",
@@ -3753,6 +5559,68 @@
           "id": "p7",
           "type": "paragraph",
           "text": "BFS и DFS — фундамент для множества графовых алгоритмов. Освоив их, вы сможете решать задачи на кратчайшие пути, циклы, связность и многое другое. В следующей статье мы разберём топологическую сортировку — способ упорядочить вершины направленного графа."
+        },
+        {
+          "id": "chart-complexity-graf-traversal",
+          "type": "chart",
+          "title": "Время выполнения: O(V + E)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 5
+            },
+            {
+              "n": 10,
+              "ops": 10
+            },
+            {
+              "n": 15,
+              "ops": 15
+            },
+            {
+              "n": 20,
+              "ops": 20
+            },
+            {
+              "n": 25,
+              "ops": 25
+            },
+            {
+              "n": 30,
+              "ops": 30
+            },
+            {
+              "n": 35,
+              "ops": 35
+            },
+            {
+              "n": 40,
+              "ops": 40
+            },
+            {
+              "n": 45,
+              "ops": 45
+            },
+            {
+              "n": 50,
+              "ops": 50
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(V + E)",
+              "color": "#4ade80"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -3797,6 +5665,17 @@
           "code": "from collections import deque, defaultdict\n\ndef topological_sort_kahn(graph, all_vertices):\n    \"\"\"Алгоритм Кана — топологическая сортировка через BFS.\"\"\"\n    in_degree = defaultdict(int)\n    for v in all_vertices:\n        in_degree[v] = 0\n    for u in graph:\n        for v in graph[u]:\n            in_degree[v] += 1\n\n    queue = deque([v for v in all_vertices if in_degree[v] == 0])\n    order = []\n\n    while queue:\n        vertex = queue.popleft()\n        order.append(vertex)\n        for neighbor in graph.get(vertex, []):\n            in_degree[neighbor] -= 1\n            if in_degree[neighbor] == 0:\n                queue.append(neighbor)\n\n    if len(order) != len(all_vertices):\n        return None  # обнаружен цикл!\n    return order\n\n# Пререквизиты курсов\ncourses = {\n    \"Математика\": [\"Статистика\", \"Линейная алгебра\"],\n    \"Статистика\": [\"ML\"],\n    \"Линейная алгебра\": [\"ML\"],\n    \"ML\": [\"Глубокое обучение\"],\n    \"Глубокое обучение\": []\n}\nall_courses = [\"Математика\", \"Статистика\", \"Линейная алгебра\", \"ML\", \"Глубокое обучение\"]\n\nprint(topological_sort_kahn(courses, all_courses))\n# ['Математика', 'Статистика', 'Линейная алгебра', 'ML', 'Глубокое обучение']"
         },
         {
+          "id": "anim-toposort",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"graph\" width=\"100%\" height=\"280\" viewBox=\"0 0 460 260\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('graph');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction drawEdge(id, x1, y1, x2, y2, w) {\nvar line = svgEl('line', {id:'e-'+id, x1:x1, y1:y1, x2:x2, y2:y2, class:'g-edge'});\nsvg.insertBefore(line, svg.firstChild);\nif (w !== undefined) {\nvar mx=(x1+x2)/2, my=(y1+y2)/2;\nvar t = svgEl('text', {x:mx, y:my-8, class:'g-weight'});\nt.textContent = w;\nsvg.appendChild(t);\n}\nreturn line;\n}\nfunction drawNode(id, x, y, label) {\nvar c = svgEl('circle', {id:'n-'+id, cx:x, cy:y, r:18, class:'g-node'});\nsvg.appendChild(c);\nvar t = svgEl('text', {x:x, y:y});\nt.textContent = label;\nsvg.appendChild(t);\nreturn c;\n}\nfunction setNodeClass(id, cls) {\nvar el = document.getElementById('n-'+id);\nif(el) el.setAttribute('class', 'g-node' + (cls ? ' g-node--'+cls : ''));\n}\nfunction setEdgeClass(id, cls) {\nvar el = document.getElementById('e-'+id);\nif(el) el.setAttribute('class', 'g-edge' + (cls ? ' g-edge--'+cls : ''));\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nvar nodes=[{id:0,x:50,y:100,l:'A'},{id:1,x:150,y:40,l:'B'},{id:2,x:150,y:160,l:'C'},{id:3,x:270,y:40,l:'D'},{id:4,x:270,y:160,l:'E'},{id:5,x:390,y:100,l:'F'}];\nvar edges=[[0,1,'01'],[0,2,'02'],[1,3,'13'],[2,4,'24'],[3,5,'35'],[4,5,'45'],[1,4,'14']];\nedges.forEach(function(e){\nvar n1=nodes[e[0]],n2=nodes[e[1]];\nvar line=drawEdge(e[2],n1.x,n1.y,n2.x,n2.y);\nline.setAttribute('marker-end','url(#ah)');\n});\nvar defs=svgEl('defs',{});\ndefs.innerHTML='<marker id=\"ah\" viewBox=\"0 0 10 10\" refX=\"28\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\"><path d=\"M0 0 L10 5 L0 10 z\" fill=\"rgba(148,163,184,0.7)\"/></marker>';\nsvg.insertBefore(defs,svg.firstChild);\nnodes.forEach(function(n){drawNode(n.id,n.x,n.y,n.l);});\nvar indegree={}, adj={};\nnodes.forEach(function(n){indegree[n.id]=0;adj[n.id]=[];});\nedges.forEach(function(e){adj[e[0]].push(e[1]);indegree[e[1]]++;});\nvar queue=[], result=[];\nfor(var k in indegree) if(indegree[k]===0) queue.push(Number(k));\nqueue.forEach(function(id){setNodeClass(id,'active');});\nhint.textContent='Топо-сорт (Kahn): вершины без входящих рёбер';\nfunction step(){\nif(queue.length===0){hint.textContent='Порядок: '+result.map(function(id){return nodes[id].l;}).join(' → ');return;}\nvar u=queue.shift();\nsetNodeClass(u,'done');\nresult.push(u);\nhint.textContent='Извлекаем '+nodes[u].l+', порядок: '+result.map(function(id){return nodes[id].l;}).join(' → ');\nvar nbrs=adj[u].slice(),ni=0;\nfunction relax(){\nif(ni>=nbrs.length) return sleep(875).then(step);\nvar v=nbrs[ni]; ni++;\nindegree[v]--;\nvar eId=edges.find(function(e){return e[0]===u&&e[1]===v;});\nif(eId) setEdgeClass(eId[2],'done');\nif(indegree[v]===0){queue.push(v);setNodeClass(v,'active');hint.textContent=nodes[v].l+' — все зависимости удовлетворены';}\nreturn sleep(800).then(relax);\n}\nreturn sleep(875).then(relax);\n}\nsetTimeout(function(){step();}, 1500);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-dfs",
           "type": "heading",
           "level": 2,
@@ -3836,6 +5715,68 @@
           "id": "p6",
           "type": "paragraph",
           "text": "Сложность обоих алгоритмов — O(V + E). Топологическая сортировка применяется повсюду: планирование задач в CI/CD, определение порядка компиляции модулей, расписание курсов. В следующей статье перейдём к задаче кратчайших путей — алгоритмам Дейкстры и Беллмана-Форда."
+        },
+        {
+          "id": "chart-complexity-graf-topo",
+          "type": "chart",
+          "title": "Время выполнения: O(V + E)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 5
+            },
+            {
+              "n": 10,
+              "ops": 10
+            },
+            {
+              "n": 15,
+              "ops": 15
+            },
+            {
+              "n": 20,
+              "ops": 20
+            },
+            {
+              "n": 25,
+              "ops": 25
+            },
+            {
+              "n": 30,
+              "ops": 30
+            },
+            {
+              "n": 35,
+              "ops": 35
+            },
+            {
+              "n": 40,
+              "ops": 40
+            },
+            {
+              "n": 45,
+              "ops": 45
+            },
+            {
+              "n": 50,
+              "ops": 50
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(V + E)",
+              "color": "#4ade80"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -3880,6 +5821,17 @@
           "code": "import heapq\n\ndef dijkstra(graph, start):\n    \"\"\"Алгоритм Дейкстры с приоритетной очередью.\"\"\"\n    dist = {v: float('inf') for v in graph}\n    dist[start] = 0\n    prev = {v: None for v in graph}\n    pq = [(0, start)]  # (расстояние, вершина)\n\n    while pq:\n        d, u = heapq.heappop(pq)\n        if d > dist[u]:\n            continue  # устаревшая запись\n\n        for v, weight in graph[u]:\n            new_dist = dist[u] + weight\n            if new_dist < dist[v]:\n                dist[v] = new_dist\n                prev[v] = u\n                heapq.heappush(pq, (new_dist, v))\n\n    return dist, prev\n\ndef get_path(prev, target):\n    \"\"\"Восстанавливаем путь по массиву предков.\"\"\"\n    path = []\n    while target is not None:\n        path.append(target)\n        target = prev[target]\n    return path[::-1]\n\ngraph = {\n    \"A\": [(\"B\", 4), (\"C\", 2)],\n    \"B\": [(\"D\", 3)],\n    \"C\": [(\"B\", 1), (\"D\", 5)],\n    \"D\": []\n}\n\ndist, prev = dijkstra(graph, \"A\")\nprint(f\"Расстояние до D: {dist['D']}\")  # 6\nprint(f\"Путь: {get_path(prev, 'D')}\")  # ['A', 'C', 'B', 'D']"
         },
         {
+          "id": "anim-dijkstra",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"graph\" width=\"100%\" height=\"300\" viewBox=\"0 0 460 280\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('graph');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction drawEdge(id, x1, y1, x2, y2, w) {\nvar line = svgEl('line', {id:'e-'+id, x1:x1, y1:y1, x2:x2, y2:y2, class:'g-edge'});\nsvg.insertBefore(line, svg.firstChild);\nif (w !== undefined) {\nvar mx=(x1+x2)/2, my=(y1+y2)/2;\nvar t = svgEl('text', {x:mx, y:my-8, class:'g-weight'});\nt.textContent = w;\nsvg.appendChild(t);\n}\nreturn line;\n}\nfunction drawNode(id, x, y, label) {\nvar c = svgEl('circle', {id:'n-'+id, cx:x, cy:y, r:18, class:'g-node'});\nsvg.appendChild(c);\nvar t = svgEl('text', {x:x, y:y});\nt.textContent = label;\nsvg.appendChild(t);\nreturn c;\n}\nfunction setNodeClass(id, cls) {\nvar el = document.getElementById('n-'+id);\nif(el) el.setAttribute('class', 'g-node' + (cls ? ' g-node--'+cls : ''));\n}\nfunction setEdgeClass(id, cls) {\nvar el = document.getElementById('e-'+id);\nif(el) el.setAttribute('class', 'g-edge' + (cls ? ' g-edge--'+cls : ''));\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nvar nodes=[{id:0,x:50,y:110,l:'S'},{id:1,x:150,y:40,l:'A'},{id:2,x:150,y:180,l:'B'},{id:3,x:280,y:40,l:'C'},{id:4,x:280,y:180,l:'D'},{id:5,x:400,y:110,l:'T'}];\nvar edges=[[0,1,'01',4],[0,2,'02',2],[1,2,'12',1],[1,3,'13',5],[2,4,'24',8],[3,5,'35',3],[4,5,'45',1],[3,4,'34',2]];\nvar adj={};\nnodes.forEach(function(n){adj[n.id]=[];});\nedges.forEach(function(e){\nadj[e[0]].push({to:e[1],w:e[3],eid:e[2]});\nadj[e[1]].push({to:e[0],w:e[3],eid:e[2]});\ndrawEdge(e[2],nodes[e[0]].x,nodes[e[0]].y,nodes[e[1]].x,nodes[e[1]].y,e[3]);\n});\nnodes.forEach(function(n){drawNode(n.id,n.x,n.y,n.l);});\nvar INF=999, dist={}, done={};\nnodes.forEach(function(n){dist[n.id]=INF;});\ndist[0]=0;\nhint.textContent='Dijkstra: старт из S, dist[S]=0';\nfunction findMin(){\nvar best=-1,bd=INF;\nfor(var k in dist){ var id=Number(k); if(!done[id]&&dist[id]<bd){bd=dist[id];best=id;} }\nreturn best;\n}\nfunction step(){\nvar u=findMin();\nif(u<0){hint.textContent='Все достижимые вершины обработаны';return;}\ndone[u]=true;\nsetNodeClass(u,'done');\nhint.textContent='Обрабатываем '+nodes[u].l+', dist='+dist[u];\nvar nbrs=adj[u].slice(), ni=0;\nfunction relax(){\nif(ni>=nbrs.length) return sleep(750).then(step);\nvar nb=nbrs[ni]; ni++;\nsetEdgeClass(nb.eid,'active');\nvar nd=dist[u]+nb.w;\nif(nd<dist[nb.to]){\ndist[nb.to]=nd;\nsetNodeClass(nb.to,'active');\nhint.textContent='Релаксация: dist['+nodes[nb.to].l+']='+nd;\n}\nreturn sleep(950).then(function(){\nif(!done[nb.to]) setEdgeClass(nb.eid,'done');\nreturn relax();\n});\n}\nreturn sleep(875).then(relax);\n}\nsetTimeout(function(){step();}, 1500);\n})();",
+          "width": "100%",
+          "height": 340,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "p4",
           "type": "paragraph",
           "text": "Сложность Дейкстры с бинарной кучей — O((V + E) log V). Но есть ограничение: алгоритм Дейкстры не работает с отрицательными весами! Если вес ребра отрицательный, жадная стратегия ломается: мы можем «улучшить» путь, пройдя по отрицательному ребру позже."
@@ -3922,6 +5874,159 @@
           "id": "p8",
           "type": "paragraph",
           "text": "В следующей статье мы разберём задачу построения минимального остовного дерева — как соединить все вершины графа с минимальной суммарной стоимостью рёбер."
+        },
+        {
+          "id": "chart-complexity-graf-shortest",
+          "type": "chart",
+          "title": "Время выполнения: Dijkstra O(E log V) vs Bellman-Ford O(VE)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0,
+              "O(VE)": 0
+            },
+            {
+              "n": 2,
+              "ops": 2,
+              "O(VE)": 4
+            },
+            {
+              "n": 4,
+              "ops": 8,
+              "O(VE)": 16
+            },
+            {
+              "n": 6,
+              "ops": 15.51,
+              "O(VE)": 36
+            },
+            {
+              "n": 8,
+              "ops": 24,
+              "O(VE)": 64
+            },
+            {
+              "n": 10,
+              "ops": 33.22,
+              "O(VE)": 100
+            },
+            {
+              "n": 12,
+              "ops": 43.02,
+              "O(VE)": 144
+            },
+            {
+              "n": 14,
+              "ops": 53.3,
+              "O(VE)": 196
+            },
+            {
+              "n": 16,
+              "ops": 64,
+              "O(VE)": 256
+            },
+            {
+              "n": 18,
+              "ops": 75.06,
+              "O(VE)": 324
+            },
+            {
+              "n": 20,
+              "ops": 86.44,
+              "O(VE)": 400
+            },
+            {
+              "n": 22,
+              "ops": 98.11,
+              "O(VE)": 484
+            },
+            {
+              "n": 24,
+              "ops": 110.04,
+              "O(VE)": 576
+            },
+            {
+              "n": 26,
+              "ops": 122.21,
+              "O(VE)": 676
+            },
+            {
+              "n": 28,
+              "ops": 134.61,
+              "O(VE)": 784
+            },
+            {
+              "n": 30,
+              "ops": 147.21,
+              "O(VE)": 900
+            },
+            {
+              "n": 32,
+              "ops": 160,
+              "O(VE)": 1024
+            },
+            {
+              "n": 34,
+              "ops": 172.97,
+              "O(VE)": 1156
+            },
+            {
+              "n": 36,
+              "ops": 186.12,
+              "O(VE)": 1296
+            },
+            {
+              "n": 38,
+              "ops": 199.42,
+              "O(VE)": 1444
+            },
+            {
+              "n": 40,
+              "ops": 212.88,
+              "O(VE)": 1600
+            },
+            {
+              "n": 42,
+              "ops": 226.48,
+              "O(VE)": 1764
+            },
+            {
+              "n": 44,
+              "ops": 240.21,
+              "O(VE)": 1936
+            },
+            {
+              "n": 46,
+              "ops": 254.08,
+              "O(VE)": 2116
+            },
+            {
+              "n": 48,
+              "ops": 268.08,
+              "O(VE)": 2304
+            },
+            {
+              "n": 50,
+              "ops": 282.19,
+              "O(VE)": 2500
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(E log V)",
+              "color": "#fbbf24"
+            },
+            {
+              "dataKey": "O(VE)",
+              "label": "O(VE)",
+              "color": "#f87171"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -3966,6 +6071,17 @@
           "code": "class UnionFind:\n    def __init__(self, n):\n        self.parent = list(range(n))\n        self.rank = [0] * n\n\n    def find(self, x):\n        if self.parent[x] != x:\n            self.parent[x] = self.find(self.parent[x])\n        return self.parent[x]\n\n    def union(self, x, y):\n        px, py = self.find(x), self.find(y)\n        if px == py:\n            return False  # уже в одном множестве\n        if self.rank[px] < self.rank[py]:\n            px, py = py, px\n        self.parent[py] = px\n        if self.rank[px] == self.rank[py]:\n            self.rank[px] += 1\n        return True\n\ndef kruskal(n, edges):\n    \"\"\"Алгоритм Краскала. edges = [(вес, u, v), ...]\"\"\"\n    edges.sort()  # сортируем по весу\n    uf = UnionFind(n)\n    mst = []\n    total = 0\n\n    for weight, u, v in edges:\n        if uf.union(u, v):\n            mst.append((u, v, weight))\n            total += weight\n            if len(mst) == n - 1:\n                break\n\n    return mst, total\n\n# Деревни: 0, 1, 2, 3\n# Рёбра: (вес, откуда, куда)\nedges = [\n    (4, 0, 1), (8, 0, 2), (7, 1, 2),\n    (2, 1, 3), (6, 2, 3)\n]\n\nmst, total = kruskal(4, edges)\nprint(f\"MST рёбра: {mst}\")  # [(1, 3, 2), (0, 1, 4), (2, 3, 6)]\nprint(f\"Общая стоимость: {total}\")  # 12"
         },
         {
+          "id": "anim-kruskal",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"graph\" width=\"100%\" height=\"300\" viewBox=\"0 0 460 280\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('graph');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction drawEdge(id, x1, y1, x2, y2, w) {\nvar line = svgEl('line', {id:'e-'+id, x1:x1, y1:y1, x2:x2, y2:y2, class:'g-edge'});\nsvg.insertBefore(line, svg.firstChild);\nif (w !== undefined) {\nvar mx=(x1+x2)/2, my=(y1+y2)/2;\nvar t = svgEl('text', {x:mx, y:my-8, class:'g-weight'});\nt.textContent = w;\nsvg.appendChild(t);\n}\nreturn line;\n}\nfunction drawNode(id, x, y, label) {\nvar c = svgEl('circle', {id:'n-'+id, cx:x, cy:y, r:18, class:'g-node'});\nsvg.appendChild(c);\nvar t = svgEl('text', {x:x, y:y});\nt.textContent = label;\nsvg.appendChild(t);\nreturn c;\n}\nfunction setNodeClass(id, cls) {\nvar el = document.getElementById('n-'+id);\nif(el) el.setAttribute('class', 'g-node' + (cls ? ' g-node--'+cls : ''));\n}\nfunction setEdgeClass(id, cls) {\nvar el = document.getElementById('e-'+id);\nif(el) el.setAttribute('class', 'g-edge' + (cls ? ' g-edge--'+cls : ''));\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nvar nodes=[{id:0,x:50,y:60,l:'A'},{id:1,x:170,y:30,l:'B'},{id:2,x:290,y:60,l:'C'},{id:3,x:50,y:180,l:'D'},{id:4,x:170,y:210,l:'E'},{id:5,x:290,y:180,l:'F'}];\nvar edges=[[0,1,'01',4],[0,3,'03',2],[1,2,'12',6],[1,4,'14',5],[2,5,'25',3],[3,4,'34',1],[4,5,'45',7]];\nedges.forEach(function(e){\ndrawEdge(e[2],nodes[e[0]].x,nodes[e[0]].y,nodes[e[1]].x,nodes[e[1]].y,e[3]);\n});\nnodes.forEach(function(n){drawNode(n.id,n.x,n.y,n.l);});\nvar parent={};\nnodes.forEach(function(n){parent[n.id]=n.id;});\nfunction find(x){return parent[x]===x?x:find(parent[x]);}\nfunction union(a,b){parent[find(a)]=find(b);}\nvar sorted=edges.slice().sort(function(a,b){return a[3]-b[3];});\nvar ei=0, mstCount=0;\nhint.textContent='Kruskal: рёбра отсортированы по весу';\nfunction step(){\nif(ei>=sorted.length||mstCount>=nodes.length-1){hint.textContent='MST построено! ('+mstCount+' рёбер)';return;}\nvar e=sorted[ei]; ei++;\nsetEdgeClass(e[2],'active');\nhint.textContent='Ребро '+nodes[e[0]].l+'-'+nodes[e[1]].l+' (вес '+e[3]+')';\nreturn sleep(1000).then(function(){\nif(find(e[0])===find(e[1])){\nhint.textContent='Цикл! Пропускаем '+nodes[e[0]].l+'-'+nodes[e[1]].l;\nsetEdgeClass(e[2],'');\nreturn sleep(875).then(step);\n}\nunion(e[0],e[1]);\nsetEdgeClass(e[2],'done');\nsetNodeClass(e[0],'done');\nsetNodeClass(e[1],'done');\nmstCount++;\nhint.textContent='Добавляем '+nodes[e[0]].l+'-'+nodes[e[1]].l+' в MST';\nreturn sleep(1000).then(step);\n});\n}\nsetTimeout(function(){step();}, 1500);\n})();",
+          "width": "100%",
+          "height": 340,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-prim",
           "type": "heading",
           "level": 2,
@@ -3998,6 +6114,128 @@
           "id": "p6",
           "type": "paragraph",
           "text": "В следующей статье мы разберём циклы в графах и компоненты сильной связности — важные понятия для анализа структуры направленных графов."
+        },
+        {
+          "id": "chart-complexity-graf-mst",
+          "type": "chart",
+          "title": "Время выполнения: O(E log E)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 2,
+              "ops": 2
+            },
+            {
+              "n": 4,
+              "ops": 8
+            },
+            {
+              "n": 6,
+              "ops": 15.51
+            },
+            {
+              "n": 8,
+              "ops": 24
+            },
+            {
+              "n": 10,
+              "ops": 33.22
+            },
+            {
+              "n": 12,
+              "ops": 43.02
+            },
+            {
+              "n": 14,
+              "ops": 53.3
+            },
+            {
+              "n": 16,
+              "ops": 64
+            },
+            {
+              "n": 18,
+              "ops": 75.06
+            },
+            {
+              "n": 20,
+              "ops": 86.44
+            },
+            {
+              "n": 22,
+              "ops": 98.11
+            },
+            {
+              "n": 24,
+              "ops": 110.04
+            },
+            {
+              "n": 26,
+              "ops": 122.21
+            },
+            {
+              "n": 28,
+              "ops": 134.61
+            },
+            {
+              "n": 30,
+              "ops": 147.21
+            },
+            {
+              "n": 32,
+              "ops": 160
+            },
+            {
+              "n": 34,
+              "ops": 172.97
+            },
+            {
+              "n": 36,
+              "ops": 186.12
+            },
+            {
+              "n": 38,
+              "ops": 199.42
+            },
+            {
+              "n": 40,
+              "ops": 212.88
+            },
+            {
+              "n": 42,
+              "ops": 226.48
+            },
+            {
+              "n": 44,
+              "ops": 240.21
+            },
+            {
+              "n": 46,
+              "ops": 254.08
+            },
+            {
+              "n": 48,
+              "ops": 268.08
+            },
+            {
+              "n": 50,
+              "ops": 282.19
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(E log E)",
+              "color": "#fbbf24"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -4136,6 +6374,17 @@
           "code": "import math\n\ndef floyd_warshall(n, edges):\n    \"\"\"Floyd-Warshall: кратчайшие пути между всеми парами.\"\"\"\n    INF = math.inf\n    dist = [[INF] * n for _ in range(n)]\n    nxt = [[None] * n for _ in range(n)]  # для восстановления пути\n\n    for i in range(n):\n        dist[i][i] = 0\n\n    for u, v, w in edges:\n        dist[u][v] = w\n        nxt[u][v] = v\n\n    # Тройной цикл — сердце алгоритма\n    for k in range(n):\n        for i in range(n):\n            for j in range(n):\n                if dist[i][k] + dist[k][j] < dist[i][j]:\n                    dist[i][j] = dist[i][k] + dist[k][j]\n                    nxt[i][j] = nxt[i][k]\n\n    return dist, nxt\n\n# 4 города: 0, 1, 2, 3\nedges = [\n    (0, 1, 3), (0, 2, 6),\n    (1, 2, 2), (1, 3, 1),\n    (2, 3, 4), (3, 0, 7)\n]\n\ndist, nxt = floyd_warshall(4, edges)\n\nprint(\"Матрица кратчайших расстояний:\")\nfor row in dist:\n    print([x if x != math.inf else '∞' for x in row])"
         },
         {
+          "id": "anim-floyd-warshall",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-grid\" id=\"grid\" style=\"grid-template-columns:repeat(5,1fr);max-width:360px;\"></div></div>",
+          "css": ".viz-grid .viz-cell{min-height:48px;font-size:13px;}",
+          "js": "(function(){\nvar N=4;\nvar INF=99;\nvar labels=['A','B','C','D'];\nvar dist=[[0,3,INF,7],[8,0,2,INF],[5,INF,0,1],[2,INF,INF,0]];\nvar grid=document.getElementById('grid');\nvar hint=document.getElementById('hint');\ngrid.style.gridTemplateColumns='repeat('+(N+1)+',1fr)';\nfunction sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}\nfunction render(ki,ii,ji){\ngrid.innerHTML='';\nvar hdr=document.createElement('div');hdr.className='viz-cell';hdr.innerHTML='<span class=\"viz-cell__main\"></span>';grid.appendChild(hdr);\nfor(var c=0;c<N;c++){var h=document.createElement('div');h.className='viz-cell';h.innerHTML='<span class=\"viz-cell__main\">'+labels[c]+'</span>';grid.appendChild(h);}\nfor(var i=0;i<N;i++){\nvar rh=document.createElement('div');rh.className='viz-cell';rh.innerHTML='<span class=\"viz-cell__main\">'+labels[i]+'</span>';grid.appendChild(rh);\nfor(var j=0;j<N;j++){\nvar d=document.createElement('div');\nvar cls='viz-cell';\nif(i===ii&&j===ji) cls+=' viz-cell--compare';\nelse if(i===ii||j===ji) cls+=' viz-cell--active';\nd.className=cls;\nd.innerHTML='<span class=\"viz-cell__main\">'+(dist[i][j]>=INF?'∞':dist[i][j])+'</span>';\ngrid.appendChild(d);\n}\n}\n}\nrender(-1,-1,-1);\nhint.textContent='Floyd-Warshall: матрица кратчайших расстояний';\nfunction run(){\nvar k=0;\nfunction loopK(){\nif(k>=N){hint.textContent='Готово! Все кратчайшие пути найдены';render(-1,-1,-1);return;}\nhint.textContent='Промежуточная вершина: '+labels[k];\nvar i=0;\nfunction loopI(){\nif(i>=N){k++;return sleep(500).then(loopK);}\nvar j=0;\nfunction loopJ(){\nif(j>=N){i++;return loopI();}\nif(i!==j&&i!==k&&j!==k){\nvar nd=dist[i][k]+dist[k][j];\nrender(k,i,j);\nif(nd<dist[i][j]){\ndist[i][j]=nd;\nhint.textContent=labels[i]+'→'+labels[j]+' через '+labels[k]+': '+nd+' < '+(dist[i][j]>=INF?'∞':dist[i][j]+nd-nd);\nrender(k,i,j);\n}\n}\nj++;\nreturn sleep(450).then(loopJ);\n}\nreturn loopJ();\n}\nreturn loopI();\n}\nreturn sleep(1250).then(loopK);\n}\nrun();\n})();",
+          "width": "100%",
+          "height": 360,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-path",
           "type": "heading",
           "level": 2,
@@ -4186,6 +6435,108 @@
           "id": "p7",
           "type": "paragraph",
           "text": "На этом мы завершаем цикл статей о графовых алгоритмах. Вы изучили: представление графов, обходы BFS/DFS, топологическую сортировку, алгоритмы кратчайших путей (Дейкстра, Беллман-Форд, Floyd-Warshall), минимальное остовное дерево (Краскал, Прим), обнаружение циклов и компоненты сильной связности. Это мощный набор инструментов, который покрывает огромное число задач!"
+        },
+        {
+          "id": "chart-complexity-graf-floydw",
+          "type": "chart",
+          "title": "Время выполнения: O(V³)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 1,
+              "ops": 1
+            },
+            {
+              "n": 2,
+              "ops": 8
+            },
+            {
+              "n": 3,
+              "ops": 27
+            },
+            {
+              "n": 4,
+              "ops": 64
+            },
+            {
+              "n": 5,
+              "ops": 125
+            },
+            {
+              "n": 6,
+              "ops": 216
+            },
+            {
+              "n": 7,
+              "ops": 343
+            },
+            {
+              "n": 8,
+              "ops": 512
+            },
+            {
+              "n": 9,
+              "ops": 729
+            },
+            {
+              "n": 10,
+              "ops": 1000
+            },
+            {
+              "n": 11,
+              "ops": 1331
+            },
+            {
+              "n": 12,
+              "ops": 1728
+            },
+            {
+              "n": 13,
+              "ops": 2197
+            },
+            {
+              "n": 14,
+              "ops": 2744
+            },
+            {
+              "n": 15,
+              "ops": 3375
+            },
+            {
+              "n": 16,
+              "ops": 4096
+            },
+            {
+              "n": 17,
+              "ops": 4913
+            },
+            {
+              "n": 18,
+              "ops": 5832
+            },
+            {
+              "n": 19,
+              "ops": 6859
+            },
+            {
+              "n": 20,
+              "ops": 8000
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(V³)",
+              "color": "#f87171"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -4378,6 +6729,17 @@
           "code": "def unique_paths(m, n):\n    # Создаём таблицу m x n, заполненную единицами\n    dp = [[1] * n for _ in range(m)]\n\n    # Заполняем: dp[i][j] = dp[i-1][j] + dp[i][j-1]\n    for i in range(1, m):\n        for j in range(1, n):\n            dp[i][j] = dp[i - 1][j] + dp[i][j - 1]\n\n    return dp[m - 1][n - 1]\n\n# Сетка 3x3:\n# [1, 1, 1]\n# [1, 2, 3]\n# [1, 3, 6]  <-- ответ: 6 путей\nprint(unique_paths(3, 3))  # 6"
         },
         {
+          "id": "anim-dp-grid-paths",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-grid\" id=\"grid\" style=\"grid-template-columns:repeat(5,1fr);max-width:340px;\"></div></div>",
+          "css": ".viz-grid .viz-cell{min-height:52px;}",
+          "js": "(function(){\nvar R=4,C=5;\nvar dp=[];\nfor(var i=0;i<R;i++){dp[i]=[];for(var j=0;j<C;j++) dp[i][j]=0;}\nvar grid=document.getElementById('grid');\nvar hint=document.getElementById('hint');\ngrid.style.gridTemplateColumns='repeat('+C+',1fr)';\nfunction sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}\nfunction render(ci,cj){\ngrid.innerHTML='';\nfor(var i=0;i<R;i++) for(var j=0;j<C;j++){\nvar d=document.createElement('div');\nvar cls='viz-cell';\nif(i===ci&&j===cj) cls+=' viz-cell--active';\nelse if(dp[i][j]>0) cls+=' viz-cell--success';\nd.className=cls;\nd.innerHTML='<span class=\"viz-cell__main\">'+(dp[i][j]||'')+'</span><span class=\"viz-cell__sub\">['+i+','+j+']</span>';\ngrid.appendChild(d);\n}\n}\nrender(-1,-1);\nhint.textContent='DP: кол-во путей из [0,0] в [3,4], ходы вниз/вправо';\nvar qi=0,qj=0;\nfunction step(){\nif(qi>=R){hint.textContent='Ответ: '+dp[R-1][C-1]+' путей';render(-1,-1);return;}\nif(qj>=C){qi++;qj=0;return step();}\ndp[qi][qj]=(qi===0||qj===0)?1:(dp[qi-1][qj]+dp[qi][qj-1]);\nrender(qi,qj);\nhint.textContent='dp['+qi+']['+qj+'] = '+(qi===0||qj===0?'1 (край)':dp[qi-1][qj]+' + '+dp[qi][qj-1]+' = '+dp[qi][qj]);\nqj++;\nreturn sleep(700).then(step);\n}\nsetTimeout(function(){step();}, 1250);\n})();",
+          "width": "100%",
+          "height": 340,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-obstacles",
           "type": "heading",
           "level": 2,
@@ -4416,6 +6778,84 @@
           "id": "p7",
           "type": "paragraph",
           "text": "Фибоначчи учит нас мемоизации и табуляции. Пути в сетке — заполнению двумерной таблицы. Обе задачи просты, но они закладывают фундамент для всех остальных задач ДП. Запомни паттерн: состояние → переход → базовый случай → заполнение → ответ."
+        },
+        {
+          "id": "chart-complexity-dp-basics",
+          "type": "chart",
+          "title": "Время выполнения: O(n) с мемоизацией",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0,
+              "O(2ⁿ) без мемо": 1
+            },
+            {
+              "n": 5,
+              "ops": 5,
+              "O(2ⁿ) без мемо": 32
+            },
+            {
+              "n": 10,
+              "ops": 10,
+              "O(2ⁿ) без мемо": 1024
+            },
+            {
+              "n": 15,
+              "ops": 15,
+              "O(2ⁿ) без мемо": 32768
+            },
+            {
+              "n": 20,
+              "ops": 20,
+              "O(2ⁿ) без мемо": 1000000
+            },
+            {
+              "n": 25,
+              "ops": 25,
+              "O(2ⁿ) без мемо": 1000000
+            },
+            {
+              "n": 30,
+              "ops": 30,
+              "O(2ⁿ) без мемо": 1000000
+            },
+            {
+              "n": 35,
+              "ops": 35,
+              "O(2ⁿ) без мемо": 1000000
+            },
+            {
+              "n": 40,
+              "ops": 40,
+              "O(2ⁿ) без мемо": 1000000
+            },
+            {
+              "n": 45,
+              "ops": 45,
+              "O(2ⁿ) без мемо": 1000000
+            },
+            {
+              "n": 50,
+              "ops": 50,
+              "O(2ⁿ) без мемо": 1000000
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(n)",
+              "color": "#4ade80"
+            },
+            {
+              "dataKey": "O(2ⁿ) без мемо",
+              "label": "O(2ⁿ) без мемо",
+              "color": "#f87171"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -4482,6 +6922,17 @@
           "text": "Для нашего примера таблица заполняется так: строки — предметы (ноутбук, книга, фотоаппарат, одежда), столбцы — вес от 0 до 10. Каждая клетка — лучший результат при данных ограничениях. Конечный ответ в правом нижнем углу: dp[4][10] = 17 (ноутбук + книга + одежда = 3+1+5 = 9 кг, ценность = 8+2+7 = 17)."
         },
         {
+          "id": "anim-dp-knapsack",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><div class=\"viz-badge\" id=\"items\"></div><div class=\"viz-grid\" id=\"grid\"></div></div>",
+          "css": ".viz-grid .viz-cell{min-height:42px;font-size:12px;}",
+          "js": "(function(){\nvar items=[{w:1,v:1},{w:3,v:4},{w:4,v:5},{w:5,v:7}];\nvar W=7,n=items.length;\nvar dp=[];\nfor(var i=0;i<=n;i++){dp[i]=[];for(var j=0;j<=W;j++) dp[i][j]=0;}\nvar grid=document.getElementById('grid');\nvar hint=document.getElementById('hint');\nvar itemsEl=document.getElementById('items');\nitemsEl.textContent='Предметы: '+items.map(function(it,i){return '('+(i+1)+': w='+it.w+' v='+it.v+')';}).join(' ');\ngrid.style.gridTemplateColumns='repeat('+(W+2)+',1fr)';\nfunction sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}\nfunction render(ci,cj){\ngrid.innerHTML='';\nvar hdr=document.createElement('div');hdr.className='viz-cell';hdr.innerHTML='<span class=\"viz-cell__main\">i\\w</span>';grid.appendChild(hdr);\nfor(var j=0;j<=W;j++){var h=document.createElement('div');h.className='viz-cell';h.innerHTML='<span class=\"viz-cell__main\">'+j+'</span>';grid.appendChild(h);}\nfor(var i=0;i<=n;i++){\nvar rh=document.createElement('div');rh.className='viz-cell';rh.innerHTML='<span class=\"viz-cell__main\">'+i+'</span>';grid.appendChild(rh);\nfor(var j=0;j<=W;j++){\nvar d=document.createElement('div');\nvar cls='viz-cell';\nif(i===ci&&j===cj) cls+=' viz-cell--active';\nelse if(dp[i][j]>0) cls+=' viz-cell--success';\nd.className=cls;\nd.innerHTML='<span class=\"viz-cell__main\">'+dp[i][j]+'</span>';\ngrid.appendChild(d);\n}\n}\n}\nrender(-1,-1);\nhint.textContent='0/1 Knapsack: вместимость='+W;\nvar qi=1,qj=0;\nfunction step(){\nif(qi>n){hint.textContent='Ответ: '+dp[n][W];render(-1,-1);return;}\nif(qj>W){qi++;qj=0;return step();}\nvar it=items[qi-1];\nif(it.w>qj){dp[qi][qj]=dp[qi-1][qj];}\nelse{dp[qi][qj]=Math.max(dp[qi-1][qj],dp[qi-1][qj-it.w]+it.v);}\nrender(qi,qj);\nhint.textContent='dp['+qi+']['+qj+'] = '+dp[qi][qj];\nqj++;\nreturn sleep(450).then(step);\n}\nsetTimeout(function(){step();}, 1250);\n})();",
+          "width": "100%",
+          "height": 360,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-restore",
           "type": "heading",
           "level": 2,
@@ -4527,6 +6978,88 @@
           "id": "p8",
           "type": "paragraph",
           "text": "Задача о рюкзаке — шаблон для огромного класса задач оптимизации. Рюкзак 0/1: O(n×W) по времени и памяти. Неограниченный: O(n×W) по времени, O(W) по памяти. Научившись решать рюкзак, ты сможешь решать задачи на размен монет, разбиение множества, распределение ресурсов и многие другие."
+        },
+        {
+          "id": "chart-complexity-dp-knapsack",
+          "type": "chart",
+          "title": "Время выполнения: O(n × W)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 2,
+              "ops": 4
+            },
+            {
+              "n": 4,
+              "ops": 16
+            },
+            {
+              "n": 6,
+              "ops": 36
+            },
+            {
+              "n": 8,
+              "ops": 64
+            },
+            {
+              "n": 10,
+              "ops": 100
+            },
+            {
+              "n": 12,
+              "ops": 144
+            },
+            {
+              "n": 14,
+              "ops": 196
+            },
+            {
+              "n": 16,
+              "ops": 256
+            },
+            {
+              "n": 18,
+              "ops": 324
+            },
+            {
+              "n": 20,
+              "ops": 400
+            },
+            {
+              "n": 22,
+              "ops": 484
+            },
+            {
+              "n": 24,
+              "ops": 576
+            },
+            {
+              "n": 26,
+              "ops": 676
+            },
+            {
+              "n": 28,
+              "ops": 784
+            },
+            {
+              "n": 30,
+              "ops": 900
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(n × W)",
+              "color": "#fbbf24"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -5070,6 +7603,108 @@
           "text": "Итоги"
         },
         {
+          "id": "chart-complexity-str-pq",
+          "type": "chart",
+          "title": "Время выполнения: push/pop O(log n)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 2.32
+            },
+            {
+              "n": 10,
+              "ops": 3.32
+            },
+            {
+              "n": 15,
+              "ops": 3.91
+            },
+            {
+              "n": 20,
+              "ops": 4.32
+            },
+            {
+              "n": 25,
+              "ops": 4.64
+            },
+            {
+              "n": 30,
+              "ops": 4.91
+            },
+            {
+              "n": 35,
+              "ops": 5.13
+            },
+            {
+              "n": 40,
+              "ops": 5.32
+            },
+            {
+              "n": 45,
+              "ops": 5.49
+            },
+            {
+              "n": 50,
+              "ops": 5.64
+            },
+            {
+              "n": 55,
+              "ops": 5.78
+            },
+            {
+              "n": 60,
+              "ops": 5.91
+            },
+            {
+              "n": 65,
+              "ops": 6.02
+            },
+            {
+              "n": 70,
+              "ops": 6.13
+            },
+            {
+              "n": 75,
+              "ops": 6.23
+            },
+            {
+              "n": 80,
+              "ops": 6.32
+            },
+            {
+              "n": 85,
+              "ops": 6.41
+            },
+            {
+              "n": 90,
+              "ops": 6.49
+            },
+            {
+              "n": 95,
+              "ops": 6.57
+            },
+            {
+              "n": 100,
+              "ops": 6.64
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(log n)",
+              "color": "#a78bfa"
+            }
+          ],
+          "height": 220
+        },
+        {
           "id": "p8",
           "type": "paragraph",
           "text": "Куча — это структура данных, которая позволяет за O(log n) добавлять элементы и извлекать минимум (или максимум). В Python используй модуль heapq. Применения: приоритетные очереди, top-K задачи, алгоритм Дейкстры, сортировка слиянием K списков и многое другое."
@@ -5243,6 +7878,17 @@
           "code": "# Использование\ntrie = Trie()\nfor word in [\"apple\", \"app\", \"application\", \"bat\", \"ball\"]:\n    trie.insert(word)\n\nprint(trie.search(\"app\"))         # True\nprint(trie.search(\"ap\"))          # False — нет такого слова\nprint(trie.starts_with(\"app\"))    # True — есть слова с этим префиксом\nprint(trie.starts_with(\"bac\"))    # False"
         },
         {
+          "id": "anim-trie",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"tree\" width=\"100%\" height=\"300\" viewBox=\"0 0 440 280\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('tree');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nfunction drawTreeEdge(px,py,cx,cy){\nvar l=svgEl('line',{x1:px,y1:py,x2:cx,y2:cy,class:'g-edge'});\nsvg.insertBefore(l,svg.firstChild);\nreturn l;\n}\nfunction drawTreeNode(id,x,y,val){\nvar c=svgEl('circle',{id:'tn-'+id,cx:x,cy:y,r:18,class:'g-node'});\nsvg.appendChild(c);\nvar t=svgEl('text',{x:x,y:y});\nt.textContent=val;\nsvg.appendChild(t);\n}\nfunction setTNodeClass(id,cls){\nvar el=document.getElementById('tn-'+id);\nif(el) el.setAttribute('class','g-node'+(cls?' g-node--'+cls:''));\n}\nvar words=['cat','car','card','care','can'];\nvar nodeId=0;\nvar root={id:nodeId++,ch:{},x:220,y:25,c:''};\nvar allNodes=[root];\nfunction addWord(word){\nvar cur=root;\nfor(var i=0;i<word.length;i++){\nvar c=word[i];\nif(!cur.ch[c]){\nvar dx=(Object.keys(cur.ch).length-0.5)*60;\nvar newNode={id:nodeId++,ch:{},x:cur.x+dx,y:cur.y+55,c:c,parent:cur};\ncur.ch[c]=newNode;\nallNodes.push(newNode);\n}\ncur=cur.ch[c];\n}\ncur.end=true;\n}\nfunction layout(){\nvar q=[root]; var level=0;\nwhile(q.length){\nvar next=[];\nvar w=400;\nvar step=w/(q.length+1);\nq.forEach(function(n,i){\nn.x=20+step*(i+1);\nn.y=25+level*55;\nfor(var k in n.ch) next.push(n.ch[k]);\n});\nlevel++;\nq=next;\n}\n}\nfunction drawAll(){\nsvg.innerHTML='';\nallNodes.forEach(function(n){\nif(n.parent) drawTreeEdge(n.parent.x,n.parent.y,n.x,n.y);\n});\nallNodes.forEach(function(n){\ndrawTreeNode(n.id,n.x,n.y,n.c||'·');\n});\n}\nhint.textContent='Trie: вставляем слова с общим префиксом';\nvar wi=0;\nfunction step(){\nif(wi>=words.length){hint.textContent='Trie построено: '+words.join(', ');allNodes.forEach(function(n){setTNodeClass(n.id,'done');});return;}\nvar w=words[wi]; wi++;\naddWord(w);\nlayout();\ndrawAll();\nhint.textContent='Вставляем \"'+w+'\"';\nvar cur=root;\nfor(var i=0;i<w.length;i++){setTNodeClass(cur.ch[w[i]].id,'active');cur=cur.ch[w[i]];}\nreturn sleep(1375).then(function(){\nallNodes.forEach(function(n){setTNodeClass(n.id,'');});\nreturn sleep(500).then(step);\n});\n}\nsetTimeout(function(){step();}, 1250);\n})();",
+          "width": "100%",
+          "height": 340,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-autocomplete",
           "type": "heading",
           "level": 2,
@@ -5270,6 +7916,88 @@
           "id": "p5",
           "type": "paragraph",
           "text": "Вставка: O(L). Поиск: O(L). Поиск по префиксу: O(L + K), где K — суммарная длина найденных слов. По памяти trie может потребовать много — в худшем случае O(N×L×|alphabet|), где N — число слов, L — средняя длина, |alphabet| — размер алфавита. Но на практике узлы переиспользуются, если слова имеют общие префиксы."
+        },
+        {
+          "id": "chart-complexity-str-trie",
+          "type": "chart",
+          "title": "Время выполнения: O(L) — длина слова",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 2,
+              "ops": 2
+            },
+            {
+              "n": 4,
+              "ops": 4
+            },
+            {
+              "n": 6,
+              "ops": 6
+            },
+            {
+              "n": 8,
+              "ops": 8
+            },
+            {
+              "n": 10,
+              "ops": 10
+            },
+            {
+              "n": 12,
+              "ops": 12
+            },
+            {
+              "n": 14,
+              "ops": 14
+            },
+            {
+              "n": 16,
+              "ops": 16
+            },
+            {
+              "n": 18,
+              "ops": 18
+            },
+            {
+              "n": 20,
+              "ops": 20
+            },
+            {
+              "n": 22,
+              "ops": 22
+            },
+            {
+              "n": 24,
+              "ops": 24
+            },
+            {
+              "n": 26,
+              "ops": 26
+            },
+            {
+              "n": 28,
+              "ops": 28
+            },
+            {
+              "n": 30,
+              "ops": 30
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(L)",
+              "color": "#4ade80"
+            }
+          ],
+          "height": 220
         },
         {
           "id": "h2-uses",
@@ -5342,6 +8070,17 @@
           "code": "class DSU:\n    def __init__(self, n):\n        self.parent = list(range(n))  # Каждый сам себе корень\n        self.rank = [0] * n\n\n    def find(self, x):\n        # Сжатие путей: перенаправляем прямо к корню\n        if self.parent[x] != x:\n            self.parent[x] = self.find(self.parent[x])\n        return self.parent[x]\n\n    def union(self, x, y):\n        rx, ry = self.find(x), self.find(y)\n        if rx == ry:\n            return False  # Уже в одном множестве\n        # Объединение по рангу: меньшее дерево под большее\n        if self.rank[rx] < self.rank[ry]:\n            rx, ry = ry, rx\n        self.parent[ry] = rx\n        if self.rank[rx] == self.rank[ry]:\n            self.rank[rx] += 1\n        return True\n\n    def connected(self, x, y):\n        return self.find(x) == self.find(y)"
         },
         {
+          "id": "anim-dsu",
+          "type": "animation",
+          "html": "<div class=\"viz-col\"><div class=\"viz-hint\" id=\"hint\"></div><svg id=\"graph\" width=\"100%\" height=\"280\" viewBox=\"0 0 460 260\"></svg></div>",
+          "css": "\nsvg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}\n.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}\n.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}\n.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}\n.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}\n.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}\n.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}\n.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}\n.g-weight{font-size:10px;fill:var(--viz-muted);}\n",
+          "js": "(function(){\nvar svg = document.getElementById('graph');\nvar hint = document.getElementById('hint');\nfunction svgEl(tag, attrs) {\nvar el = document.createElementNS('http://www.w3.org/2000/svg', tag);\nfor (var k in attrs) el.setAttribute(k, attrs[k]);\nreturn el;\n}\nfunction drawEdge(id, x1, y1, x2, y2, w) {\nvar line = svgEl('line', {id:'e-'+id, x1:x1, y1:y1, x2:x2, y2:y2, class:'g-edge'});\nsvg.insertBefore(line, svg.firstChild);\nif (w !== undefined) {\nvar mx=(x1+x2)/2, my=(y1+y2)/2;\nvar t = svgEl('text', {x:mx, y:my-8, class:'g-weight'});\nt.textContent = w;\nsvg.appendChild(t);\n}\nreturn line;\n}\nfunction drawNode(id, x, y, label) {\nvar c = svgEl('circle', {id:'n-'+id, cx:x, cy:y, r:18, class:'g-node'});\nsvg.appendChild(c);\nvar t = svgEl('text', {x:x, y:y});\nt.textContent = label;\nsvg.appendChild(t);\nreturn c;\n}\nfunction setNodeClass(id, cls) {\nvar el = document.getElementById('n-'+id);\nif(el) el.setAttribute('class', 'g-node' + (cls ? ' g-node--'+cls : ''));\n}\nfunction setEdgeClass(id, cls) {\nvar el = document.getElementById('e-'+id);\nif(el) el.setAttribute('class', 'g-edge' + (cls ? ' g-edge--'+cls : ''));\n}\nfunction sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }\nvar N=8;\nvar positions=[];\nfor(var i=0;i<N;i++) positions.push({x:30+i*55,y:80});\nvar parent=[];\nfor(var i=0;i<N;i++) parent.push(i);\npositions.forEach(function(p,i){drawNode(i,p.x,p.y,String(i));});\nfunction find(x){return parent[x]===x?x:find(parent[x]);}\nfunction union(a,b){\nvar ra=find(a),rb=find(b);\nif(ra===rb) return false;\nparent[ra]=rb;\nreturn true;\n}\nvar ops=[[0,1],[2,3],[4,5],[6,7],[1,3],[5,7],[3,7]];\nhint.textContent='Union-Find: объединяем множества';\nvar oi=0;\nfunction step(){\nif(oi>=ops.length){hint.textContent='Все элементы в одном множестве!';for(var i=0;i<N;i++) setNodeClass(i,'done');return;}\nvar o=ops[oi]; oi++;\nsetNodeClass(o[0],'active');\nsetNodeClass(o[1],'active');\nhint.textContent='union('+o[0]+', '+o[1]+')';\nvar merged=union(o[0],o[1]);\nif(!merged) hint.textContent+==' — уже в одном множестве';\nelse drawEdge('e'+oi,positions[o[0]].x,positions[o[0]].y,positions[o[1]].x,positions[o[1]].y);\nreturn sleep(1250).then(function(){\nsetNodeClass(o[0],'');setNodeClass(o[1],'');\nreturn sleep(500).then(step);\n});\n}\nsetTimeout(function(){step();}, 1500);\n})();",
+          "width": "100%",
+          "height": 320,
+          "showPlayButton": true,
+          "vizLayout": "default"
+        },
+        {
           "id": "h2-optimizations",
           "type": "heading",
           "level": 2,
@@ -5405,6 +8144,108 @@
           "id": "p7",
           "type": "paragraph",
           "text": "DSU — элегантная и невероятно эффективная структура данных. Две оптимизации (сжатие путей + объединение по рангу) дают почти O(1) на операцию. Основные применения: минимальное остовное дерево (Краскал), подсчёт компонент связности, обнаружение циклов в графе, задачи на объединение групп."
+        },
+        {
+          "id": "chart-complexity-str-dsu",
+          "type": "chart",
+          "title": "Время выполнения: ~O(α(n)) ≈ O(1) амортизированно",
+          "data": [
+            {
+              "n": 0,
+              "ops": 2
+            },
+            {
+              "n": 5,
+              "ops": 2.93
+            },
+            {
+              "n": 10,
+              "ops": 3.2
+            },
+            {
+              "n": 15,
+              "ops": 3.35
+            },
+            {
+              "n": 20,
+              "ops": 3.45
+            },
+            {
+              "n": 25,
+              "ops": 3.52
+            },
+            {
+              "n": 30,
+              "ops": 3.58
+            },
+            {
+              "n": 35,
+              "ops": 3.63
+            },
+            {
+              "n": 40,
+              "ops": 3.68
+            },
+            {
+              "n": 45,
+              "ops": 3.71
+            },
+            {
+              "n": 50,
+              "ops": 3.74
+            },
+            {
+              "n": 55,
+              "ops": 3.77
+            },
+            {
+              "n": 60,
+              "ops": 3.8
+            },
+            {
+              "n": 65,
+              "ops": 3.82
+            },
+            {
+              "n": 70,
+              "ops": 3.84
+            },
+            {
+              "n": 75,
+              "ops": 3.86
+            },
+            {
+              "n": 80,
+              "ops": 3.88
+            },
+            {
+              "n": 85,
+              "ops": 3.9
+            },
+            {
+              "n": 90,
+              "ops": 3.91
+            },
+            {
+              "n": 95,
+              "ops": 3.93
+            },
+            {
+              "n": 100,
+              "ops": 3.94
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(α(n))",
+              "color": "#60a5fa"
+            }
+          ],
+          "height": 220
         }
       ]
     },
@@ -5606,6 +8447,68 @@
           "type": "heading",
           "level": 2,
           "text": "Итоги"
+        },
+        {
+          "id": "chart-complexity-prod-strings",
+          "type": "chart",
+          "title": "Время выполнения: O(n + m)",
+          "data": [
+            {
+              "n": 0,
+              "ops": 0
+            },
+            {
+              "n": 5,
+              "ops": 5
+            },
+            {
+              "n": 10,
+              "ops": 10
+            },
+            {
+              "n": 15,
+              "ops": 15
+            },
+            {
+              "n": 20,
+              "ops": 20
+            },
+            {
+              "n": 25,
+              "ops": 25
+            },
+            {
+              "n": 30,
+              "ops": 30
+            },
+            {
+              "n": 35,
+              "ops": 35
+            },
+            {
+              "n": 40,
+              "ops": 40
+            },
+            {
+              "n": 45,
+              "ops": 45
+            },
+            {
+              "n": 50,
+              "ops": 50
+            }
+          ],
+          "xKey": "n",
+          "xLabel": "n",
+          "yLabel": "операции",
+          "lines": [
+            {
+              "dataKey": "ops",
+              "label": "O(n + m)",
+              "color": "#4ade80"
+            }
+          ],
+          "height": 220
         },
         {
           "id": "p7",

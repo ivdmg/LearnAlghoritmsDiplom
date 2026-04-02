@@ -139,6 +139,53 @@
   align-items: center;
 }
 
+/* ── Chart (Recharts) ── */
+.chartTitle {
+  padding: 12px 16px 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e5e7eb;
+  letter-spacing: 0.02em;
+}
+
+[data-theme='light'] .chartTitle {
+  color: #1e293b;
+}
+
+.chartContainer {
+  padding: 4px 8px 12px;
+}
+
+.chartPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.3;
+}
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 6px 10px;
+}
+
+.chartSingle {
+  min-width: 0;
+}
+
+.chartMiniTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #cbd5e1;
+  text-align: center;
+  padding: 6px 4px 2px;
+  letter-spacing: 0.02em;
+}
+
+[data-theme='light'] .chartMiniTitle {
+  color: #475569;
+}
+
 /* Узкие «табы» скорости — не 120px как у Теория/Задачи */
 .animationSpeedTab {
   width: auto !important;

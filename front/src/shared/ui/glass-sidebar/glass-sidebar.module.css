@@ -98,6 +98,7 @@
   margin-top: 12px;
   padding-right: 6px;
   overflow: hidden auto;
+  contain: layout style;
 }
 
 .content::-webkit-scrollbar {

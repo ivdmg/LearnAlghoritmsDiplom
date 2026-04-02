@@ -4,7 +4,8 @@ export type ContentBlockType =
   | 'subheading'
   | 'link'
   | 'code'
-  | 'animation';
+  | 'animation'
+  | 'chart';
 
 export interface BaseContentBlock {
   id: string;
@@ -56,12 +57,50 @@ export interface AnimationBlock extends BaseContentBlock {
   vizLayout?: 'default' | 'tall';
 }
 
+export interface ChartLine {
+  dataKey: string;
+  label: string;
+  color: string;
+}
+
+export interface SingleChart {
+  title?: string;
+  data: Record<string, number | string>[];
+  xKey: string;
+  xLabel?: string;
+  yLabel?: string;
+  lines: ChartLine[];
+  height?: number;
+}
+
+export interface ChartBlock extends BaseContentBlock {
+  type: 'chart';
+  /** Chart title shown above the grid (when using `charts`) or above a single chart */
+  title?: string;
+  /** Single chart data — used when `charts` is not provided */
+  data?: Record<string, number | string>[];
+  xKey?: string;
+  xLabel?: string;
+  yLabel?: string;
+  lines?: ChartLine[];
+  /** Chart height in px (single chart mode) */
+  height?: number;
+  /**
+   * Grid of multiple charts (e.g. complexity comparison).
+   * When provided, `data`/`xKey`/`lines` on the root are ignored.
+   */
+  charts?: SingleChart[];
+  /** Grid columns (default: auto-fit) */
+  columns?: number;
+}
+
 export type ContentBlock =
   | HeadingBlock
   | ParagraphBlock
   | LinkBlock
   | CodeBlock
-  | AnimationBlock;
+  | AnimationBlock
+  | ChartBlock;
 
 export interface Article {
   id: string;

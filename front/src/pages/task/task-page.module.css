@@ -253,7 +253,7 @@
 .output {
   padding: 14px 16px;
   border-radius: 14px;
-  font-family: 'Consolas', monospace;
+  font-family: var(--font-mono);
   font-size: 0.9rem;
   white-space: pre-wrap;
   min-height: 80px;
@@ -278,15 +278,21 @@
 
 :global(.cm-transparent .cm-editor) {
   background-color: transparent !important;
+  font-family: var(--font-mono) !important;
 }
 
 :global(.cm-transparent .cm-scroller) {
   background-color: transparent !important;
 }
 
+:global(.cm-transparent .cm-content) {
+  font-family: var(--font-mono) !important;
+}
+
 :global(.cm-transparent .cm-gutters) {
   background-color: transparent !important;
   border-right: none !important;
+  font-family: var(--font-mono) !important;
 }
 
 /* ---------- ERROR ---------- */

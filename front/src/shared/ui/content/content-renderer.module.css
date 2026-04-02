@@ -45,8 +45,7 @@
 }
 
 .codeBlock {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   border-radius: 16px;
   padding: 16px 18px;
@@ -71,8 +70,7 @@
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   color: #e5e7eb;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   resize: vertical;
   transition: box-shadow 0.2s ease;

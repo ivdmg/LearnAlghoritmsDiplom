@@ -22,6 +22,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     token: {
       colorPrimary: '#1677ff',
       borderRadius: 6,
+      fontFamily:
+        '"Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontFamilyCode:
+        '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
     },
   };
 

@@ -48,15 +48,39 @@ export function TaskPage() {
     setIsSuccess(false);
     setHasRun(false);
     setOutput('Выполнение...');
-    const testInput = task.testCases[0]?.input;
-    const expected = task.testCases[0]?.expected;
+
+    const cases = task.testCases;
+    if (!cases || cases.length === 0) {
+      setOutput('Нет тест-кейсов для проверки.');
+      setIsRunning(false);
+      setHasRun(true);
+      return;
+    }
+
     try {
-      const result = await runPython(code, testInput);
-      const resultStr = (result ?? '(нет вывода)').trim();
-      setOutput(resultStr);
-      const expectedStr = (expected ?? '').trim();
-      const success = resultStr === expectedStr;
-      setIsSuccess(success);
+      const lines: string[] = [];
+      let allPassed = true;
+
+      for (let i = 0; i < cases.length; i++) {
+        const tc = cases[i];
+        const result = await runPython(code, tc.input);
+        const got = (result ?? '').trim();
+        const want = (tc.expected ?? '').trim();
+        const passed = got === want;
+        if (!passed) allPassed = false;
+        lines.push(
+          `${passed ? '✓' : '✗'} Тест ${i + 1}: вход: ${tc.input}` +
+          `\n  Ожидалось: ${want}` +
+          `\n  Получено:  ${got}`
+        );
+      }
+
+      const summary = allPassed
+        ? `Все тесты пройдены (${cases.length}/${cases.length})`
+        : `Пройдено: ${cases.filter((_, i) => { const r = lines[i]; return r.startsWith('✓'); }).length}/${cases.length}`;
+
+      setOutput(summary + '\n\n' + lines.join('\n\n'));
+      setIsSuccess(allPassed);
     } catch (err) {
       setOutput(`Ошибка: ${String(err)}`);
       setIsSuccess(false);

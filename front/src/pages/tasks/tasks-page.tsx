@@ -115,10 +115,16 @@ export function TasksPage() {
                               {it.taskIds.map((taskId) => {
                                 const task = taskById.get(taskId);
                                 if (!task) return null;
+                                const diff = task.difficulty ?? 'easy';
                                 return (
                                   <div key={task.id} className={styles.taskItem}>
                                     <div className={styles.taskLeft}>
-                                      <div className={styles.taskTitle}>{task.title}</div>
+                                      <div className={styles.taskTitleRow}>
+                                        <span className={styles.taskTitle}>{task.title}</span>
+                                        <span className={`${styles.diffBadge} ${styles[`diff_${diff}`]}`}>
+                                          {diff === 'easy' ? 'Easy' : diff === 'medium' ? 'Medium' : 'Hard'}
+                                        </span>
+                                      </div>
                                       <div className={styles.taskMeta}>{task.description}</div>
                                     </div>
                                     <GlassButton

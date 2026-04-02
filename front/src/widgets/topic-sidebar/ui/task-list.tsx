@@ -21,7 +21,7 @@ export function TaskList({ tasks, onClose }: TaskListProps) {
       {tasks.map((task) => (
         <div key={task.id} className={styles.taskItem}>
           <span className={styles.taskTitle}>{task.title}</span>
-          <GlassButton onClick={() => handleTaskClick(task)}  className={styles.resolveBtn}>
+          <GlassButton onClick={() => handleTaskClick(task)} className={styles.resolveBtn}>
             Решить
           </GlassButton>
         </div>

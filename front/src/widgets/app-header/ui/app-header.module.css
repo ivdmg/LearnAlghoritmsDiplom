@@ -12,13 +12,231 @@
 .headerRight {
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: flex-end;
+  gap: 12px;
+  min-height: 0;
 }
 
-.navTabs {
+/* Профиль: при входе — зелёная иконка и подсветка снизу (в духе луны в переключателе темы) */
+.accountWrap {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 8px;
+  align-self: center;
+}
+
+.accountWrapActive {
+  padding-bottom: 10px;
+}
+
+.accountUnderGlow {
+  position: absolute;
+  left: 50%;
+  top: calc(100% - 4px);
+  transform: translateX(-50%);
+  width: 56px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(14px);
+  opacity: 0.85;
+}
+
+[data-theme='light'] .accountUnderGlow {
+  background: radial-gradient(
+    ellipse 85% 100% at 50% 0%,
+    rgba(34, 197, 94, 0.5) 0%,
+    rgba(22, 163, 74, 0.28) 40%,
+    transparent 72%
+  );
+}
+
+[data-theme='dark'] .accountUnderGlow {
+  background: radial-gradient(
+    ellipse 85% 100% at 50% 0%,
+    rgba(74, 222, 128, 0.5) 0%,
+    rgba(34, 197, 94, 0.32) 38%,
+    transparent 72%
+  );
+}
+
+.accountBtn {
+  position: relative;
+  z-index: 1;
+  min-width: 40px;
+  padding: 8px 10px;
+  color: rgba(229, 231, 235, 0.45);
+  transition:
+    color 0.28s ease,
+    box-shadow 0.28s ease,
+    transform 0.2s ease;
+}
+
+.accountBtn:hover:not(:disabled) {
+  color: rgba(229, 231, 235, 0.78);
+}
+
+[data-theme='light'] .accountBtn {
+  color: rgba(15, 23, 42, 0.4);
+}
+
+[data-theme='light'] .accountBtn:hover:not(:disabled) {
+  color: rgba(15, 23, 42, 0.62);
+}
+
+/* Выше специфичность, чем у glass-button .button */
+.accountWrapActive .accountBtn.accountBtnSignedIn {
+  color: #d4fce8;
+  border-color: rgba(74, 222, 128, 0.45);
+  box-shadow:
+    0 0 14px rgba(34, 197, 94, 0.42),
+    0 0 26px rgba(34, 197, 94, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+[data-theme='light'] .accountWrapActive .accountBtn.accountBtnSignedIn {
+  color: #166534;
+  border-color: rgba(22, 163, 74, 0.4);
+  box-shadow:
+    0 0 12px rgba(34, 197, 94, 0.3),
+    0 0 22px rgba(22, 163, 74, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.accountWrapActive .accountBtn.accountBtnSignedIn:hover:not(:disabled) {
+  color: #ecfdf5;
+}
+
+[data-theme='light'] .accountWrapActive .accountBtn.accountBtnSignedIn:hover:not(:disabled) {
+  color: #14532d;
+}
+
+.accountBtn:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.45);
+  outline-offset: 2px;
+}
+
+[data-theme='light'] .accountBtn:focus-visible {
+  outline-color: rgba(22, 163, 74, 0.5);
+}
+
+/* Roadmap / Tasks: без отдельной подложки — кнопки на фоне хедера; скользит только .navIndicator (как в GlassTabs сайдбара) */
+
+.navPill {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.navTrack {
+  display: flex;
+  align-items: stretch;
+}
+
+.navSlot {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 5px 8px;
+  margin: 0 2px;
+}
+
+.navSlot:first-child {
+  margin-left: 0;
+}
+
+.navSlot:last-child {
+  margin-right: 0;
+}
+
+/* Как .indicator в shared/ui/glass-tabs/glass-tabs.module.css — нейтральный glass, без зелёного */
+.navIndicator {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 9px;
+  right: 9px;
+  border-radius: 999px;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.08),
+    inset 3px 5px 2px -4.75px rgba(255, 255, 255, 0.08),
+    inset 1.25px 1.5px 0px rgba(0, 0, 0, 0.04),
+    inset 0px 4.75px 0.25px -2.5px rgba(255, 255, 255, 0.08),
+    inset 1px 1px 3px 3px rgba(245, 245, 245, 0.08),
+    inset 0px -3px 1px rgba(0, 0, 0, 0.04),
+    inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
+    inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
+}
+
+[data-theme='light'] .navIndicator {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.35),
+    inset 1px 1px 3px 3px rgba(255, 255, 255, 0.25),
+    0 8px 22px rgba(2, 6, 23, 0.08);
+}
+
+.navBtn {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 96px;
+  padding: 9px 20px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(229, 231, 235, 0.45);
+  transition: color 0.2s ease;
+}
+
+.navBtn:hover {
+  color: rgba(229, 231, 235, 0.75);
+}
+
+.navBtnActive {
+  color: #f9fafb;
+}
+
+[data-theme='light'] .navBtn {
+  color: rgba(15, 23, 42, 0.38);
+}
+
+[data-theme='light'] .navBtn:hover {
+  color: rgba(15, 23, 42, 0.62);
+}
+
+[data-theme='light'] .navBtnActive {
+  color: #0b1220;
+}
+
+.navBtn:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.45);
+  outline-offset: 2px;
+}
+
+[data-theme='light'] .navBtn:focus-visible {
+  outline-color: rgba(217, 119, 6, 0.5);
 }
 
 .logo {
@@ -28,28 +246,61 @@
   letter-spacing: -0.5px;
 }
 
+/* Заголовок по центру хедера; при решении задачи под ним скользит та же стеклянная плашка (layoutId) */
+.titleSlot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: min(100%, 560px);
+  min-width: 0;
+  padding: 5px 16px;
+}
+
+.titleSlot .title {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titleNavIndicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 999px;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.08),
+    inset 3px 5px 2px -4.75px rgba(255, 255, 255, 0.08),
+    inset 1.25px 1.5px 0px rgba(0, 0, 0, 0.04),
+    inset 0px 4.75px 0.25px -2.5px rgba(255, 255, 255, 0.08),
+    inset 1px 1px 3px 3px rgba(245, 245, 245, 0.08),
+    inset 0px -3px 1px rgba(0, 0, 0, 0.04),
+    inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
+    inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
+}
+
+[data-theme='light'] .titleNavIndicator {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.35),
+    inset 1px 1px 3px 3px rgba(255, 255, 255, 0.25),
+    0 8px 22px rgba(2, 6, 23, 0.08);
+}
+
 .title {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #e5e7eb;
 }
 
-.profileBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  color: #e5e7eb;
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
-  flex-shrink: 0;
-}
-
-.profileBtn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.28);
+[data-theme='light'] .logo,
+[data-theme='light'] .title {
+  color: #0b1220;
 }

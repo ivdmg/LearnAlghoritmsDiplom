@@ -21,7 +21,7 @@ export function RoadmapPage() {
 
   return (
     <div className={styles.layout}>
-      <AppHeader variant="main" />
+      <AppHeader />
       <div className={styles.content}>
         <Roadmap topics={ROADMAP} onNodeClick={handleNodeClick} />
       </div>

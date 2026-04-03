@@ -3,15 +3,19 @@ import { LeftOutlined, RightOutlined, HomeOutlined, CheckCircleFilled, CloseCirc
 import { useMemo, useState, useEffect, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
-import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
+import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selector';
+import { recordTaskSolved } from '@/shared/store/slices/auth-slice';
+import { isApiConfigured } from '@/shared/config/api-url';
 import { getOrderedTaskIds, useTaskById } from '@/entities/task';
 import { usePyodide } from '@/features/run-python';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
+import { ScrollArea } from '@/shared/ui';
 import { TaskExpectedOutput } from '@/entities/task/ui/task-expected-output';
 import styles from './task-page.module.css';
 
 export function TaskPage() {
+  const dispatch = useAppDispatch();
   const { taskId } = useParams<{ taskId: string }>();
   const navigate = useNavigate();
   const [code, setCode] = useState('');
@@ -23,6 +27,13 @@ export function TaskPage() {
   const { runPython, isLoading } = usePyodide();
   const layoutRef = useRef<HTMLDivElement | null>(null);
   const themeMode = useAppSelector((state) => state.theme.mode);
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
+  const bootstrapDone = useAppSelector((state) => state.auth.bootstrapDone);
+
+  const apiOn = isApiConfigured();
+  /** С включённым API запуск тестов только для вошедших пользователей (статистика). Без API — как раньше. */
+  const runBlocked = apiOn && bootstrapDone && !accessToken;
+  const runAuthLoading = apiOn && !bootstrapDone;
 
   const { task, loading: taskLoading } = useTaskById(taskId);
 
@@ -44,19 +55,59 @@ export function TaskPage() {
 
   const handleRun = async () => {
     if (!runPython || !task) return;
+    if (apiOn && !accessToken) {
+      if (!bootstrapDone) {
+        setOutput('Проверяем сессию… Подождите секунду и нажмите снова.');
+        return;
+      }
+      setOutput(
+        'Войдите в личный кабинет (иконка профиля в шапке), чтобы запускать проверку решения и сохранять прогресс в статистике.\n\n' +
+          'Roadmap, статьи и условия задач доступны без входа.',
+      );
+      return;
+    }
     setIsRunning(true);
     setIsSuccess(false);
     setHasRun(false);
     setOutput('Выполнение...');
-    const testInput = task.testCases[0]?.input;
-    const expected = task.testCases[0]?.expected;
+
+    const cases = task.testCases;
+    if (!cases || cases.length === 0) {
+      setOutput('Нет тест-кейсов для проверки.');
+      setIsRunning(false);
+      setHasRun(true);
+      return;
+    }
+
     try {
-      const result = await runPython(code, testInput);
-      const resultStr = (result ?? '(нет вывода)').trim();
-      setOutput(resultStr);
-      const expectedStr = (expected ?? '').trim();
-      const success = resultStr === expectedStr;
-      setIsSuccess(success);
+      const lines: string[] = [];
+      let allPassed = true;
+
+      for (let i = 0; i < cases.length; i++) {
+        const tc = cases[i];
+        const result = await runPython(code, tc.input);
+        const got = (result ?? '').trim();
+        const want = (tc.expected ?? '').trim();
+        const passed = got === want;
+        if (!passed) allPassed = false;
+        lines.push(
+          `${passed ? '✓' : '✗'} Тест ${i + 1}: вход: ${tc.input}` +
+          `\n  Ожидалось: ${want}` +
+          `\n  Получено:  ${got}`
+        );
+      }
+
+      const summary = allPassed
+        ? `Все тесты пройдены (${cases.length}/${cases.length})`
+        : `Пройдено: ${cases.filter((_, i) => { const r = lines[i]; return r.startsWith('✓'); }).length}/${cases.length}`;
+
+      setOutput(summary + '\n\n' + lines.join('\n\n'));
+      setIsSuccess(allPassed);
+      if (allPassed && task && apiOn && accessToken) {
+        void dispatch(
+          recordTaskSolved({ taskId: task.id, difficulty: task.difficulty }),
+        );
+      }
     } catch (err) {
       setOutput(`Ошибка: ${String(err)}`);
       setIsSuccess(false);
@@ -117,7 +168,7 @@ export function TaskPage() {
 
       <div className={styles.mainLayout}>
         <div className={styles.leftPanel}>
-          <div className={styles.panelContent}>
+          <ScrollArea className={styles.leftScrollPanel} viewportClassName={styles.leftScrollViewport}>
             <div className={styles.leftTopRow}>
               <div className={styles.leftNavButtons}>
                 <GlassButton onClick={handleBack} className={styles.iconButton}>
@@ -161,19 +212,44 @@ export function TaskPage() {
                   'Напишите функцию с именем solution и нужными аргументами. Pyodide вызовет её и вернёт результат.'}
               </p>
             </div>
-          </div>
+          </ScrollArea>
         </div>
         <div className={styles.rightPanel}>
           <div className={styles.rightColumn}>
             <div className={styles.panelContent}>
+              {runBlocked && (
+                <div className={styles.runGateBanner} role="status">
+                  <strong>Вход нужен для проверки решения.</strong> Условие и код вы можете читать свободно; запуск тестов и
+                  учёт в статистике — после входа в личный кабинет.
+                  <button type="button" className={styles.runGateLink} onClick={() => navigate('/account')}>
+                    Войти или зарегистрироваться
+                  </button>
+                </div>
+              )}
+              {runAuthLoading && (
+                <div className={styles.runGateBannerMuted} role="status">
+                  Проверка сессии…
+                </div>
+              )}
               <div className={styles.editorHeader}>
                 <h3 className={styles.sectionSubtitle}>Код (Python)</h3>
                 <div className={styles.editorHeaderRight}>
                   {isLoading && (
                     <span className={styles.statusPill}>Загрузка Python (Pyodide)...</span>
                   )}
-                  <GlassButton onClick={handleRun}>
-                    <span>{isRunning || isLoading ? 'Выполнение...' : 'Запустить'}</span>
+                  <GlassButton
+                    onClick={handleRun}
+                    disabled={runBlocked || runAuthLoading || isLoading || isRunning}
+                  >
+                    <span>
+                      {runAuthLoading
+                        ? 'Проверка входа…'
+                        : runBlocked
+                          ? 'Войдите, чтобы запустить'
+                          : isRunning || isLoading
+                            ? 'Выполнение...'
+                            : 'Запустить'}
+                    </span>
                   </GlassButton>
                 </div>
               </div>

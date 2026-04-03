@@ -1,0 +1,65 @@
+.card {
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 16px;
+}
+
+[data-theme='light'] .card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+.title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+
+.muted {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: rgba(229, 231, 235, 0.55);
+  margin: 0 0 12px;
+}
+
+[data-theme='light'] .muted {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.code {
+  font-size: 0.85em;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='light'] .code {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.summary {
+  margin: 0 0 8px;
+  font-size: 0.92rem;
+}
+
+.chartWrap {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.streak {
+  font-size: 0.88rem;
+  margin: 0 0 10px;
+  color: rgba(229, 231, 235, 0.75);
+}
+
+[data-theme='light'] .streak {
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.btn {
+  width: 100%;
+  margin-top: 4px;
+}

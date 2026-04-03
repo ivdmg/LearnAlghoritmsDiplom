@@ -18,33 +18,34 @@ export function AppHeader() {
 
   const isRoadmap = location.pathname === '/';
   const isTasksList = location.pathname === '/tasks';
-  const isTaskDetails = location.pathname.startsWith('/task');
+  /** Страница решения задачи: /task/:id (не путать с /tasks — она тоже начинается с «task» в URL) */
+  const isTaskSolution = location.pathname.startsWith('/task/');
 
-  const activeTab = isTasksList || isTaskDetails ? 'tasks' : 'roadmap';
+  const activeNavTab = isRoadmap ? 'roadmap' : isTasksList ? 'tasks' : null;
 
   const currentTaskTitle =
-    isTaskDetails && taskId ? TASKS.find((t) => t.id === taskId)?.title ?? 'Задачи' : null;
+    isTaskSolution && taskId ? TASKS.find((t) => t.id === taskId)?.title ?? 'Задача' : null;
 
   let centerTitle: string;
   if (isRoadmap) {
     centerTitle = 'AlgoLearn — Roadmap';
   } else if (isTasksList) {
     centerTitle = 'Задачи';
-  } else if (isTaskDetails) {
-    centerTitle = currentTaskTitle ?? 'Задачи';
+  } else if (isTaskSolution) {
+    centerTitle = currentTaskTitle ?? 'Задача';
   } else {
     centerTitle = 'AlgoLearn';
   }
 
   return (
     <header className={styles.headerShell}>
-      <GlassTopbar
-        left={
-          <LayoutGroup>
+      <LayoutGroup>
+        <GlassTopbar
+          left={
             <nav className={styles.navPill} aria-label="Основная навигация">
               <div className={styles.navTrack}>
                 <div className={styles.navSlot}>
-                  {activeTab === 'roadmap' && (
+                  {activeNavTab === 'roadmap' && (
                     <motion.div
                       className={styles.navIndicator}
                       layoutId="header-main-nav-pill"
@@ -53,15 +54,15 @@ export function AppHeader() {
                   )}
                   <button
                     type="button"
-                    className={`${styles.navBtn} ${activeTab === 'roadmap' ? styles.navBtnActive : ''}`}
+                    className={`${styles.navBtn} ${activeNavTab === 'roadmap' ? styles.navBtnActive : ''}`}
                     onClick={() => navigate('/')}
-                    aria-current={activeTab === 'roadmap' ? 'page' : undefined}
+                    aria-current={activeNavTab === 'roadmap' ? 'page' : undefined}
                   >
                     Roadmap
                   </button>
                 </div>
                 <div className={styles.navSlot}>
-                  {activeTab === 'tasks' && (
+                  {activeNavTab === 'tasks' && (
                     <motion.div
                       className={styles.navIndicator}
                       layoutId="header-main-nav-pill"
@@ -70,24 +71,35 @@ export function AppHeader() {
                   )}
                   <button
                     type="button"
-                    className={`${styles.navBtn} ${activeTab === 'tasks' ? styles.navBtnActive : ''}`}
+                    className={`${styles.navBtn} ${activeNavTab === 'tasks' ? styles.navBtnActive : ''}`}
                     onClick={() => navigate('/tasks')}
-                    aria-current={activeTab === 'tasks' ? 'page' : undefined}
+                    aria-current={activeNavTab === 'tasks' ? 'page' : undefined}
                   >
                     Tasks
                   </button>
                 </div>
               </div>
             </nav>
-          </LayoutGroup>
-        }
-        center={<span className={styles.title}>{centerTitle}</span>}
-        right={
-          <div className={styles.headerRight}>
-            <ThemeToggle compact />
-          </div>
-        }
-      />
+          }
+          center={
+            <div className={styles.titleSlot}>
+              {isTaskSolution && (
+                <motion.div
+                  className={styles.titleNavIndicator}
+                  layoutId="header-main-nav-pill"
+                  transition={navSpring}
+                />
+              )}
+              <span className={styles.title}>{centerTitle}</span>
+            </div>
+          }
+          right={
+            <div className={styles.headerRight}>
+              <ThemeToggle compact />
+            </div>
+          }
+        />
+      </LayoutGroup>
     </header>
   );
 }

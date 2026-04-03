@@ -140,6 +140,54 @@
   letter-spacing: -0.5px;
 }
 
+/* Заголовок по центру хедера; при решении задачи под ним скользит та же стеклянная плашка (layoutId) */
+.titleSlot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: min(100%, 560px);
+  min-width: 0;
+  padding: 5px 16px;
+}
+
+.titleSlot .title {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titleNavIndicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 999px;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.08),
+    inset 3px 5px 2px -4.75px rgba(255, 255, 255, 0.08),
+    inset 1.25px 1.5px 0px rgba(0, 0, 0, 0.04),
+    inset 0px 4.75px 0.25px -2.5px rgba(255, 255, 255, 0.08),
+    inset 1px 1px 3px 3px rgba(245, 245, 245, 0.08),
+    inset 0px -3px 1px rgba(0, 0, 0, 0.04),
+    inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
+    inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
+}
+
+[data-theme='light'] .titleNavIndicator {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.35),
+    inset 1px 1px 3px 3px rgba(255, 255, 255, 0.25),
+    0 8px 22px rgba(2, 6, 23, 0.08);
+}
+
 .title {
   font-size: 1rem;
   font-weight: 600;

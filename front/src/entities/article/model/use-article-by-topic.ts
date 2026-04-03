@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import type { Article } from './types';
+import { getContentApiBaseUrl } from '@/shared/config/content-api-url';
 
 interface UseArticleByTopicResult {
   article: Article | null;
   loading: boolean;
   error: Error | null;
 }
-
-const API_BASE = 'http://localhost:3001';
 
 export function useArticleByTopic(topicId?: string, subtopicId?: string): UseArticleByTopicResult {
   const [article, setArticle] = useState<Article | null>(null);
@@ -22,19 +21,30 @@ export function useArticleByTopic(topicId?: string, subtopicId?: string): UseArt
       return;
     }
 
+    const resolvedTopicId = topicId;
     let cancelled = false;
 
     async function load() {
-      try {
-        setLoading(true);
-        setError(null);
+      setLoading(true);
+      setError(null);
+      setArticle(null);
 
+      const base = getContentApiBaseUrl();
+      if (!base) {
+        if (!cancelled) {
+          setLoading(false);
+          setError(null);
+        }
+        return;
+      }
+
+      try {
         const params = new URLSearchParams();
-        params.set('topicId', topicId as string);
+        params.set('topicId', resolvedTopicId);
         if (subtopicId) {
           params.set('subtopicId', subtopicId);
         }
-        const res = await fetch(`${API_BASE}/articles?${params.toString()}`);
+        const res = await fetch(`${base}/articles?${params.toString()}`);
         if (!res.ok) {
           throw new Error(`Failed to load article (status ${res.status})`);
         }
@@ -42,16 +52,19 @@ export function useArticleByTopic(topicId?: string, subtopicId?: string): UseArt
         if (!cancelled) {
           setArticle(data[0] ?? null);
           setLoading(false);
+          setError(null);
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err : new Error('Unknown error'));
+          /* Нет json-server — сайдбар покажет THEORIES (markdown) */
+          setArticle(null);
+          setError(null);
           setLoading(false);
         }
       }
     }
 
-    load();
+    void load();
 
     return () => {
       cancelled = true;
@@ -60,4 +73,3 @@ export function useArticleByTopic(topicId?: string, subtopicId?: string): UseArt
 
   return { article, loading, error };
 }
-

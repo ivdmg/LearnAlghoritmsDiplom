@@ -17,6 +17,112 @@
   min-height: 0;
 }
 
+/* Профиль: при входе — зелёная иконка и подсветка снизу (в духе луны в переключателе темы) */
+.accountWrap {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 8px;
+  align-self: center;
+}
+
+.accountWrapActive {
+  padding-bottom: 10px;
+}
+
+.accountUnderGlow {
+  position: absolute;
+  left: 50%;
+  top: calc(100% - 4px);
+  transform: translateX(-50%);
+  width: 56px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(14px);
+  opacity: 0.85;
+}
+
+[data-theme='light'] .accountUnderGlow {
+  background: radial-gradient(
+    ellipse 85% 100% at 50% 0%,
+    rgba(34, 197, 94, 0.5) 0%,
+    rgba(22, 163, 74, 0.28) 40%,
+    transparent 72%
+  );
+}
+
+[data-theme='dark'] .accountUnderGlow {
+  background: radial-gradient(
+    ellipse 85% 100% at 50% 0%,
+    rgba(74, 222, 128, 0.5) 0%,
+    rgba(34, 197, 94, 0.32) 38%,
+    transparent 72%
+  );
+}
+
+.accountBtn {
+  position: relative;
+  z-index: 1;
+  min-width: 40px;
+  padding: 8px 10px;
+  color: rgba(229, 231, 235, 0.45);
+  transition:
+    color 0.28s ease,
+    box-shadow 0.28s ease,
+    transform 0.2s ease;
+}
+
+.accountBtn:hover:not(:disabled) {
+  color: rgba(229, 231, 235, 0.78);
+}
+
+[data-theme='light'] .accountBtn {
+  color: rgba(15, 23, 42, 0.4);
+}
+
+[data-theme='light'] .accountBtn:hover:not(:disabled) {
+  color: rgba(15, 23, 42, 0.62);
+}
+
+/* Выше специфичность, чем у glass-button .button */
+.accountWrapActive .accountBtn.accountBtnSignedIn {
+  color: #d4fce8;
+  border-color: rgba(74, 222, 128, 0.45);
+  box-shadow:
+    0 0 14px rgba(34, 197, 94, 0.42),
+    0 0 26px rgba(34, 197, 94, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+[data-theme='light'] .accountWrapActive .accountBtn.accountBtnSignedIn {
+  color: #166534;
+  border-color: rgba(22, 163, 74, 0.4);
+  box-shadow:
+    0 0 12px rgba(34, 197, 94, 0.3),
+    0 0 22px rgba(22, 163, 74, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.accountWrapActive .accountBtn.accountBtnSignedIn:hover:not(:disabled) {
+  color: #ecfdf5;
+}
+
+[data-theme='light'] .accountWrapActive .accountBtn.accountBtnSignedIn:hover:not(:disabled) {
+  color: #14532d;
+}
+
+.accountBtn:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.45);
+  outline-offset: 2px;
+}
+
+[data-theme='light'] .accountBtn:focus-visible {
+  outline-color: rgba(22, 163, 74, 0.5);
+}
+
 /* Roadmap / Tasks: без отдельной подложки — кнопки на фоне хедера; скользит только .navIndicator (как в GlassTabs сайдбара) */
 
 .navPill {

@@ -1,8 +1,12 @@
 import { LayoutGroup, motion } from 'framer-motion';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { UserOutlined } from '@ant-design/icons';
 import { ThemeToggle } from '@/widgets/theme-toggle';
 import { GlassTopbar } from '@/shared/ui';
+import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { TASKS } from '@/entities/task';
+import { isApiConfigured } from '@/shared/config/api-url';
+import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import styles from './app-header.module.css';
 
 const navSpring = {
@@ -15,9 +19,13 @@ export function AppHeader() {
   const navigate = useNavigate();
   const location = useLocation();
   const { taskId } = useParams<{ taskId?: string }>();
+  const accessToken = useAppSelector((s) => s.auth.accessToken);
+  const apiOn = isApiConfigured();
+  const accountSignedIn = Boolean(apiOn && accessToken);
 
   const isRoadmap = location.pathname === '/';
   const isTasksList = location.pathname === '/tasks';
+  const isAccount = location.pathname === '/account';
   /** Страница решения задачи: /task/:id (не путать с /tasks — она тоже начинается с «task» в URL) */
   const isTaskSolution = location.pathname.startsWith('/task/');
 
@@ -29,6 +37,8 @@ export function AppHeader() {
   let centerTitle: string;
   if (isRoadmap) {
     centerTitle = 'AlgoLearn — Roadmap';
+  } else if (isAccount) {
+    centerTitle = 'Личный кабинет';
   } else if (isTasksList) {
     centerTitle = 'Задачи';
   } else if (isTaskSolution) {
@@ -83,7 +93,7 @@ export function AppHeader() {
           }
           center={
             <div className={styles.titleSlot}>
-              {isTaskSolution && (
+              {(isTaskSolution || isAccount) && (
                 <motion.div
                   className={styles.titleNavIndicator}
                   layoutId="header-main-nav-pill"
@@ -95,6 +105,19 @@ export function AppHeader() {
           }
           right={
             <div className={styles.headerRight}>
+              <div
+                className={`${styles.accountWrap} ${accountSignedIn ? styles.accountWrapActive : ''}`}
+              >
+                {accountSignedIn && <div className={styles.accountUnderGlow} aria-hidden />}
+                <GlassButton
+                  type="button"
+                  className={`${styles.accountBtn} ${accountSignedIn ? styles.accountBtnSignedIn : ''}`}
+                  onClick={() => navigate('/account')}
+                  aria-label="Личный кабинет"
+                >
+                  <UserOutlined />
+                </GlassButton>
+              </div>
               <ThemeToggle compact />
             </div>
           }

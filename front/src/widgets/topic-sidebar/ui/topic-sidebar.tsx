@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { RoadmapNode } from '@/entities/roadmap';
-import { THEORIES, TASKS } from '@/entities/task';
+import { THEORIES, useTasksByTopic } from '@/entities/task';
 import { useArticleByTopic } from '@/entities/article';
 import { GlassSidebar, ContentRenderer } from '@/shared/ui';
 import { TheoryContent } from './theory-content';
@@ -43,6 +43,14 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
     error: articleError,
   } = useArticleByTopic(topicId, effectiveSubtopicId);
 
+  const openedSubtopicIdForTasks =
+    node?.type === 'subtopic' ? node.subtopic.id : undefined;
+  const { tasks: tasksFromApi } = useTasksByTopic({
+    topicId,
+    effectiveSubtopicId,
+    openedSubtopicId: openedSubtopicIdForTasks,
+  });
+
   // Сбрасываем активную вкладку при смене узла
   useEffect(() => {
     if (!node) return;
@@ -74,11 +82,6 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
 
   if (node.type === 'topic') {
     const theoryContent = THEORIES[`theory-${node.topic.id}`] ?? `# ${node.topic.title}\n\nВыберите подтему для изучения.`;
-    const tasks = effectiveSubtopicId
-      ? TASKS.filter(
-          (t) => t.topicId === node.topic.id && (t.subtopicId === effectiveSubtopicId || !t.subtopicId)
-        )
-      : TASKS.filter((t) => t.topicId === node.topic.id && !t.subtopicId);
 
     const hasArticle = !articleLoading && !articleError && article && article.blocks.length > 0;
     const activeSubtopic =
@@ -98,7 +101,7 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
       {
         key: 'tasks',
         label: 'Задачи',
-        children: <TaskList tasks={tasks} onClose={onClose} />,
+        children: <TaskList tasks={tasksFromApi} onClose={onClose} />,
       },
       {
         key: 'subtopics',
@@ -168,13 +171,6 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
   const theoryContent = subtopic.theory
     ? THEORIES[subtopic.theory]
     : THEORIES[`theory-${topic.id}`] ?? `# ${subtopic.title}`;
-  const tasks = effectiveSubtopicId
-    ? TASKS.filter(
-        (t) => t.topicId === topic.id && (t.subtopicId === effectiveSubtopicId || !t.subtopicId)
-      )
-    : TASKS.filter(
-        (t) => t.topicId === topic.id && (t.subtopicId === subtopic.id || !t.subtopicId)
-      );
 
   const hasArticle = !articleLoading && !articleError && article && article.blocks.length > 0;
   const activeSubtopic =
@@ -194,7 +190,7 @@ export function TopicSidebar({ open, node, onClose }: TopicSidebarProps) {
     {
       key: 'tasks',
       label: 'Задачи',
-      children: <TaskList tasks={tasks} onClose={onClose} />,
+      children: <TaskList tasks={tasksFromApi} onClose={onClose} />,
     },
     {
       key: 'subtopics',

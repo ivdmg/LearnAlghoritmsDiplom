@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppHeader } from '@/widgets/app-header';
+import { TasksStatsSnippet } from '@/widgets/tasks-stats-snippet';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { ScrollArea, TaskRowList } from '@/shared/ui';
 import { ROADMAP } from '@/entities/roadmap';
@@ -70,6 +71,7 @@ export function TasksPage() {
           <div className={styles.panelContent}>
             <h2 className={styles.sectionTitle}>Задачи</h2>
             <p className={styles.text}>Выберите тему, затем задачу — откроется контестер.</p>
+            <TasksStatsSnippet />
           </div>
         </div>
 

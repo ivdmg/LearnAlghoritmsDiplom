@@ -430,15 +430,16 @@ const countingSortViz = sortVizBlock('anim-counting-sort', 360, js`
 // GROUP 2 — GRAPH (SVG-based node + edge visualization)
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// Дублирует классы из viz-animation-base.css; цвета — var(--viz-fill-*) в :root iframe
 const GRAPH_CSS = `
 svg text{font-family:var(--viz-mono);font-size:12px;fill:var(--viz-text);text-anchor:middle;dominant-baseline:central;pointer-events:none;}
-.g-edge{stroke:rgba(148,163,184,0.5);stroke-width:2;}
-.g-edge--active{stroke:var(--viz-amber-top);stroke-width:3;}
-.g-edge--done{stroke:var(--viz-green-top);stroke-width:3;}
-.g-node{fill:var(--viz-blue-top);stroke:var(--viz-blue-border);stroke-width:2;}
-.g-node--active{fill:var(--viz-amber-top);stroke:var(--viz-amber-border);}
-.g-node--done{fill:var(--viz-green-top);stroke:var(--viz-green-border);}
-.g-node--fail{fill:var(--viz-red-top);stroke:var(--viz-red-border);}
+.g-edge{stroke:rgba(148,163,184,0.55);stroke-width:2;}
+.g-edge--active{stroke:var(--viz-fill-amber);stroke-width:3;}
+.g-edge--done{stroke:var(--viz-fill-green);stroke-width:3;}
+.g-node{fill:var(--viz-fill-blue);stroke:var(--viz-border-blue);stroke-width:2;}
+.g-node--active{fill:var(--viz-fill-amber);stroke:var(--viz-border-amber);}
+.g-node--done{fill:var(--viz-fill-green);stroke:var(--viz-border-green);}
+.g-node--fail{fill:var(--viz-fill-red);stroke:var(--viz-border-red);}
 .g-weight{font-size:10px;fill:var(--viz-muted);}
 `;
 

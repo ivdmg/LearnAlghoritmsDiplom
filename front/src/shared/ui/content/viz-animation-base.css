@@ -1,28 +1,39 @@
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 
 /**
- * Визуализации в iframe. Палитра — насыщенные «как в визуализаторах» (см. algo example.txt).
- * Массивы чисел — через .viz-chart + .viz-bar-*; стек/очередь — .viz-cell с теми же оттенками.
+ * Визуализации в iframe. Все сплошные заливки задаются в :root ниже (без градиентов).
+ * Массивы — .viz-chart + .viz-bar-*; стек/очередь — .viz-cell.
  */
 :root {
   --viz-bg: transparent;
-  /* Нейтральный столбец / ячейка — насыщенный голубой (не «мыльный») */
-  --viz-blue-top: #60a5fa;
-  --viz-blue-bot: #2563eb;
-  --viz-blue-border: rgba(96, 165, 250, 0.95);
-  --viz-blue-glow: rgba(37, 99, 235, 0.45);
-  /* Сравнение / фокус — янтарь */
-  --viz-amber-top: #fbbf24;
-  --viz-amber-bot: #d97706;
-  --viz-amber-border: rgba(251, 191, 36, 0.95);
-  /* Успех — изумруд */
-  --viz-green-top: #4ade80;
-  --viz-green-bot: #16a34a;
-  --viz-green-border: rgba(74, 222, 128, 0.95);
-  /* Ошибка / нет — красный */
-  --viz-red-top: #f87171;
-  --viz-red-bot: #dc2626;
-  --viz-red-border: rgba(248, 113, 113, 0.95);
+
+  /* ━━━ НАСТРОЙКА ЦВЕТОВ ВИЗУАЛИЗАЦИИ: меняйте только значения справа ━━━ */
+
+  /* Обычное состояние: столбцы сортировки, ячейки стека/очереди, бейдж, .viz-bars */
+  --viz-fill-blue: #385dffc0;
+  --viz-glow-blue: rgba(79, 109, 245, 0.42);
+
+  /* Сравнение / активный элемент */
+  --viz-fill-amber: #d97706;
+  --viz-glow-amber: rgba(217, 119, 6, 0.42);
+
+  /* Успех / отсортировано */
+  --viz-fill-green: #059669;
+  --viz-glow-green: rgba(5, 150, 105, 0.38);
+
+  /* Ошибка / отказ */
+  --viz-fill-red: #dc2626;
+  --viz-glow-red: rgba(220, 38, 38, 0.38);
+
+  /* Подсветка колонок merge sort: левая / правая половина */
+  --viz-zone-a-bg: #1e3a5f;
+  --viz-zone-b-bg: #3b2f55;
+
+  /* Рамка контейнера с несколькими рядами баров */
+  --viz-group-bg: #1e293b;
+  --viz-group-border: #475569;
+
+  /* ━━━ конец блока цветов визуализации ━━━ */
 
   --viz-text: #f1f5f9;
   --viz-muted: #94a3b8;
@@ -187,12 +198,13 @@ body {
   transition: background 0.2s ease;
 }
 
+/* Фон зон merge — цвета: --viz-zone-a-bg / --viz-zone-b-bg в :root */
 .viz-bar-col--zone-a {
-  background: rgba(59, 130, 246, 0.14);
+  background: var(--viz-zone-a-bg);
 }
 
 .viz-bar-col--zone-b {
-  background: rgba(168, 85, 247, 0.14);
+  background: var(--viz-zone-b-bg);
 }
 
 .viz-bar-track {
@@ -230,32 +242,33 @@ body {
   white-space: nowrap;
 }
 
+/* Заливка столбца — --viz-fill-* и --viz-border-* в :root */
 .viz-bar-fill {
   width: 100%;
   min-height: 0;
   flex: 0 0 auto;
   align-self: stretch;
   border-radius: 4px 4px 2px 2px;
-  background: #3b82f6;
-  border: 1px solid rgba(96, 165, 250, 0.95);
+  background: var(--viz-fill-blue);
+  border: 1px solid var(--viz-border-blue);
   box-sizing: border-box;
   /* без transition height — иначе «двойная» анимация и мигание */
 }
 
 .viz-bar-fill--compare,
 .viz-bar-fill--active {
-  background: #d97706;
-  border-color: #fbbf24;
+  background: var(--viz-fill-amber);
+  border-color: var(--viz-border-amber);
 }
 
 .viz-bar-fill--success {
-  background: #16a34a;
-  border-color: #4ade80;
+  background: var(--viz-fill-green);
+  border-color: var(--viz-border-green);
 }
 
 .viz-bar-fill--fail {
-  background: #dc2626;
-  border-color: #f87171;
+  background: var(--viz-fill-red);
+  border-color: var(--viz-border-red);
 }
 
 .viz-bar-foot {
@@ -285,9 +298,7 @@ body {
   justify-content: center;
   padding: clamp(6px, 1.8vw, 14px);
   border-radius: var(--viz-radius);
-  background: linear-gradient(180deg, rgba(96, 165, 250, 0.92), rgba(37, 99, 235, 0.88));
-  border: 2px solid var(--viz-blue-border);
-  box-shadow: 0 0 12px var(--viz-blue-glow);
+  background: var(--viz-fill-blue);
   outline: none;
   font-family: var(--viz-mono);
   font-size: clamp(13px, 2.6vw, 18px);
@@ -296,28 +307,21 @@ body {
   transition:
     background 0.3s ease,
     border-color 0.3s ease,
-    box-shadow 0.3s ease,
     transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.35s ease;
 }
 
 .viz-cell--active,
 .viz-cell--compare {
-  background: linear-gradient(180deg, rgba(251, 191, 36, 0.95), rgba(217, 119, 6, 0.9));
-  border-color: var(--viz-amber-border);
-  box-shadow: 0 0 18px rgba(217, 119, 6, 0.5);
+  background: var(--viz-fill-amber);
 }
 
 .viz-cell--success {
-  background: linear-gradient(180deg, rgba(74, 222, 128, 0.95), rgba(22, 163, 74, 0.9));
-  border-color: var(--viz-green-border);
-  box-shadow: 0 0 16px rgba(22, 163, 74, 0.45);
+  background: var(--viz-fill-green);
 }
 
 .viz-cell--fail {
-  background: linear-gradient(180deg, rgba(248, 113, 113, 0.95), rgba(220, 38, 38, 0.9));
-  border-color: var(--viz-red-border);
-  box-shadow: 0 0 16px rgba(220, 38, 38, 0.45);
+  background: var(--viz-fill-red);
 }
 
 /* Въезд сбоку (push / enqueue) */
@@ -377,12 +381,12 @@ body {
   line-height: 1.35;
 }
 
+/* Бейдж — те же --viz-fill-blue / --viz-border-blue, что и базовые ячейки */
 .viz-badge {
   padding: 8px 14px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(96, 165, 250, 0.35), rgba(37, 99, 235, 0.25));
-  border: 1px solid var(--viz-blue-border);
-  box-shadow: none;
+  background: var(--viz-fill-blue);
+  border: 1px solid var(--viz-border-blue);
   font-family: var(--viz-mono);
   font-size: clamp(11px, 2.1vw, 13px);
   color: var(--viz-text);
@@ -448,27 +452,28 @@ body {
   padding: 6px 0;
 }
 
+/* Узкие столбики «рост n» — заливка как у базового синего */
 .viz-bars .viz-bar {
   flex: 1 1 0;
   min-width: 0;
   max-width: 48px;
   border-radius: var(--viz-radius-sm);
-  background: linear-gradient(180deg, var(--viz-blue-top), var(--viz-blue-bot));
-  border: 2px solid var(--viz-blue-border);
-  box-shadow: 0 0 10px var(--viz-blue-glow);
+  background: var(--viz-fill-blue);
+  border: 2px solid var(--viz-border-blue);
   transition:
     height 0.35s ease,
     opacity 0.35s ease;
 }
 
+/* Группа баров — --viz-group-bg / --viz-group-border в :root */
 .viz-group {
   display: flex;
   flex-wrap: wrap;
   gap: var(--viz-gap);
   padding: var(--viz-gap);
   border-radius: var(--viz-radius);
-  background: rgba(30, 58, 138, 0.25);
-  border: 1px solid rgba(96, 165, 250, 0.35);
+  background: var(--viz-group-bg);
+  border: 1px solid var(--viz-group-border);
   box-shadow: none;
   align-items: flex-end;
   justify-content: center;
@@ -495,4 +500,56 @@ body {
 .viz-grid .viz-cell {
   min-height: clamp(40px, 12vh, 64px);
   flex: none;
+}
+
+/* ========== SVG-графы (узлы/рёбра): те же --viz-fill-* / --viz-border-* в :root ========== */
+.viz-col svg text,
+.viz-viewport svg text {
+  font-family: var(--viz-mono);
+  font-size: 12px;
+  fill: var(--viz-text);
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.g-edge {
+  stroke: rgba(148, 163, 184, 0.55);
+  stroke-width: 2;
+}
+
+.g-edge--active {
+  stroke: var(--viz-fill-amber);
+  stroke-width: 3;
+}
+
+.g-edge--done {
+  stroke: var(--viz-fill-green);
+  stroke-width: 3;
+}
+
+.g-node {
+  fill: var(--viz-fill-blue);
+  stroke: var(--viz-border-blue);
+  stroke-width: 2;
+}
+
+.g-node--active {
+  fill: var(--viz-fill-amber);
+  stroke: var(--viz-border-amber);
+}
+
+.g-node--done {
+  fill: var(--viz-fill-green);
+  stroke: var(--viz-border-green);
+}
+
+.g-node--fail {
+  fill: var(--viz-fill-red);
+  stroke: var(--viz-border-red);
+}
+
+.g-weight {
+  font-size: 10px;
+  fill: var(--viz-muted);
 }

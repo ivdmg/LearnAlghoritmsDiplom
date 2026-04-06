@@ -15,6 +15,8 @@ import { useMyStats } from '@/shared/hooks/use-my-stats';
 import { TASKS } from '@/entities/task';
 import styles from './account-page.module.css';
 
+const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
+
 export function AccountPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -22,12 +24,19 @@ export function AccountPage() {
   const { stats, loading: statsLoading, reload } = useMyStats();
 
   const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [identifier, setIdentifier] = useState('');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [curPwd, setCurPwd] = useState('');
   const [newPwd, setNewPwd] = useState('');
+  const [confirmPwd, setConfirmPwd] = useState('');
   const [pwdMsg, setPwdMsg] = useState<string | null>(null);
+
+  const usernameValid = USERNAME_RE.test(username);
+  const usernameTouched = username.length > 0;
+  const passwordsMatch = newPwd === confirmPwd && newPwd.length > 0;
 
   const apiOn = isApiConfigured();
 
@@ -67,9 +76,9 @@ export function AccountPage() {
     e.preventDefault();
     dispatch(clearAuthError());
     if (mode === 'login') {
-      void dispatch(login({ email, password }));
+      void dispatch(login({ identifier: identifier.trim(), password }));
     } else {
-      void dispatch(register({ email, password, displayName: displayName || undefined }));
+      void dispatch(register({ email, password, username: username.trim(), displayName: displayName.trim() || undefined }));
     }
   };
 
@@ -81,11 +90,16 @@ export function AccountPage() {
   const handleChangePassword = (e: React.FormEvent) => {
     e.preventDefault();
     setPwdMsg(null);
+    if (!passwordsMatch) {
+      setPwdMsg('Пароли не совпадают');
+      return;
+    }
     void dispatch(changePassword({ currentPassword: curPwd, newPassword: newPwd })).then((a) => {
       if (changePassword.fulfilled.match(a)) {
         setPwdMsg('Пароль обновлён. Войдите снова.');
         setCurPwd('');
         setNewPwd('');
+        setConfirmPwd('');
       } else if (changePassword.rejected.match(a)) {
         setPwdMsg(String(a.payload ?? 'Ошибка'));
       }
@@ -116,8 +130,76 @@ export function AccountPage() {
                 Регистрация
               </button>
             </div>
-            <form className={styles.form} onSubmit={handleSubmit}>
-              {mode === 'register' && (
+
+            {mode === 'login' ? (
+              <form className={styles.form} onSubmit={handleSubmit}>
+                <label className={styles.label}>
+                  Email или логин
+                  <input
+                    className={styles.input}
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    autoComplete="username"
+                    placeholder="email@example.com или my_username"
+                  />
+                </label>
+                <label className={styles.label}>
+                  Пароль
+                  <input
+                    className={styles.input}
+                    type="password"
+                    required
+                    minLength={8}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                </label>
+                {error && <p className={styles.error}>{error}</p>}
+                <GlassButton type="submit" disabled={loading}>
+                  {loading ? '…' : 'Войти'}
+                </GlassButton>
+              </form>
+            ) : (
+              <form className={styles.form} onSubmit={handleSubmit}>
+                <label className={styles.label}>
+                  Логин *
+                  <input
+                    className={`${styles.input} ${usernameTouched && !usernameValid ? styles.inputError : ''}`}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
+                    autoComplete="username"
+                    placeholder="3–24 символа, a-z, 0-9, _"
+                    required
+                  />
+                  {usernameTouched && !usernameValid && (
+                    <span className={styles.fieldError}>3–24 символа, только a-z, 0-9, _</span>
+                  )}
+                </label>
+                <label className={styles.label}>
+                  Email *
+                  <input
+                    className={styles.input}
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                  />
+                </label>
+                <label className={styles.label}>
+                  Пароль *
+                  <input
+                    className={styles.input}
+                    type="password"
+                    required
+                    minLength={8}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="new-password"
+                    placeholder="Минимум 8 символов, буквы + цифры"
+                  />
+                </label>
                 <label className={styles.label}>
                   Имя (необязательно)
                   <input
@@ -127,40 +209,23 @@ export function AccountPage() {
                     autoComplete="nickname"
                   />
                 </label>
-              )}
-              <label className={styles.label}>
-                Email
-                <input
-                  className={styles.input}
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                />
-              </label>
-              <label className={styles.label}>
-                Пароль
-                <input
-                  className={styles.input}
-                  type="password"
-                  required
-                  minLength={8}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                />
-              </label>
-              {error && <p className={styles.error}>{error}</p>}
-              <GlassButton type="submit" disabled={loading}>
-                {loading ? '…' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
-              </GlassButton>
-            </form>
+                {error && <p className={styles.error}>{error}</p>}
+                <GlassButton type="submit" disabled={loading || (usernameTouched && !usernameValid)}>
+                  {loading ? '…' : 'Зарегистрироваться'}
+                </GlassButton>
+              </form>
+            )}
           </section>
         ) : (
           <>
             <section className={styles.card}>
               <h2 className={styles.h2}>Профиль</h2>
+              {user?.username && (
+                <p className={styles.row}>
+                  <span className={styles.muted}>Логин</span>{' '}
+                  <strong>{user.username}</strong>
+                </p>
+              )}
               <p className={styles.row}>
                 <span className={styles.muted}>Email</span> {user?.email}
               </p>
@@ -198,9 +263,27 @@ export function AccountPage() {
                     value={newPwd}
                     onChange={(e) => setNewPwd(e.target.value)}
                     autoComplete="new-password"
+                    placeholder="Минимум 8 символов, буквы + цифры"
                   />
                 </label>
-                {pwdMsg && <p className={styles.ok}>{pwdMsg}</p>}
+                <label className={styles.label}>
+                  Подтвердите пароль
+                  <input
+                    className={`${styles.input} ${confirmPwd && !passwordsMatch ? styles.inputError : ''}`}
+                    type="password"
+                    required
+                    minLength={8}
+                    value={confirmPwd}
+                    onChange={(e) => setConfirmPwd(e.target.value)}
+                    autoComplete="new-password"
+                  />
+                  {confirmPwd && !passwordsMatch && (
+                    <span className={styles.fieldError}>Пароли не совпадают</span>
+                  )}
+                </label>
+                {pwdMsg && (
+                  <p className={pwdMsg.includes('обновлён') ? styles.ok : styles.error}>{pwdMsg}</p>
+                )}
                 <GlassButton type="submit">Сохранить пароль</GlassButton>
               </form>
             </section>

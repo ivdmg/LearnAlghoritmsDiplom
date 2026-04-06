@@ -180,3 +180,12 @@
 [data-theme='light'] .linkish {
   color: #2563eb;
 }
+
+.inputError {
+  border-color: #f87171 !important;
+}
+
+.fieldError {
+  color: #f87171;
+  font-size: 0.8rem;
+}

@@ -6,6 +6,7 @@ import { isApiConfigured } from '@/shared/config/api-url';
 export type MyStats = {
   solvedTotal: number;
   byDifficulty: Record<string, number>;
+  byTopic: Record<string, number>;
   lastSolved: Array<{
     taskId: string;
     difficulty: string;
@@ -13,7 +14,13 @@ export type MyStats = {
     attemptsCount: number;
   }>;
   streakDays: number;
+  longestStreak: number;
   firstSolvedAt: string | null;
+  totalAttempts: number;
+  firstAttemptRate: number;
+  solvedLast7: number;
+  solvedLast30: number;
+  calendarData: Array<{ date: string; count: number }>;
 };
 
 export function useMyStats() {

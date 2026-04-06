@@ -6,6 +6,7 @@ import { isApiConfigured } from '@/shared/config/api-url';
 export type AuthUser = {
   id: string;
   email: string;
+  username: string | null;
   displayName: string | null;
 };
 
@@ -46,7 +47,7 @@ export const bootstrapAuth = createAsyncThunk('auth/bootstrap', async (_, { reje
 
 export const login = createAsyncThunk(
   'auth/login',
-  async (payload: { email: string; password: string }, { rejectWithValue }) => {
+  async (payload: { identifier: string; password: string }, { rejectWithValue }) => {
     const res = await apiFetch('/auth/login', {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -62,7 +63,7 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
   'auth/register',
   async (
-    payload: { email: string; password: string; displayName?: string },
+    payload: { email: string; password: string; username: string; displayName?: string },
     { rejectWithValue },
   ) => {
     const res = await apiFetch('/auth/register', {

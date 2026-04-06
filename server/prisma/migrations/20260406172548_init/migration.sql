@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
     "displayName" TEXT,
@@ -13,8 +14,10 @@ CREATE TABLE "UserTaskProgress" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "userId" TEXT NOT NULL,
     "taskId" TEXT NOT NULL,
+    "topicId" TEXT,
     "difficulty" TEXT NOT NULL,
     "solvedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     "attemptsCount" INTEGER NOT NULL DEFAULT 1,
     "lastRunAt" DATETIME,
     CONSTRAINT "UserTaskProgress_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
@@ -29,6 +32,9 @@ CREATE TABLE "RefreshSession" (
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "RefreshSession_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");

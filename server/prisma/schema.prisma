@@ -1,4 +1,5 @@
-// Локально: SQLite (файл dev.db). Для продакшена можно сменить provider на postgresql и DATABASE_URL на Neon.
+// Локально: SQLite (файл dev.db). Для продакшена смените provider на "postgresql"
+// и укажите DATABASE_URL (Neon, Supabase, Railway и т.д.).
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,26 +9,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Difficulty {
+  easy
+  medium
+  hard
+}
+
 model User {
   id           String   @id @default(uuid())
+  username     String   @unique // 3–24 символа, [a-zA-Z0-9_]
   email        String   @unique
   passwordHash String
   displayName  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  progress UserTaskProgress[]
-  sessions RefreshSession[]
+  progress     UserTaskProgress[]
+  sessions     RefreshSession[]
 }
 
 model UserTaskProgress {
-  id            String    @id @default(uuid())
+  id            String     @id @default(uuid())
   userId        String
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   taskId        String
-  difficulty    String
-  solvedAt      DateTime  @default(now())
-  attemptsCount Int       @default(1)
+  topicId       String?    // для группировки статистики по темам
+  difficulty    Difficulty
+  solvedAt      DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  attemptsCount Int        @default(1)
   lastRunAt     DateTime?
 
   @@unique([userId, taskId])

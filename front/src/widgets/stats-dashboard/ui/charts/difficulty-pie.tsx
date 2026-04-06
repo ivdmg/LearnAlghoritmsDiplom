@@ -33,7 +33,7 @@ export function DifficultyPie({ easy, medium, hard }: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.chartArea}>
-        <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer width="100%" height={220}>
           <PieChart>
             <Pie
               data={data}

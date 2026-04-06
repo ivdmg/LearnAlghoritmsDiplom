@@ -40,7 +40,7 @@ export function TopicBarChart({ byTopic }: Props) {
   }
 
   return (
-    <ResponsiveContainer width="100%" height={320}>
+    <ResponsiveContainer width="100%" height={340}>
       <BarChart
         data={visible}
         margin={{ top: 5, right: 30, left: 120, bottom: 5 }}

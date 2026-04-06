@@ -69,8 +69,6 @@ export function TasksPage() {
       <div className={styles.mainLayout}>
         <div className={styles.leftPanel}>
           <div className={styles.panelContent}>
-            <h2 className={styles.sectionTitle}>Задачи</h2>
-            <p className={styles.text}>Выберите тему, затем задачу — откроется контестер.</p>
             <TasksStatsSnippet />
           </div>
         </div>

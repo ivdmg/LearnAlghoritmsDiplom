@@ -1,82 +1,141 @@
 .wrapper {
   position: relative;
   width: 100%;
-  overflow-x: auto;
   padding: 8px 0;
 }
 
-.grid {
-  position: relative;
+.rangeBar {
   display: flex;
-  gap: 0;
-  min-width: 680px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.rangeButtons {
+  display: flex;
+  gap: 4px;
+}
+
+.rangeBtn {
+  padding: 4px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(229, 231, 235, 0.6);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.rangeBtn:hover {
+  color: rgba(229, 231, 235, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.rangeBtnActive {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #a78bfa;
+}
+
+[data-theme='light'] .rangeBtn {
+  border-color: rgba(15, 23, 42, 0.12);
+  color: rgba(15, 23, 42, 0.5);
+}
+
+[data-theme='light'] .rangeBtn:hover {
+  border-color: rgba(15, 23, 42, 0.2);
+  color: rgba(15, 23, 42, 0.8);
+}
+
+[data-theme='light'] .rangeBtnActive {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #7c3aed;
+}
+
+.totalLabel {
+  font-size: 0.82rem;
+  color: rgba(229, 231, 235, 0.5);
+}
+
+[data-theme='light'] .totalLabel {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.gridContainer {
+  display: flex;
+  gap: 6px;
+  width: 100%;
 }
 
 .dayLabels {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  gap: 0;
-  padding-right: 6px;
-  font-size: 0.7rem;
-  color: rgba(229, 231, 235, 0.4);
-  min-height: 96px;
-  margin-top: 18px;
+  gap: 6px;
+  padding-top: 4px;
+  font-size: 0.65rem;
+  color: rgba(229, 231, 235, 0.3);
+  flex-shrink: 0;
+  width: 24px;
+  text-align: right;
 }
 
-[data-theme='light'] .dayLabels span {
-  color: rgba(15, 23, 42, 0.4);
+[data-theme='light'] .dayLabels {
+  color: rgba(15, 23, 42, 0.35);
+}
+
+.graphArea {
+  flex: 1;
+  position: relative;
+  min-width: 0;
 }
 
 .monthRow {
   position: relative;
-  height: 16px;
-  margin-left: 22px;
-  flex: 1;
+  height: 14px;
+  margin-bottom: 2px;
 }
 
 .monthLabel {
   position: absolute;
-  font-size: 0.7rem;
-  color: rgba(229, 231, 235, 0.4);
-  white-space: nowrap;
+  font-size: 0.65rem;
+  color: rgba(229, 231, 235, 0.35);
 }
 
 [data-theme='light'] .monthLabel {
-  color: rgba(15, 23, 42, 0.4);
-}
-
-.weeksContainer {
-  display: flex;
-  flex: 1;
-  overflow: visible;
+  color: rgba(15, 23, 42, 0.35);
 }
 
 .weeksGrid {
   display: flex;
   gap: 3px;
+  overflow: hidden;
 }
 
 .weekCol {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  flex-shrink: 0;
 }
 
 .dayCell {
   width: 12px;
   height: 12px;
   border-radius: 2px;
-  outline: 1px solid rgba(255, 255, 255, 0.04);
-  transition: outline 0.15s;
+  outline: 1px solid rgba(255, 255, 255, 0.03);
+  transition: outline 0.15s, transform 0.1s;
 }
 
 .dayCell:hover {
-  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline: 2px solid rgba(255, 255, 255, 0.35);
+  transform: scale(1.2);
 }
 
 [data-theme='light'] .dayCell {
-  outline: 1px solid rgba(0, 0, 0, 0.06);
+  outline: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 [data-theme='light'] .dayCell:hover {
@@ -84,11 +143,11 @@
 }
 
 .level0 {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 [data-theme='light'] .level0 {
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .level1 {
@@ -108,22 +167,22 @@
 }
 
 .tooltip {
-  position: fixed;
+  position: absolute;
   z-index: 9999;
   background: #1e1e2e;
   color: #e5e7eb;
-  padding: 6px 10px;
+  padding: 5px 10px;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   pointer-events: none;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 [data-theme='light'] .tooltip {
   background: #fff;
   color: #0b1220;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .legend {
@@ -131,13 +190,13 @@
   align-items: center;
   gap: 4px;
   justify-content: flex-end;
-  margin-top: 8px;
-  font-size: 0.7rem;
-  color: rgba(229, 231, 235, 0.5);
+  margin-top: 10px;
+  font-size: 0.68rem;
+  color: rgba(229, 231, 235, 0.45);
 }
 
 [data-theme='light'] .legend {
-  color: rgba(15, 23, 42, 0.5);
+  color: rgba(15, 23, 42, 0.45);
 }
 
 .legendCell {

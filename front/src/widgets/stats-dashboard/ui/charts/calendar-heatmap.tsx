@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from './calendar-heatmap.module.css';
 
 type CalendarDay = { date: string; count: number };
@@ -7,8 +7,9 @@ type Props = {
   data: CalendarDay[];
 };
 
+export type HeatmapRange = 'week' | 'month' | 'year';
+
 const MONTH_NAMES = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
-const DAY_LABELS = ['Пн', 'Ср', 'Пт'];
 
 function getLevel(count: number): number {
   if (count === 0) return 0;
@@ -17,89 +18,153 @@ function getLevel(count: number): number {
   return 3;
 }
 
-export function CalendarHeatmap({ data }: Props) {
-  // Build a map for quick lookup
-  const map = new Map<string, number>();
-  for (const d of data) {
-    map.set(d.date, d.count);
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  return `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function pluralTasks(n: number): string {
+  if (n === 1) return 'задача';
+  if (n < 5) return 'задачи';
+  return 'задач';
+}
+
+/**
+ * Собирает массив недель за заданный период
+ */
+function buildWeeks(
+  dataMap: Map<string, number>,
+  range: HeatmapRange,
+  today: Date
+): { date: string; count: number; level: number }[][] {
+  let totalDays: number;
+  switch (range) {
+    case 'week':
+      totalDays = 7;
+      break;
+    case 'month':
+      totalDays = 28; // 4 weeks
+      break;
+    default:
+      totalDays = 364;
   }
 
-  // Build the last ~365 days, aligned to start on a Monday
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  // Calculate the Monday that is ~52 weeks ago
-  const dow = today.getDay(); // 0=Sun, 1=Mon, ...
+  const dow = today.getDay();
   const daysSinceMonday = dow === 0 ? 6 : dow - 1;
   const endDate = new Date(today);
   const startDate = new Date(today);
-  startDate.setDate(startDate.getDate() - daysSinceMonday - 364 + (dow === 0 ? 7 : 0));
+  startDate.setDate(startDate.getDate() - daysSinceMonday - (totalDays === 7 ? 0 : totalDays - (dow === 0 ? 7 : 0)));
 
-  // Generate weeks: each week has 7 days (Mon-Sun)
   const weeks: { date: string; count: number; level: number }[][] = [];
-  let current = new Date(startDate);
+  const current = new Date(startDate);
+  const end = new Date(endDate);
 
-  while (current <= endDate) {
+  while (current <= end) {
     const week: { date: string; count: number; level: number }[] = [];
     for (let d = 0; d < 7; d++) {
+      if (current > end) break;
       const dateStr = current.toISOString().slice(0, 10);
-      const count = map.get(dateStr) ?? 0;
+      const count = dataMap.get(dateStr) ?? 0;
       week.push({ date: dateStr, count, level: getLevel(count) });
       current.setDate(current.getDate() + 1);
     }
-    weeks.push(week);
+    if (week.length > 0) weeks.push(week);
   }
 
-  // Month labels: find the first cell in each month
-  const monthPositions: { label: string; colIndex: number }[] = [];
-  let lastMonth = -1;
-  weeks.forEach((week, wi) => {
-    const d = new Date(week[0].date);
-    if (d.getMonth() !== lastMonth && week[0].level !== undefined) {
-      monthPositions.push({ label: MONTH_NAMES[d.getMonth()], colIndex: wi });
-      lastMonth = d.getMonth();
-    }
-  });
+  return weeks;
+}
 
-  // Tooltip state
-  const [tooltip, setTooltip] = React.useState<{ x: number; y: number; date: string; count: number } | null>(null);
+export function CalendarHeatmap({ data }: Props) {
+  const today = useMemo(() => {
+    const t = new Date();
+    t.setHours(0, 0, 0, 0);
+    return t;
+  }, []);
 
-  const formatDate = (dateStr: string): string => {
-    const d = new Date(dateStr);
-    return `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
-  };
+  const dataMap = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const d of data) m.set(d.date, d.count);
+    return m;
+  }, [data]);
+
+  const [range, setRange] = useState<HeatmapRange>('year');
+
+  const weeks = useMemo(() => buildWeeks(dataMap, range, today), [dataMap, range, today]);
+
+  // Total solved for the visible range
+  const totalVisible = useMemo(() => {
+    let t = 0;
+    for (const w of weeks) for (const d of w) t += d.count;
+    return t;
+  }, [weeks]);
+
+  // Month labels
+  const monthPositions = useMemo(() => {
+    if (range === 'week') return [];
+    const result: { label: string; colIndex: number }[] = [];
+    let lastMonth = -1;
+    weeks.forEach((week, wi) => {
+      const d = new Date(week[0].date + 'T12:00:00Z');
+      if (d.getMonth() !== lastMonth) {
+        result.push({ label: MONTH_NAMES[d.getMonth()], colIndex: wi });
+        lastMonth = d.getMonth();
+      }
+    });
+    return result;
+  }, [weeks, range]);
+
+  const [tooltip, setTooltip] = useState<{
+    x: number; y: number; date: string; count: number;
+  } | null>(null);
 
   return (
-    <div className={styles.wrapper}>
-      <div
-        className={styles.grid}
-        onMouseLeave={() => setTooltip(null)}
-      >
+    <div className={styles.wrapper} onMouseLeave={() => setTooltip(null)}>
+      {/* Range selector */}
+      <div className={styles.rangeBar}>
+        <div className={styles.rangeButtons}>
+          {(['week', 'month', 'year'] satisfies HeatmapRange[]).map((r) => (
+            <button
+              key={r}
+              type="button"
+              className={`${styles.rangeBtn} ${range === r ? styles.rangeBtnActive : ''}`}
+              onClick={() => setRange(r)}
+            >
+              {r === 'week' ? 'Неделя' : r === 'month' ? 'Месяц' : 'Год'}
+            </button>
+          ))}
+        </div>
+        <span className={styles.totalLabel}>{totalVisible} {pluralTasks(totalVisible)}</span>
+      </div>
+
+      <div className={styles.gridContainer}>
         {/* Day labels */}
         <div className={styles.dayLabels}>
-          {DAY_LABELS.map((label, i) => (
+          {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((label, i) => (
             <span key={i}>{label}</span>
           ))}
         </div>
 
-        {/* Month row */}
-        <div className={styles.monthRow}>
-          {monthPositions.map((m, i) => {
-            // Calculate the left offset based on colIndex
-            const leftPercent = m.colIndex / weeks.length * 100;
-            return (
-              <span
-                key={i}
-                className={styles.monthLabel}
-                style={{ left: `${leftPercent}%` }}
-              >
-                {m.label}
-              </span>
-            );
-          })}
-        </div>
+        {/* Main area */}
+        <div className={styles.graphArea}>
+          {/* Month row */}
+          {range !== 'week' && (
+            <div className={styles.monthRow}>
+              {monthPositions.map((m, i) => {
+                const leftPercent = weeks.length > 0 ? (m.colIndex / weeks.length) * 100 : 0;
+                return (
+                  <span
+                    key={i}
+                    className={styles.monthLabel}
+                    style={{ left: `${leftPercent}%` }}
+                  >
+                    {m.label}
+                  </span>
+                );
+              })}
+            </div>
+          )}
 
-        {/* Weeks grid */}
-        <div className={styles.weeksContainer}>
+          {/* Weeks grid */}
           <div className={styles.weeksGrid}>
             {weeks.map((week, wi) => (
               <div key={wi} className={styles.weekCol}>
@@ -109,9 +174,10 @@ export function CalendarHeatmap({ data }: Props) {
                     className={`${styles.dayCell} ${styles[`level${day.level}`]}`}
                     onMouseEnter={(e) => {
                       const rect = (e.target as HTMLElement).getBoundingClientRect();
+                      const containerRect = (e.currentTarget.closest(`.${styles.wrapper}`) as HTMLElement)?.getBoundingClientRect();
                       setTooltip({
-                        x: rect.left + rect.width / 2,
-                        y: rect.top - 8,
+                        x: rect.left - (containerRect?.left ?? 0) + rect.width / 2,
+                        y: rect.top - (containerRect?.top ?? 0) - 6,
                         date: day.date,
                         count: day.count,
                       });
@@ -128,14 +194,9 @@ export function CalendarHeatmap({ data }: Props) {
       {tooltip && (
         <div
           className={styles.tooltip}
-          style={{
-            left: tooltip.x,
-            top: tooltip.y,
-            transform: 'translate(-50%, -100%)',
-          }}
+          style={{ left: tooltip.x, top: tooltip.y }}
         >
-          {tooltip.count} {tooltip.count === 1 ? 'задача' : tooltip.count < 5 ? 'задачи' : 'задач'}{' '}
-          — {formatDate(tooltip.date)}
+          {tooltip.count} {pluralTasks(tooltip.count)} — {formatDate(tooltip.date)}
         </div>
       )}
 

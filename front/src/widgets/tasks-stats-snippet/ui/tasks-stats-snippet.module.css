@@ -1,5 +1,5 @@
 .card {
-  padding: 16px;
+  padding: 20px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -12,13 +12,16 @@
 }
 
 .title {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin: 0 0 10px;
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .muted {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   line-height: 1.45;
   color: rgba(229, 231, 235, 0.55);
   margin: 0 0 12px;
@@ -39,51 +42,101 @@
   background: rgba(15, 23, 42, 0.06);
 }
 
-.summary {
-  margin: 0 0 8px;
-  font-size: 0.92rem;
+.summaryRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.summaryBig {
+  font-size: 0.95rem;
+}
+
+.checkIcon {
+  color: #4ade80;
+  margin-right: 4px;
+}
+
+.summaryPct {
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+[data-theme='light'] .summaryPct {
+  background: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
 }
 
 .chartWrap {
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
 }
 
-.streak {
-  font-size: 0.88rem;
-  margin: 0 0 10px;
-  color: rgba(229, 231, 235, 0.75);
-}
-
-[data-theme='light'] .streak {
-  color: rgba(15, 23, 42, 0.65);
-}
-
-.btn {
-  width: 100%;
-  margin-top: 4px;
-}
-
-.kpiRow {
+.pieLegend {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
+  justify-content: center;
+  gap: 16px;
+  margin-top: -10px;
+  margin-bottom: 12px;
 }
 
-.kpiBadge {
+.pieLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 0.78rem;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(229, 231, 235, 0.8);
 }
 
-[data-theme='light'] .kpiBadge {
-  background: rgba(15, 23, 42, 0.04);
-  border-color: rgba(15, 23, 42, 0.08);
-  color: rgba(15, 23, 42, 0.7);
+.pieDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.pieName {
+  font-weight: 500;
+}
+
+.pieVal {
+  color: rgba(229, 231, 235, 0.5);
+}
+
+[data-theme='light'] .pieVal {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.kpiItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.8rem;
+}
+
+[data-theme='light'] .kpiItem {
+  background: rgba(15, 23, 42, 0.03);
+  border-color: rgba(15, 23, 42, 0.06);
+}
+
+.kpiGrid .kpiItem svg {
+  font-size: 0.85rem;
+  flex-shrink: 0;
 }
 
 .hint {
@@ -95,4 +148,9 @@
 
 [data-theme='light'] .hint {
   color: rgba(15, 23, 42, 0.4);
+}
+
+.btn {
+  width: 100%;
+  margin-top: 4px;
 }

@@ -1,5 +1,20 @@
 import { useState } from 'react';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
+import {
+  UserOutlined,
+  EditOutlined,
+  KeyOutlined,
+  MailOutlined,
+  DeleteOutlined,
+  LogoutOutlined,
+  ReloadOutlined,
+  CalendarOutlined,
+  BarChartOutlined,
+  LineChartOutlined,
+  TrophyOutlined,
+  BookOutlined,
+  ClockCircleOutlined,
+} from '@ant-design/icons';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selector';
@@ -28,7 +43,7 @@ type UserShape = {
   displayName: string | null;
 };
 
-/** Секция профиля (чтобы не дублировать состояние на каждый rerender) */
+/** Секция профиля */
 function ProfileSection({
   user,
   stats,
@@ -43,32 +58,30 @@ function ProfileSection({
   navigate: NavigateFunction;
 }) {
   const dispatch = useAppDispatch();
-
   const taskTitle = (id: string) => TASKS.find((t) => t.id === id)?.title ?? id;
 
-  // Редактирование displayName
+  // displayName
   const [editName, setEditName] = useState(false);
   const [displayName, setDisplayName] = useState(user.displayName ?? '');
   const [nameMsg, setNameMsg] = useState<string | null>(null);
 
-  // Редактирование username
+  // username
   const [editUsername, setEditUsername] = useState(false);
   const [username, setUsername] = useState(user.username ?? '');
   const [usernamePwd, setUsernamePwd] = useState('');
   const [usernameMsg, setUsernameMsg] = useState<string | null>(null);
 
-  // Редактирование email
+  // email
   const [editEmail, setEditEmail] = useState(false);
   const [email, setEmail] = useState(user.email ?? '');
   const [emailPwd, setEmailPwd] = useState('');
   const [emailMsg, setEmailMsg] = useState<string | null>(null);
 
-  // Удаление
+  // delete
   const [showDelete, setShowDelete] = useState(false);
   const [deletePwd, setDeletePwd] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deleteMsg, setDeleteMsg] = useState<string | null>(null);
-
   const passwordMatch = deletePwd === deleteConfirm;
 
   const handleSaveDisplayName = () => {
@@ -127,272 +140,184 @@ function ProfileSection({
     });
   };
 
+  const avatarLetter = user.displayName?.charAt(0)?.toUpperCase() ?? user.username?.charAt(0)?.toUpperCase() ?? '?';
+
   return (
     <>
-      {/* ---- Карточка профиля ---- */}
-      <section className={styles.card}>
-        <h2 className={styles.h2}>Профиль</h2>
+      {/* Профиль + статистика: 2 колонки */}
+      <section className={styles.topGrid}>
+        {/* Левая: профиль + настройки */}
+        <div className={styles.sidebar}>
+          {/* Аватар + инфо */}
+          <div className={`${styles.card} ${styles.profileCard}`}>
+            <div className={styles.profileHeader}>
+              <div className={styles.avatar}>{avatarLetter}</div>
+              <div className={styles.profileInfo}>
+                <span className={styles.profileName}>{user.displayName || user.username || 'Пользователь'}</span>
+                <span className={styles.profileEmail}>{user.email}</span>
+              </div>
+            </div>
 
-        {/* Логин */}
-        <div className={styles.rowFlex}>
-          <div className={styles.row}>
-            <span className={styles.muted}>Логин</span>{' '}
-            {editUsername ? <strong className={styles.editMode}>{username}</strong> : <strong>{user.username}</strong>}
-          </div>
-          <button
-            type="button"
-            className={styles.editBtn}
-            onClick={() => {
-              setEditUsername(!editUsername);
-              setUsername(user.username ?? '');
-              setUsernameMsg(null);
-            }}
-          >
-            {editUsername ? 'Отмена' : 'Изменить'}
-          </button>
-        </div>
-        {editUsername && (
-          <form className={styles.subForm} onSubmit={handleSaveUsername}>
-            <label className={styles.label}>
-              Новый логин
-              <input
-                className={`${styles.input} ${USERNAME_RE.test(username) ? '' : styles.inputError}`}
-                value={username}
-                onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
-                autoComplete="username"
-                placeholder="3–24 символа, a-z, 0-9, _"
-              />
-            </label>
-            <label className={styles.label}>
-              Текущий пароль
-              <input
-                className={styles.input}
-                type="password"
-                required
-                value={usernamePwd}
-                onChange={(e) => setUsernamePwd(e.target.value)}
-                autoComplete="current-password"
-              />
-            </label>
-            {usernameMsg && (
-              <p className={usernameMsg.includes('обновлён') || usernameMsg === 'Сохранено' ? styles.ok : styles.error}>
-                {usernameMsg}
-              </p>
+            {/* Логин */}
+            <div className={styles.rowFlex}>
+              <div className={styles.row}>
+                <span className={styles.muted}><UserOutlined style={{ fontSize: 12, marginRight: 4 }} />Логин</span>{' '}
+                {editUsername ? <strong className={styles.editMode}>{username}</strong> : <strong>{user.username}</strong>}
+              </div>
+              <button type="button" className={styles.editBtn} onClick={() => { setEditUsername(!editUsername); setUsername(user.username ?? ''); setUsernameMsg(null); }}>
+                {editUsername ? 'Отмена' : <EditOutlined />}
+              </button>
+            </div>
+            {editUsername && (
+              <form className={styles.subForm} onSubmit={handleSaveUsername}>
+                <label className={styles.label}>
+                  Новый логин
+                  <input className={`${styles.input} ${USERNAME_RE.test(username) ? '' : styles.inputError}`} value={username} onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))} autoComplete="username" placeholder="3–24 символа, a-z, 0-9, _" />
+                </label>
+                <label className={styles.label}>Текущий пароль<input className={styles.input} type="password" required value={usernamePwd} onChange={(e) => setUsernamePwd(e.target.value)} autoComplete="current-password" /></label>
+                {usernameMsg && <p className={usernameMsg.includes('обновлён') || usernameMsg === 'Сохранено' ? styles.ok : styles.error}>{usernameMsg}</p>}
+                <GlassButton type="submit">Сохранить логин</GlassButton>
+              </form>
             )}
-            <GlassButton type="submit">Сохранить логин</GlassButton>
-          </form>
-        )}
 
-        {/* Email */}
-        <div className={styles.rowFlex}>
-          <div className={styles.row}>
-            <span className={styles.muted}>Email</span>{' '}
-            {editEmail ? <span className={styles.editMode}>{email}</span> : <span>{user.email}</span>}
-          </div>
-          <button
-            type="button"
-            className={styles.editBtn}
-            onClick={() => {
-              setEditEmail(!editEmail);
-              setEmail(user.email ?? '');
-              setEmailMsg(null);
-            }}
-          >
-            {editEmail ? 'Отмена' : 'Изменить'}
-          </button>
-        </div>
-        {editEmail && (
-          <form className={styles.subForm} onSubmit={handleSaveEmail}>
-            <label className={styles.label}>
-              Новый email
-              <input
-                className={styles.input}
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-              />
-            </label>
-            <label className={styles.label}>
-              Текущий пароль
-              <input
-                className={styles.input}
-                type="password"
-                required
-                value={emailPwd}
-                onChange={(e) => setEmailPwd(e.target.value)}
-                autoComplete="current-password"
-              />
-            </label>
-            {emailMsg && (
-              <p className={emailMsg.includes('обновлён') || emailMsg === 'Сохранено' ? styles.ok : styles.error}>
-                {emailMsg}
-              </p>
+            {/* Email */}
+            <div className={styles.rowFlex}>
+              <div className={styles.row}>
+                <span className={styles.muted}><MailOutlined style={{ fontSize: 12, marginRight: 4 }} />Email</span>{' '}
+                {editEmail ? <span className={styles.editMode}>{email}</span> : <span>{user.email}</span>}
+              </div>
+              <button type="button" className={styles.editBtn} onClick={() => { setEditEmail(!editEmail); setEmail(user.email ?? ''); setEmailMsg(null); }}>
+                {editEmail ? 'Отмена' : <EditOutlined />}
+              </button>
+            </div>
+            {editEmail && (
+              <form className={styles.subForm} onSubmit={handleSaveEmail}>
+                <label className={styles.label}>Новый email<input className={styles.input} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></label>
+                <label className={styles.label}>Текущий пароль<input className={styles.input} type="password" required value={emailPwd} onChange={(e) => setEmailPwd(e.target.value)} autoComplete="current-password" /></label>
+                {emailMsg && <p className={emailMsg.includes('обновлён') || emailMsg === 'Сохранено' ? styles.ok : styles.error}>{emailMsg}</p>}
+                <GlassButton type="submit">Сохранить email</GlassButton>
+              </form>
             )}
-            <GlassButton type="submit">Сохранить email</GlassButton>
-          </form>
-        )}
 
-        {/* Имя (displayName) */}
-        <div className={styles.rowFlex}>
-          <div className={styles.row}>
-            <span className={styles.muted}>Имя</span>{' '}
-            {editName ? <span className={styles.editMode}>{displayName || '—'}</span> : <span>{user.displayName || '—'}</span>}
-          </div>
-          <button
-            type="button"
-            className={styles.editBtn}
-            onClick={() => {
-              setEditName(!editName);
-              setDisplayName(user.displayName ?? '');
-              setNameMsg(null);
-            }}
-          >
-            {editName ? 'Отмена' : 'Изменить'}
-          </button>
-        </div>
-        {editName && (
-          <div className={styles.subForm}>
-            <label className={styles.label}>
-              Новое имя
-              <input
-                className={styles.input}
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value.slice(0, 50))}
-                autoComplete="nickname"
-                placeholder="Максимум 50 символов"
-              />
-            </label>
-            {nameMsg && (
-              <p className={nameMsg === 'Сохранено' ? styles.ok : styles.error}>{nameMsg}</p>
+            {/* Имя */}
+            <div className={styles.rowFlex}>
+              <div className={styles.row}>
+                <span className={styles.muted}><UserOutlined style={{ fontSize: 12, marginRight: 4 }} />Имя</span>{' '}
+                {editName ? <span className={styles.editMode}>{displayName || '—'}</span> : <span>{user.displayName || '—'}</span>}
+              </div>
+              <button type="button" className={styles.editBtn} onClick={() => { setEditName(!editName); setDisplayName(user.displayName ?? ''); setNameMsg(null); }}>
+                {editName ? 'Отмена' : <EditOutlined />}
+              </button>
+            </div>
+            {editName && (
+              <div className={styles.subForm}>
+                <label className={styles.label}>Новое имя<input className={styles.input} value={displayName} onChange={(e) => setDisplayName(e.target.value.slice(0, 50))} autoComplete="nickname" placeholder="Максимум 50 символов" /></label>
+                {nameMsg && <p className={nameMsg === 'Сохранено' ? styles.ok : styles.error}>{nameMsg}</p>}
+                <GlassButton onClick={handleSaveDisplayName}>Сохранить имя</GlassButton>
+              </div>
             )}
-            <GlassButton onClick={handleSaveDisplayName}>Сохранить имя</GlassButton>
+
+            <div className={styles.actions}>
+              <GlassButton onClick={() => void dispatch(logout())}><LogoutOutlined /> Выйти</GlassButton>
+            </div>
           </div>
-        )}
 
-        <div className={styles.actions}>
-          <GlassButton onClick={() => void dispatch(logout())}>Выйти</GlassButton>
+          {/* Смена пароля */}
+          <div className={`${styles.card} ${styles.settingsCard}`}>
+            <h3 className={styles.h2}><KeyOutlined /> Смена пароля</h3>
+            <ChangePasswordForm />
+          </div>
+
+          {/* Удаление */}
+          <div className={`${styles.card} ${styles.dangerCard}`}>
+            <h3 className={styles.h2}><DeleteOutlined /> Удаление аккаунта</h3>
+            <p className={styles.muted}>Это действие необратимо. Все данные будут удалены.</p>
+            {!showDelete ? (
+              <GlassButton onClick={() => setShowDelete(true)} className={styles.dangerBtn}>Удалить аккаунт</GlassButton>
+            ) : (
+              <form className={styles.form} onSubmit={handleDelete}>
+                <label className={styles.label}>Текущий пароль<input className={styles.input} type="password" required value={deletePwd} onChange={(e) => setDeletePwd(e.target.value)} autoComplete="current-password" /></label>
+                <label className={styles.label}>Подтвердите пароль<input className={`${styles.input} ${deleteConfirm && !passwordMatch ? styles.inputError : ''}`} type="password" required value={deleteConfirm} onChange={(e) => setDeleteConfirm(e.target.value)} autoComplete="current-password" />{deleteConfirm && !passwordMatch && <span className={styles.fieldError}>Пароли не совпадают</span>}</label>
+                {deleteMsg && <p className={styles.error}>{deleteMsg}</p>}
+                <div className={styles.rowFlex}>
+                  <GlassButton type="submit" className={styles.dangerBtn}>Удалить навсегда</GlassButton>
+                  <GlassButton onClick={() => { setShowDelete(false); setDeletePwd(''); setDeleteConfirm(''); setDeleteMsg(null); }}>Отмена</GlassButton>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
-      </section>
 
-      {/* ---- Статистика ---- */}
-      <section className={styles.card}>
-        <div className={styles.statsHeader}>
-          <h2 className={styles.h2}>Статистика задач</h2>
-          <GlassButton type="button" onClick={() => reload()}>
-            Обновить
-          </GlassButton>
-        </div>
-        {statsLoading && <p className={styles.muted}>Загрузка…</p>}
-        {stats && (
-          <>
-            <StatsKPI stats={stats} />
+        {/* Правая: статистика */}
+        <div className={styles.mainStats}>
+          {/* KPI */}
+          <StatsKPI stats={stats} statsLoading={statsLoading} />
 
-            {/* Графики */}
+          {/* Статистика заголовок */}
+          <div className={styles.statsHeader}>
+            <h2 className={styles.h2}>Аналитика</h2>
+            <GlassButton type="button" onClick={() => reload()}><ReloadOutlined /> Обновить</GlassButton>
+          </div>
+
+          {statsLoading && !stats && <p className={styles.muted}>Загрузка…</p>}
+
+          {stats && (
             <div className={styles.chartsGrid}>
-              {/* Heatmap на всю ширину */}
+              {/* Heatmap */}
               <div className={styles.chartFull}>
-                <h3 className={styles.h3}>🗓️ Календарь активности</h3>
-                <CalendarHeatmap data={stats.calendarData} />
+                <div className={styles.chartCard}>
+                  <h3 className={styles.h3}><CalendarOutlined /> Календарь активности</h3>
+                  <CalendarHeatmap data={stats.calendarData} />
+                </div>
               </div>
 
               {/* Donut + Line */}
               <div className={styles.chartCol}>
-                <h3 className={styles.h3}>🎯 По сложности</h3>
-                <DifficultyPie
-                  easy={stats.byDifficulty.easy ?? 0}
-                  medium={stats.byDifficulty.medium ?? 0}
-                  hard={stats.byDifficulty.hard ?? 0}
-                />
+                <div className={styles.chartCard}>
+                  <h3 className={styles.h3}><BarChartOutlined /> По сложности</h3>
+                  <DifficultyPie easy={stats.byDifficulty.easy ?? 0} medium={stats.byDifficulty.medium ?? 0} hard={stats.byDifficulty.hard ?? 0} />
+                </div>
               </div>
               <div className={styles.chartCol}>
-                <h3 className={styles.h3}>📊 Активность по дням</h3>
-                <ActivityLineChart calendarData={stats.calendarData} />
+                <div className={styles.chartCard}>
+                  <h3 className={styles.h3}><LineChartOutlined /> Активность по дням</h3>
+                  <ActivityLineChart calendarData={stats.calendarData} />
+                </div>
               </div>
 
-              {/* Bar chart на всю ширину */}
+              {/* Topics */}
               <div className={styles.chartFull}>
-                <h3 className={styles.h3}>📚 По темам</h3>
-                <TopicBarChart byTopic={stats.byTopic} />
+                <div className={styles.chartCard}>
+                  <h3 className={styles.h3}><BookOutlined /> По темам</h3>
+                  <TopicBarChart byTopic={stats.byTopic} />
+                </div>
+              </div>
+
+              {/* Recent solved */}
+              <div className={styles.chartFull}>
+                <div className={styles.chartCard}>
+                  <h3 className={styles.h3}><ClockCircleOutlined /> Недавние решения</h3>
+                  {stats.lastSolved.length > 0 ? (
+                    <ul className={styles.list}>
+                      {stats.lastSolved.slice(0, 10).map((x) => (
+                        <li key={`${x.taskId}-${x.solvedAt}`}>
+                          <button type="button" className={styles.linkish} onClick={() => navigate(`/task/${x.taskId}`)}>
+                            {taskTitle(x.taskId)}
+                          </button>
+                          <span className={styles.muted}>
+                            {' '}· {x.difficulty} · {new Date(x.solvedAt).toLocaleString('ru-RU')}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className={styles.muted}>Пока нет решённых задач</p>
+                  )}
+                </div>
               </div>
             </div>
-          </>
-        )}
-      </section>
-
-      {/* Последние решения */}
-      <section className={styles.card}>
-        <h2 className={styles.h2}>🕐 Недавние решения</h2>
-        {stats && stats.lastSolved.length > 0 ? (
-          <ul className={styles.list}>
-            {stats.lastSolved.slice(0, 10).map((x) => (
-              <li key={`${x.taskId}-${x.solvedAt}`}>
-                <button
-                  type="button"
-                  className={styles.linkish}
-                  onClick={() => navigate(`/task/${x.taskId}`)}
-                >
-                  {taskTitle(x.taskId)}
-                </button>
-                <span className={styles.muted}>
-                  {' '}
-                  · {x.difficulty} · {new Date(x.solvedAt).toLocaleString('ru-RU')}
-                </span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className={styles.muted}>Пока нет решённых задач</p>
-        )}
-      </section>
-
-      {/* ---- Смена пароля ---- */}
-      <section className={styles.card}>
-        <h2 className={styles.h2}>Смена пароля</h2>
-        <ChangePasswordForm />
-      </section>
-
-      {/* ---- Удаление аккаунта ---- */}
-      <section className={styles.card}>
-        <h2 className={styles.h2}>Удаление аккаунта</h2>
-        <p className={styles.muted}>Это действие необратимо. Все данные будут удалены.</p>
-        {!showDelete ? (
-          <GlassButton onClick={() => setShowDelete(true)} className={styles.dangerBtn}>Удалить аккаунт</GlassButton>
-        ) : (
-          <form className={styles.form} onSubmit={handleDelete}>
-            <label className={styles.label}>
-              Текущий пароль
-              <input
-                className={styles.input}
-                type="password"
-                required
-                value={deletePwd}
-                onChange={(e) => setDeletePwd(e.target.value)}
-                autoComplete="current-password"
-              />
-            </label>
-            <label className={styles.label}>
-              Подтвердите пароль
-              <input
-                className={`${styles.input} ${deleteConfirm && !passwordMatch ? styles.inputError : ''}`}
-                type="password"
-                required
-                value={deleteConfirm}
-                onChange={(e) => setDeleteConfirm(e.target.value)}
-                autoComplete="current-password"
-              />
-              {deleteConfirm && !passwordMatch && (
-                <span className={styles.fieldError}>Пароли не совпадают</span>
-              )}
-            </label>
-            {deleteMsg && <p className={styles.error}>{deleteMsg}</p>}
-            <div className={styles.rowFlex}>
-              <GlassButton type="submit" className={styles.dangerBtn}>Удалить навсегда</GlassButton>
-              <GlassButton onClick={() => { setShowDelete(false); setDeletePwd(''); setDeleteConfirm(''); setDeleteMsg(null); }}>Отмена</GlassButton>
-            </div>
-          </form>
-        )}
+          )}
+        </div>
       </section>
     </>
   );
@@ -427,49 +352,11 @@ function ChangePasswordForm() {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <label className={styles.label}>
-        Текущий пароль
-        <input
-          className={styles.input}
-          type="password"
-          required
-          value={curPwd}
-          onChange={(e) => setCurPwd(e.target.value)}
-          autoComplete="current-password"
-        />
-      </label>
-      <label className={styles.label}>
-        Новый пароль
-        <input
-          className={styles.input}
-          type="password"
-          required
-          minLength={8}
-          value={newPwd}
-          onChange={(e) => setNewPwd(e.target.value)}
-          autoComplete="new-password"
-          placeholder="Минимум 8 символов, буквы + цифры"
-        />
-      </label>
-      <label className={styles.label}>
-        Подтвердите пароль
-        <input
-          className={`${styles.input} ${confirmPwd && !passwordsMatch ? styles.inputError : ''}`}
-          type="password"
-          required
-          minLength={8}
-          value={confirmPwd}
-          onChange={(e) => setConfirmPwd(e.target.value)}
-          autoComplete="new-password"
-        />
-        {confirmPwd && !passwordsMatch && (
-          <span className={styles.fieldError}>Пароли не совпадают</span>
-        )}
-      </label>
-      {pwdMsg && (
-        <p className={pwdMsg.includes('обновлён') ? styles.ok : styles.error}>{pwdMsg}</p>
-      )}
-      <GlassButton type="submit">Сохранить пароль</GlassButton>
+      <label className={styles.label}>Текущий пароль<input className={styles.input} type="password" required value={curPwd} onChange={(e) => setCurPwd(e.target.value)} autoComplete="current-password" /></label>
+      <label className={styles.label}>Новый пароль<input className={styles.input} type="password" required minLength={8} value={newPwd} onChange={(e) => setNewPwd(e.target.value)} autoComplete="new-password" placeholder="Минимум 8 символов, буквы + цифры" /></label>
+      <label className={styles.label}>Подтвердите пароль<input className={`${styles.input} ${confirmPwd && !passwordsMatch ? styles.inputError : ''}`} type="password" required minLength={8} value={confirmPwd} onChange={(e) => setConfirmPwd(e.target.value)} autoComplete="new-password" />{confirmPwd && !passwordsMatch && <span className={styles.fieldError}>Пароли не совпадают</span>}</label>
+      {pwdMsg && <p className={pwdMsg.includes('обновлён') ? styles.ok : styles.error}>{pwdMsg}</p>}
+      <GlassButton type="submit"><KeyOutlined /> Сохранить пароль</GlassButton>
     </form>
   );
 }
@@ -489,7 +376,6 @@ export function AccountPage() {
 
   const usernameValid = USERNAME_RE.test(username);
   const usernameTouched = username.length > 0;
-
   const apiOn = isApiConfigured();
 
   if (apiOn && !bootstrapDone) {
@@ -513,8 +399,7 @@ export function AccountPage() {
             Сервер авторизации не подключён. Для локальной работы создайте файл{' '}
             <code className={styles.code}>front/.env.local</code> с{' '}
             <code className={styles.code}>VITE_API_URL=http://localhost:3000</code>, запустите API из папки{' '}
-            <code className={styles.code}>server</code> (см. <code className={styles.code}>docs/COMMERCIAL_STACK_AUTH_AND_DEPLOY.md</code>
-            ).
+            <code className={styles.code}>server</code>.
           </p>
           <GlassButton onClick={() => navigate(-1)}>Назад</GlassButton>
         </main>
@@ -541,104 +426,25 @@ export function AccountPage() {
         {!accessToken ? (
           <section className={styles.card}>
             <div className={styles.tabs}>
-              <button
-                type="button"
-                className={`${styles.tab} ${mode === 'login' ? styles.tabActive : ''}`}
-                onClick={() => setMode('login')}
-              >
-                Вход
-              </button>
-              <button
-                type="button"
-                className={`${styles.tab} ${mode === 'register' ? styles.tabActive : ''}`}
-                onClick={() => setMode('register')}
-              >
-                Регистрация
-              </button>
+              <button type="button" className={`${styles.tab} ${mode === 'login' ? styles.tabActive : ''}`} onClick={() => setMode('login')}>Вход</button>
+              <button type="button" className={`${styles.tab} ${mode === 'register' ? styles.tabActive : ''}`} onClick={() => setMode('register')}>Регистрация</button>
             </div>
 
             {mode === 'login' ? (
               <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.label}>
-                  Email или логин
-                  <input
-                    className={styles.input}
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    autoComplete="username"
-                    placeholder="email@example.com или my_username"
-                  />
-                </label>
-                <label className={styles.label}>
-                  Пароль
-                  <input
-                    className={styles.input}
-                    type="password"
-                    required
-                    minLength={8}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="current-password"
-                  />
-                </label>
+                <label className={styles.label}>Email или логин<input className={styles.input} value={identifier} onChange={(e) => setIdentifier(e.target.value)} autoComplete="username" placeholder="email@example.com или my_username" /></label>
+                <label className={styles.label}>Пароль<input className={styles.input} type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" /></label>
                 {error && <p className={styles.error}>{error}</p>}
-                <GlassButton type="submit" disabled={loading}>
-                  {loading ? '…' : 'Войти'}
-                </GlassButton>
+                <GlassButton type="submit" disabled={loading}>{loading ? '…' : 'Войти'}</GlassButton>
               </form>
             ) : (
               <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.label}>
-                  Логин *
-                  <input
-                    className={`${styles.input} ${usernameTouched && !usernameValid ? styles.inputError : ''}`}
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
-                    autoComplete="username"
-                    placeholder="3–24 символа, a-z, 0-9, _"
-                    required
-                  />
-                  {usernameTouched && !usernameValid && (
-                    <span className={styles.fieldError}>3–24 символа, только a-z, 0-9, _</span>
-                  )}
-                </label>
-                <label className={styles.label}>
-                  Email *
-                  <input
-                    className={styles.input}
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="email"
-                  />
-                </label>
-                <label className={styles.label}>
-                  Пароль *
-                  <input
-                    className={styles.input}
-                    type="password"
-                    required
-                    minLength={8}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="new-password"
-                    placeholder="Минимум 8 символов, буквы + цифры"
-                  />
-                </label>
-                <label className={styles.label}>
-                  Имя (необязательно)
-                  <input
-                    className={styles.input}
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    autoComplete="nickname"
-                  />
-                </label>
+                <label className={styles.label}>Логин *<input className={`${styles.input} ${usernameTouched && !usernameValid ? styles.inputError : ''}`} value={username} onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))} autoComplete="username" placeholder="3–24 символа, a-z, 0-9, _" required />{usernameTouched && !usernameValid && <span className={styles.fieldError}>3–24 символа, только a-z, 0-9, _</span>}</label>
+                <label className={styles.label}>Email *<input className={styles.input} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></label>
+                <label className={styles.label}>Пароль *<input className={styles.input} type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" placeholder="Минимум 8 символов, буквы + цифры" /></label>
+                <label className={styles.label}>Имя (необязательно)<input className={styles.input} value={displayName} onChange={(e) => setDisplayName(e.target.value)} autoComplete="nickname" /></label>
                 {error && <p className={styles.error}>{error}</p>}
-                <GlassButton type="submit" disabled={loading || (usernameTouched && !usernameValid)}>
-                  {loading ? '…' : 'Зарегистрироваться'}
-                </GlassButton>
+                <GlassButton type="submit" disabled={loading || (usernameTouched && !usernameValid)}>{loading ? '…' : 'Зарегистрироваться'}</GlassButton>
               </form>
             )}
           </section>

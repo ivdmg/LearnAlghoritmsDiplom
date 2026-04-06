@@ -1,5 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import {
+  LineChartOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  FireOutlined,
+  TrophyOutlined,
+  LoginOutlined,
+  BarChartOutlined,
+} from '@ant-design/icons';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import { useMyStats } from '@/shared/hooks/use-my-stats';
@@ -18,10 +27,9 @@ export function TasksStatsSnippet() {
   if (!apiOn) {
     return (
       <section className={styles.card}>
-        <h3 className={styles.title}>Прогресс</h3>
+        <h3 className={styles.title}><BarChartOutlined /> Прогресс</h3>
         <p className={styles.muted}>
-          Укажите <code className={styles.code}>VITE_API_URL</code> и запустите сервер — здесь появится статистика
-          решённых задач.
+          Укажите <code className={styles.code}>VITE_API_URL</code> и запустите сервер — здесь появится статистика решённых задач.
         </p>
       </section>
     );
@@ -30,10 +38,10 @@ export function TasksStatsSnippet() {
   if (!accessToken) {
     return (
       <section className={styles.card}>
-        <h3 className={styles.title}>📊 Прогресс</h3>
+        <h3 className={styles.title}><BarChartOutlined /> Прогресс</h3>
         <p className={styles.muted}>Войдите в личный кабинет, чтобы сохранять и видеть статистику решённых задач.</p>
         <GlassButton type="button" className={styles.btn} onClick={() => navigate('/account')}>
-          Войти
+          <LoginOutlined /> Войти
         </GlassButton>
       </section>
     );
@@ -49,21 +57,39 @@ export function TasksStatsSnippet() {
     { name: 'Medium', value: medium },
     { name: 'Hard', value: hard },
   ];
+  const totalPieDiff = easy + medium + hard;
+
+  const pctStr = (val: number) => {
+    if (totalPieDiff === 0) return '0%';
+    return `${Math.round((val / totalPieDiff) * 100)}%`;
+  };
 
   return (
     <section className={styles.card}>
-      <h3 className={styles.title}>📊 Ваш прогресс</h3>
+      <h3 className={styles.title}><BarChartOutlined /> Ваш прогресс</h3>
+
       {loading && !stats ? (
         <p className={styles.muted}>Загрузка…</p>
       ) : (
         <>
-          <p className={styles.summary}>
-            Решено <strong>{solved}</strong> из <strong>{totalCatalog}</strong>
-          </p>
+          {/* Summary row */}
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryBig}>
+              <CheckCircleOutlined className={styles.checkIcon} />
+              Решено: <strong>{solved}</strong> / {totalCatalog}
+            </span>
+            {stats && stats.solvedTotal > 0 && (
+              <span className={styles.summaryPct}>
+                {Math.round((solved / totalCatalog) * 100)}% каталога
+              </span>
+            )}
+          </div>
+
           {solved > 0 ? (
             <>
+              {/* Donut chart */}
               <div className={styles.chartWrap}>
-                <ResponsiveContainer width="100%" height={140}>
+                <ResponsiveContainer width="100%" height={160}>
                   <PieChart>
                     <Pie
                       data={pieData}
@@ -71,32 +97,48 @@ export function TasksStatsSnippet() {
                       nameKey="name"
                       cx="50%"
                       cy="50%"
-                      innerRadius={38}
-                      outerRadius={55}
-                      paddingAngle={2}
+                      innerRadius={46}
+                      outerRadius={66}
+                      paddingAngle={3}
+                      stroke="none"
                     >
                       {pieData.map((_, i) => (
-                        <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="transparent" />
+                        <Cell key={i} fill={COLORS[i % COLORS.length]} />
                       ))}
                     </Pie>
                     <Tooltip formatter={(value) => [String(value ?? 0), '']} />
-                    <Legend
-                      formatter={(value: string) => (
-                        <span style={{ fontSize: 11, color: 'inherit' }}>{value}</span>
-                      )}
-                    />
                   </PieChart>
                 </ResponsiveContainer>
+                {/* Legend under chart */}
+                <div className={styles.pieLegend}>
+                  {pieData.map((d, i) => d.value > 0 && (
+                    <div key={d.name} className={styles.pieLegendItem}>
+                      <span className={styles.pieDot} style={{ backgroundColor: COLORS[i] }} />
+                      <span className={styles.pieName}>{d.name}</span>
+                      <span className={styles.pieVal}>{d.value} ({pctStr(d.value)})</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className={styles.kpiRow}>
-                {stats.streakDays > 0 && (
-                  <span className={styles.kpiBadge}>
-                    🔥 {stats.streakDays} {stats.streakDays === 1 ? 'день' : stats.streakDays < 5 ? 'дня' : 'дней'}
-                  </span>
-                )}
-                <span className={styles.kpiBadge}>
-                  ⚡ {stats.firstAttemptRate > 0 ? `${Math.round(stats.firstAttemptRate)}%` : '0%'} с 1-й попытки
-                </span>
+
+              {/* KPI badges */}
+              <div className={styles.kpiGrid}>
+                <div className={styles.kpiItem}>
+                  <FireOutlined style={{ color: '#f97316' }} />
+                  <span>{stats.streakDays} {stats.streakDays === 1 ? 'день' : stats.streakDays < 5 ? 'дня' : 'дней'}</span>
+                </div>
+                <div className={styles.kpiItem}>
+                  <ClockCircleOutlined style={{ color: '#60a5fa' }} />
+                  <span>{stats.firstAttemptRate > 0 ? `${Math.round(stats.firstAttemptRate)}%` : '0%'} с 1-й попытки</span>
+                </div>
+                <div className={styles.kpiItem}>
+                  <TrophyOutlined style={{ color: '#f59e0b' }} />
+                  <span>Рекорд серии: {stats.longestStreak || '—'}</span>
+                </div>
+                <div className={styles.kpiItem}>
+                  <LineChartOutlined style={{ color: '#a78bfa' }} />
+                  <span>7 дней: {stats.solvedLast7 ?? 0}</span>
+                </div>
               </div>
             </>
           ) : (

@@ -38,7 +38,7 @@ export function ActivityLineChart({ calendarData }: Props) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
   return (
-    <ResponsiveContainer width="100%" height={180}>
+    <ResponsiveContainer width="100%" height={220}>
       <AreaChart
         data={data}
         margin={{ top: 10, right: 10, left: 0, bottom: 0 }}

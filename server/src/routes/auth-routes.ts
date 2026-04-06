@@ -14,18 +14,6 @@ import { requireAuth, type AuthedRequest } from '../auth/guard.js';
 
 const SALT_ROUNDS = 10;
 
-/** Отправка с проверкой на unique-violation, fallback на 500 */
-function sendWithUniqueFallback(reply: FastifyReply, err: unknown) {
-  const meta = (err as { meta?: { target?: string[] } })?.meta;
-  if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002') {
-    if (meta?.target?.includes('username'))
-      return reply.status(409).send({ error: 'Это имя пользователя уже занято' });
-    if (meta?.target?.includes('email'))
-      return reply.status(409).send({ error: 'Этот email уже зарегистрирован' });
-  }
-  return reply.status(500).send({ error: 'Внутренняя ошибка сервера' });
-}
-
 /** Выдать пару токенов и установить httpOnly cookie refresh-токена */
 async function issueTokens(userId: string, email: string, reply: FastifyReply) {
   const accessToken = signAccess({ sub: userId, email });
@@ -84,6 +72,7 @@ export async function registerAuthRoutes(app: FastifyInstance) {
         });
 
         const accessToken = await issueTokens(user.id, user.email, reply);
+        app.log.info({ msg: 'auth:register', userId: user.id, username: user.username });
         return reply.send(authResponse(accessToken, user));
       } catch (err) {
         if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002') {
@@ -93,7 +82,7 @@ export async function registerAuthRoutes(app: FastifyInstance) {
           if (meta?.target?.includes('email'))
             return reply.status(409).send({ error: 'Этот email уже зарегистрирован' });
         }
-        app.log.error(err);
+        app.log.error({ msg: 'auth:register:error', err });
         return reply.status(500).send({ error: 'Внутренняя ошибка сервера' });
       }
     },
@@ -116,15 +105,18 @@ export async function registerAuthRoutes(app: FastifyInstance) {
       });
 
       if (!user) {
+        app.log.warn({ msg: 'auth:login:fail', identifier, reason: 'user_not_found' });
         return reply.status(401).send({ error: 'Неверный логин/email или пароль' });
       }
 
       const ok = await bcrypt.compare(password, user.passwordHash);
       if (!ok) {
+        app.log.warn({ msg: 'auth:login:fail', userId: user.id, reason: 'wrong_password' });
         return reply.status(401).send({ error: 'Неверный логин/email или пароль' });
       }
 
       const accessToken = await issueTokens(user.id, user.email, reply);
+      app.log.info({ msg: 'auth:login:ok', userId: user.id });
       return reply.send(authResponse(accessToken, user));
     },
   );
@@ -165,6 +157,7 @@ export async function registerAuthRoutes(app: FastifyInstance) {
       await prisma.refreshSession.deleteMany({ where: { tokenHash } });
     }
     reply.clearCookie(config.cookieName, { path: '/' });
+    app.log.info({ msg: 'auth:logout' });
     return reply.send({ ok: true });
   });
 
@@ -194,6 +187,7 @@ export async function registerAuthRoutes(app: FastifyInstance) {
       await prisma.user.update({ where: { id: user.id }, data: { passwordHash } });
       await prisma.refreshSession.deleteMany({ where: { userId: user.id } });
       reply.clearCookie(config.cookieName, { path: '/' });
+      app.log.info({ msg: 'auth:password:changed', userId: user.id });
       return reply.send({ ok: true, message: 'Пароль обновлён. Войдите снова.' });
     },
   );

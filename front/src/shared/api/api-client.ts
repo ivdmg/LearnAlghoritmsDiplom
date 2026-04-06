@@ -7,6 +7,31 @@ export class ApiNotConfiguredError extends Error {
   }
 }
 
+export class ApiServerError extends Error {
+  public readonly status: number;
+  constructor(status: number) {
+    super('Сервер недоступен');
+    this.name = 'ApiServerError';
+    this.status = status;
+  }
+}
+
+export class ApiNetworkError extends Error {
+  constructor() {
+    super('Проверьте соединение');
+    this.name = 'ApiNetworkError';
+  }
+}
+
+/**
+ * Централизованный wrapper для вызовов API.
+ * - Network error → ApiNetworkError
+ * - 5xx → ApiServerError
+ * - Остальное (401, 400, 422 и т.д.) → Response для обработки вызывающим
+ *
+ * 401 НЕ бросает ошибку — это ожидаемый ответ (например, при истёкшем access token),
+ * вызывающий сам решает: refresh-ить или logout.
+ */
 export async function apiFetch(
   path: string,
   options: RequestInit & { accessToken?: string | null } = {},
@@ -26,9 +51,20 @@ export async function apiFetch(
     headers.set('Content-Type', 'application/json');
   }
 
-  return fetch(`${base}${path}`, {
-    ...options,
-    headers,
-    credentials: 'include',
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${base}${path}`, {
+      ...options,
+      headers,
+      credentials: 'include',
+    });
+  } catch {
+    throw new ApiNetworkError();
+  }
+
+  if (response.status >= 500) {
+    throw new ApiServerError(response.status);
+  }
+
+  return response;
 }

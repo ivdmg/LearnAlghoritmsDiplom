@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selector';
@@ -13,16 +13,39 @@ import {
   updateProfile,
 } from '@/shared/store/slices/auth-slice';
 import { isApiConfigured } from '@/shared/config/api-url';
-import { useMyStats } from '@/shared/hooks/use-my-stats';
+import { useMyStats, type MyStats } from '@/shared/hooks/use-my-stats';
 import { TASKS } from '@/entities/task';
+import { StatsKPI } from '@/widgets/stats-kpi';
+import { CalendarHeatmap, DifficultyPie, TopicBarChart, ActivityLineChart } from '@/widgets/stats-dashboard/ui/charts';
 import styles from './account-page.module.css';
 
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
 
+type UserShape = {
+  id: string;
+  email: string;
+  username: string | null;
+  displayName: string | null;
+};
+
 /** Секция профиля (чтобы не дублировать состояние на каждый rerender) */
-function ProfileSection({ user }: { user: { id: string; email: string; username: string | null; displayName: string | null; createdAt?: string } }) {
+function ProfileSection({
+  user,
+  stats,
+  statsLoading,
+  reload,
+  navigate,
+}: {
+  user: UserShape;
+  stats: MyStats | null;
+  statsLoading: boolean;
+  reload: () => void;
+  navigate: NavigateFunction;
+}) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+
+  const taskTitle = (id: string) => TASKS.find((t) => t.id === id)?.title ?? id;
+
   // Редактирование displayName
   const [editName, setEditName] = useState(false);
   const [displayName, setDisplayName] = useState(user.displayName ?? '');
@@ -253,6 +276,77 @@ function ProfileSection({ user }: { user: { id: string; email: string; username:
         </div>
       </section>
 
+      {/* ---- Статистика ---- */}
+      <section className={styles.card}>
+        <div className={styles.statsHeader}>
+          <h2 className={styles.h2}>Статистика задач</h2>
+          <GlassButton type="button" onClick={() => reload()}>
+            Обновить
+          </GlassButton>
+        </div>
+        {statsLoading && <p className={styles.muted}>Загрузка…</p>}
+        {stats && (
+          <>
+            <StatsKPI stats={stats} />
+
+            {/* Графики */}
+            <div className={styles.chartsGrid}>
+              {/* Heatmap на всю ширину */}
+              <div className={styles.chartFull}>
+                <h3 className={styles.h3}>🗓️ Календарь активности</h3>
+                <CalendarHeatmap data={stats.calendarData} />
+              </div>
+
+              {/* Donut + Line */}
+              <div className={styles.chartCol}>
+                <h3 className={styles.h3}>🎯 По сложности</h3>
+                <DifficultyPie
+                  easy={stats.byDifficulty.easy ?? 0}
+                  medium={stats.byDifficulty.medium ?? 0}
+                  hard={stats.byDifficulty.hard ?? 0}
+                />
+              </div>
+              <div className={styles.chartCol}>
+                <h3 className={styles.h3}>📊 Активность по дням</h3>
+                <ActivityLineChart calendarData={stats.calendarData} />
+              </div>
+
+              {/* Bar chart на всю ширину */}
+              <div className={styles.chartFull}>
+                <h3 className={styles.h3}>📚 По темам</h3>
+                <TopicBarChart byTopic={stats.byTopic} />
+              </div>
+            </div>
+          </>
+        )}
+      </section>
+
+      {/* Последние решения */}
+      <section className={styles.card}>
+        <h2 className={styles.h2}>🕐 Недавние решения</h2>
+        {stats && stats.lastSolved.length > 0 ? (
+          <ul className={styles.list}>
+            {stats.lastSolved.slice(0, 10).map((x) => (
+              <li key={`${x.taskId}-${x.solvedAt}`}>
+                <button
+                  type="button"
+                  className={styles.linkish}
+                  onClick={() => navigate(`/task/${x.taskId}`)}
+                >
+                  {taskTitle(x.taskId)}
+                </button>
+                <span className={styles.muted}>
+                  {' '}
+                  · {x.difficulty} · {new Date(x.solvedAt).toLocaleString('ru-RU')}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className={styles.muted}>Пока нет решённых задач</p>
+        )}
+      </section>
+
       {/* ---- Смена пароля ---- */}
       <section className={styles.card}>
         <h2 className={styles.h2}>Смена пароля</h2>
@@ -264,7 +358,7 @@ function ProfileSection({ user }: { user: { id: string; email: string; username:
         <h2 className={styles.h2}>Удаление аккаунта</h2>
         <p className={styles.muted}>Это действие необратимо. Все данные будут удалены.</p>
         {!showDelete ? (
-          <GlassButton onClick={() => setShowDelete(true)}>Удалить аккаунт</GlassButton>
+          <GlassButton onClick={() => setShowDelete(true)} className={styles.dangerBtn}>Удалить аккаунт</GlassButton>
         ) : (
           <form className={styles.form} onSubmit={handleDelete}>
             <label className={styles.label}>
@@ -294,7 +388,7 @@ function ProfileSection({ user }: { user: { id: string; email: string; username:
             </label>
             {deleteMsg && <p className={styles.error}>{deleteMsg}</p>}
             <div className={styles.rowFlex}>
-              <GlassButton type="submit">Удалить навсегда</GlassButton>
+              <GlassButton type="submit" className={styles.dangerBtn}>Удалить навсегда</GlassButton>
               <GlassButton onClick={() => { setShowDelete(false); setDeletePwd(''); setDeleteConfirm(''); setDeleteMsg(null); }}>Отмена</GlassButton>
             </div>
           </form>
@@ -397,8 +491,6 @@ export function AccountPage() {
   const usernameTouched = username.length > 0;
 
   const apiOn = isApiConfigured();
-
-  const taskTitle = (id: string) => TASKS.find((t) => t.id === id)?.title ?? id;
 
   if (apiOn && !bootstrapDone) {
     return (
@@ -551,60 +643,9 @@ export function AccountPage() {
             )}
           </section>
         ) : (
-          <>
-            {user && <ProfileSection user={user} />}
-
-            <section className={styles.card}>
-              <div className={styles.statsHeader}>
-                <h2 className={styles.h2}>Статистика задач</h2>
-                <GlassButton type="button" onClick={() => void reload()}>
-                  Обновить
-                </GlassButton>
-              </div>
-              {statsLoading && <p className={styles.muted}>Загрузка…</p>}
-              {stats && (
-                <>
-                  <p className={styles.bigStat}>
-                    Решено: <strong>{stats.solvedTotal}</strong> из {TASKS.length}
-                  </p>
-                  <p className={styles.row}>
-                    Easy / Medium / Hard:{' '}
-                    <strong>
-                      {stats.byDifficulty.easy ?? 0} / {stats.byDifficulty.medium ?? 0} /{' '}
-                      {stats.byDifficulty.hard ?? 0}
-                    </strong>
-                  </p>
-                  <p className={styles.row}>
-                    Серия дней (streak): <strong>{stats.streakDays}</strong>
-                  </p>
-                  {stats.firstSolvedAt && (
-                    <p className={styles.row}>
-                      Первое решение:{' '}
-                      {new Date(stats.firstSolvedAt).toLocaleDateString('ru-RU')}
-                    </p>
-                  )}
-                  <h3 className={styles.h3}>Недавние</h3>
-                  <ul className={styles.list}>
-                    {stats.lastSolved.slice(0, 8).map((x) => (
-                      <li key={`${x.taskId}-${x.solvedAt}`}>
-                        <button
-                          type="button"
-                          className={styles.linkish}
-                          onClick={() => navigate(`/task/${x.taskId}`)}
-                        >
-                          {taskTitle(x.taskId)}
-                        </button>
-                        <span className={styles.muted}>
-                          {' '}
-                          · {x.difficulty} · {new Date(x.solvedAt).toLocaleString('ru-RU')}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
-            </section>
-          </>
+          user && (
+            <ProfileSection user={user} stats={stats} statsLoading={statsLoading} reload={reload} navigate={navigate} />
+          )
         )}
       </main>
     </div>

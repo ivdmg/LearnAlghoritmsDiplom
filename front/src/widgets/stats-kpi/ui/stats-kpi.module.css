@@ -1,0 +1,73 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme='light'] .card {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+.label {
+  font-size: 0.75rem;
+  color: rgba(229, 231, 235, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme='light'] .label {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.valueStreak {
+  color: #f97316;
+}
+
+.valueTotal {
+  color: #8b5cf6;
+}
+
+.valueRate {
+  color: #4ade80;
+}
+
+.valueDays {
+  color: #60a5fa;
+}
+
+.valueLongest {
+  color: #f59e0b;
+}
+
+.valueRecent {
+  color: #ec4899;
+}

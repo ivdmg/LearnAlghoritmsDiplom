@@ -30,8 +30,8 @@ export function TasksStatsSnippet() {
   if (!accessToken) {
     return (
       <section className={styles.card}>
-        <h3 className={styles.title}>Прогресс</h3>
-        <p className={styles.muted}>Войдите в личный кабинет, чтобы сохранять и видеть статистику.</p>
+        <h3 className={styles.title}>📊 Прогресс</h3>
+        <p className={styles.muted}>Войдите в личный кабинет, чтобы сохранять и видеть статистику решённых задач.</p>
         <GlassButton type="button" className={styles.btn} onClick={() => navigate('/account')}>
           Войти
         </GlassButton>
@@ -52,7 +52,7 @@ export function TasksStatsSnippet() {
 
   return (
     <section className={styles.card}>
-      <h3 className={styles.title}>Ваш прогресс</h3>
+      <h3 className={styles.title}>📊 Ваш прогресс</h3>
       {loading && !stats ? (
         <p className={styles.muted}>Загрузка…</p>
       ) : (
@@ -60,32 +60,47 @@ export function TasksStatsSnippet() {
           <p className={styles.summary}>
             Решено <strong>{solved}</strong> из <strong>{totalCatalog}</strong>
           </p>
-          {solved > 0 && (
-            <div className={styles.chartWrap}>
-              <ResponsiveContainer width="100%" height={160}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={44}
-                    outerRadius={62}
-                    paddingAngle={2}
-                  >
-                    {pieData.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="transparent" />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => [String(value ?? 0), '']} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          )}
-          {stats && stats.streakDays > 0 && (
-            <p className={styles.streak}>Серия дней: {stats.streakDays}</p>
+          {solved > 0 ? (
+            <>
+              <div className={styles.chartWrap}>
+                <ResponsiveContainer width="100%" height={140}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={38}
+                      outerRadius={55}
+                      paddingAngle={2}
+                    >
+                      {pieData.map((_, i) => (
+                        <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="transparent" />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => [String(value ?? 0), '']} />
+                    <Legend
+                      formatter={(value: string) => (
+                        <span style={{ fontSize: 11, color: 'inherit' }}>{value}</span>
+                      )}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className={styles.kpiRow}>
+                {stats.streakDays > 0 && (
+                  <span className={styles.kpiBadge}>
+                    🔥 {stats.streakDays} {stats.streakDays === 1 ? 'день' : stats.streakDays < 5 ? 'дня' : 'дней'}
+                  </span>
+                )}
+                <span className={styles.kpiBadge}>
+                  ⚡ {stats.firstAttemptRate > 0 ? `${Math.round(stats.firstAttemptRate)}%` : '0%'} с 1-й попытки
+                </span>
+              </div>
+            </>
+          ) : (
+            <p className={styles.hint}>Решите хотя бы одну задачу — здесь появится диаграмма</p>
           )}
         </>
       )}

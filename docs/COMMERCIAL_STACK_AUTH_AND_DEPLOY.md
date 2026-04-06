@@ -1,237 +1,342 @@
-# Коммерческий запуск: авторизация, БД, бесплатный стек и деплой
+# AlgoLearn — Архитектура, запуск и деплой
 
-Цель: спроектировать **личный кабинет** с **надёжной** (для старта) авторизацией и статистикой задач, **минимизируя платежи** на этапе запуска, **не ломая** текущее приложение (контент и задачи продолжают работать из репозитория/`db.json`, пока API не подключён).
+> Сервис для изучения алгоритмов и структур данных с интерактивным roadmap, статьями, задачами (Pyodide) и личным кабинетом со статистикой.
 
 ---
 
-## Реализовано в репозитории (локально)
+## 1. Архитектура проекта
 
-| Часть | Где |
-|--------|-----|
-| API (Fastify, SQLite через Prisma) | папка `server/` |
-| Регистрация / вход / refresh cookie / logout / смена пароля | `POST /auth/*`, см. `server/src/routes/auth-routes.ts` |
-| Профиль и статистика | `GET /me`, `GET /me/stats`, `POST /me/progress/solved` |
-| Фронт: Redux `auth`, bootstrap сессии | `front/src/shared/store/slices/auth-slice.ts`, `AuthBootstrap` в `app/index.tsx` |
-| Страница `/account` | `front/src/pages/account/` |
-| Иконка профиля в хедере | `widgets/app-header` |
-| Виджет на `/tasks` (donut + кнопка в ЛК) | `widgets/tasks-stats-snippet` |
-| Сохранение «решено» после успешных тестов Pyodide | `pages/task/index.tsx` (только если задан `VITE_API_URL` и пользователь залогинен) |
-| Запуск проверки кода на странице задачи | Если задан `VITE_API_URL`, кнопка «Запустить» активна только после входа (статистика); без API — запуск как раньше без логина |
+```
+┌─────────────────────────────────────────────────┐
+│                 ФРОНТЕНД (:5173)                │
+│  React 19 + TS + Vite 7 + Redux + FSD          │
+│                                                   │
+│  ┌─────────┐ ┌──────────┐ ┌───────────────┐     │
+│  │ Roadmap │ │  Tasks   │ │   Task Page   │     │
+│  │ (статьи)│ │ (список) │ │ (Pyodide + UI)│     │
+│  └─────────┘ └──────────┘ └───────────────┘     │
+│  ┌──────────────────────────────┐              │
+│  │   Account Page (дашборд)      │              │
+│  │   KPI + Heatmap + Charts     │              │
+│  └──────────────────────────────┘              │
+└─────────┬──────────────────────┬──────────────┘
+          │                      │
+   /content-api            VITE_API_URL
+          │                      │
+┌─────────▼──────────┐  ┌───────────────────────┐
+│  CONTENT API (:3001) │  │   API SERVER (:3000)  │
+│  json-server        │  │  Fastify 5 + Prisma 6 │
+│  db.json            │  │                       │
+│  Статьи + Задачи    │  │  ┌─────────────────┐  │
+│                    │  │  │  SQLite (dev)   │  │
+│                    │  │  │  PostgreSQL(pg) │  │
+│                    │  │  └─────────────────┘  │
+└────────────────────┘  └───────────────────────┘
+```
 
-**Без `VITE_API_URL`** фронт не ходит в API: roadmap, статьи, список задач и **запуск Pyodide** работают как раньше, без логина.
+### Порты
 
-### Локальный запуск
+| Сервис | Порт | Назначение |
+|--------|------|------------|
+| Frontend (Vite dev) | `:5173` | SPA, React |
+| API Server (Fastify) | `:3000` | Auth, stats, profile |
+| Content API (json-server) | `:3001` | Статьи, задачи |
 
-1. **Сервер** (из корня репозитория или из `server/`):
+### Безопасность авторизации
 
-   ```bash
-   cd server
-   cp .env.example .env
-   npm install
-   npx prisma migrate deploy
-   npm run dev
+- **Access JWT** — 15 мин TTL, передаётся в `Authorization: Bearer`
+- **Refresh Token** — 14 дней, хранится в `httpOnly`, `Secure`, `SameSite=lax` cookie
+- Пароли хешированы через **bcrypt** (salt rounds: 10)
+- Rate limiting: **300 req/мин** на все endpoints
+
+---
+
+## 2. Структура фронтенда (FSD)
+
+```
+front/src/
+├── app/                  # Инициализация приложения
+│   ├── index.tsx         # Корневой компонент, провайдеры
+│   └── router/           # React Router конфигурация
+│
+├── pages/                # Страницы (маршруты)
+│   ├── account/          # /account — личный кабинет
+│   ├── tasks/            # /tasks — список задач
+│   ├── task/             # /task/:id — страница задачи
+│   ├── roadmap/          # /roadmap — roadmap со статьями
+│   └── react-flow-roadmap/  # Интерактивная визуализация
+│
+├── widgets/              # Композитные блоки
+│   ├── app-header/       # Шапка приложения
+│   ├── topic-sidebar/    # Сайдбар с темой
+│   ├── tasks-stats-snippet/  # Виджет статистики на TasksPage
+│   ├── stats-dashboard/  # Графики в ЛК (Recharts)
+│   └── stats-kpi/        # KPI-карточки в ЛК
+│
+├── entities/             # Доменные модели
+│   ├── article/          # Статьи (useArticleByTopic)
+│   ├── task/             # Задачи (types, data, hooks)
+│   └── roadmap/          # Roadmap данные
+│
+├── features/             # Пользовательские действия (будущее)
+│
+└── shared/               # Переиспользуемый код
+    ├── api/              # api-client.ts (fetch wrapper)
+    ├── config/           # Конфигурация (URLs)
+    ├── lib/              # Утилиты (hooks)
+    ├── store/            # Redux store + slices
+    └── ui/               # UI-компоненты (GlassButton, etc.)
+```
+
+**Правила слоёв FSD:**
+- `app` → только провайдеры, роутер, конфиг
+- `pages` → только страницы (импортируют из `widgets`/`entities`/`shared`)
+- `widgets` → композитные блоки (импортируют из `entities`/`shared`)
+- `entities` → доменные модели (импортируют из `shared`)
+- `shared` → переиспользуемый код (никогда не импортирует из вышестоящих слоёв)
+
+---
+
+## 3. Переменные окружения
+
+### Frontend (`front/.env.local`)
+
+```env
+# URL API сервера (auth, статистика, прогресс)
+VITE_API_URL=http://localhost:3000
+
+# URL контент API (статьи, задачи из db.json)
+# В dev: не задавайте — запросы идут через Vite proxy /content-api → localhost:3001
+# В prod: укажите URL json-server, например http://your-domain:3001
+# Пустая строка = только встроенные TASKS/THEORIES (без API)
+# VITE_CONTENT_API_URL=
+```
+
+### Backend (`server/.env`)
+
+```env
+# ===== БАЗА ДАННЫХ =====
+# Локальная разработка (SQLite)
+DATABASE_URL="file:./dev.db"
+
+# Продакшен (PostgreSQL): раскомментируйте
+# DATABASE_URL="postgresql://user:password@host:5432/dbname?schema=public&sslmode=require"
+
+# ===== СЕРВЕР =====
+PORT=3000
+# Разделённый запятыми список допустимых фронтенд-орижинов
+CORS_ORIGINS=http://localhost:5173
+
+# ===== JWT =====
+# Генерация: node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+JWT_ACCESS_SECRET=local_dev_access_secret_change_me_32chars_min
+JWT_REFRESH_SECRET=local_dev_refresh_secret_change_me_32chars_m
+
+# ===== ОПЦИОНАЛЬНО =====
+# NODE_ENV=production   # для prod-режима (secure cookie, логирование)
+# LOG_LEVEL=info        # 'debug' (dev) или 'info' / 'warn' / 'error'
+```
+
+---
+
+## 4. API Endpoints
+
+### Auth
+
+| Метод | Путь | Body | Ответ | Описание |
+|-------|------|------|-------|----------|
+| POST | `/auth/register` | `{ email, password, username, displayName? }` | `{ accessToken, user }` | Регистрация нового пользователя |
+| POST | `/auth/login` | `{ identifier: email\|username, password }` | `{ accessToken, user }` | Вход по email или username |
+| POST | `/auth/refresh` | (cookie: refreshToken) | `{ accessToken, user }` | Обновление access токена |
+| POST | `/auth/logout` | — | `{ ok }` | Выход (очистка cookie) |
+| POST | `/auth/password` | `{ currentPassword, newPassword }` | `{ ok, message }` | Смена пароля |
+
+### Profile & Stats (требуют авторизации)
+
+| Метод | Путь | Body | Ответ | Описание |
+|-------|------|------|-------|----------|
+| GET | `/me` | — | `{ user }` | Данные текущего пользователя |
+| PUT | `/me/profile` | `{ displayName?, username?, email?, currentPassword? }` | `{ user }` | Обновление профиля |
+| DELETE | `/me/account` | `{ currentPassword }` | `{ ok }` | Удаление аккаунта (CASCADE) |
+| GET | `/me/stats` | — | `{ solvedTotal, byDifficulty, byTopic, lastSolved, streakDays, longestStreak, firstSolvedAt, totalAttempts, firstAttemptRate, solvedLast7, solvedLast30, calendarData }` | Полная статистика |
+| POST | `/me/progress/solved` | `{ taskId, difficulty, topicId? }` | `{ ok }` | Отметить задачу решённой |
+
+### Health
+
+| Метод | Путь | Ответ | Описание |
+|-------|------|-------|----------|
+| GET | `/health` | `{ ok: true }` | Проверка работоспособности |
+
+---
+
+## 5. Первый запуск (локально)
+
+### Предусловия
+- Node.js 20+ установлен
+- npm установлен
+
+### Сервер
+
+```bash
+cd server
+cp .env.example .env
+npm install
+npx prisma migrate deploy    # Применить миграции
+npm run dev                  # Запуск на :3000
+```
+
+### Контент API (json-server)
+
+```bash
+cd front
+npm run mock:server          # Запуск на :3001
+# или: npx json-server --watch ../db.json --port 3001
+```
+
+### Фронтенд
+
+```bash
+cd front
+cp .env.local.example .env.local
+npm install
+npm run dev                  # Запуск на :5173
+```
+
+Откройте `http://localhost:5173`, перейдите на `/account` и зарегистрируйтесь.
+
+---
+
+## 6. План деплоя (бесплатные хостинги)
+
+### Рекомендуемый стек: $0
+
+| Слой | Провайдер | Бесплатный лимит |
+|------|-----------|------------------|
+| **База данных** | [Neon](https://neon.tech) | 0.5 GB, serverless, scale-to-zero |
+| **API сервер** | [Render](https://render.com) Web Service | 512 MB, 0.1 CPU, засыпает после простоя |
+| **API сервер (альт.)** | [Fly.io](https://fly.io) | 3 shared VMs, 256 MB RAM |
+| **Фронтенд** | [Cloudflare Pages](https://pages.cloudflare.com) / [Vercel](https://vercel.com) / [Netlify](https://netlify.com) | Безлимитные сборки, custom domain |
+| **Контент** | json-server на том же Render/Fly | Или статический fallback на фронте |
+
+### Шаги деплоя
+
+#### 1. База данных — Neon
+
+1. Создать аккаунт на Neon.tech
+2. Создать новый проект → скопировать connection string
+3. Установить в `server/.env`:
    ```
-
-   API: `http://localhost:3000`, health: `GET /health`.
-
-2. **Фронт:**
-
-   ```bash
-   cd front
-   cp .env.local.example .env.local
-   npm run dev
+   DATABASE_URL="postgresql://user:pass@ep-xxx.region.aws.neon.tech/neondb?sslmode=require"
    ```
+4. `npx prisma generate` и `npx prisma migrate deploy`
 
-3. Откройте `/account`, зарегистрируйтесь, решите задачу с зелёными тестами — запись уйдёт в БД (`server/prisma/dev.db` при `DATABASE_URL=file:./dev.db`).
+#### 2. API сервер — Render
 
-**Деплой** (Neon, Render и т.д.) — позже; для продакшена смените секреты JWT и при необходимости `provider` в `schema.prisma` на `postgresql`.
+1. Создать Web Service, подключить GitHub репозиторий
+2. Build command: `cd server && npm install && npx prisma generate && npm run build`
+3. Start command: `cd server && node dist/index.js`
+4. Environment Variables:
+   - `DATABASE_URL` — из Neon
+   - `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` — сгенерированные секреты
+   - `NODE_ENV=production`
+   - `CORS_ORIGINS=https://your-domain.com`
 
----
+#### 3. Фронтенд — Vercel/Cloudflare Pages
 
-## 1. Рекомендуемый стек (Node.js + PostgreSQL)
+1. Подключить репозиторий
+2. Build command: `cd front && npm install && vite build`
+3. Output directory: `front/dist`
+4. Environment Variables:
+   - `VITE_API_URL=https://your-api.onrender.com`
+   - `VITE_CONTENT_API_URL=` (пусто для статического контента)
 
-| Слой | Технология | Зачем |
-|------|------------|--------|
-| **Backend** | **Node.js** (TypeScript) + **Fastify** или **Express** | Один язык с экосистемой, проще нанять/поддерживать; достаточно для REST API и будущих webhook’ов. |
-| **ORM / миграции** | **Drizzle** или **Prisma** | Типобезопасность, миграции, Postgres «из коробки». |
-| **БД** | **PostgreSQL** | Подходит под пользователей, прогресс, будущие статьи/задачи из БД, отчёты, целостность по FK. Бесплатные managed-инстансы — ниже. |
-| **Auth** | **Email + пароль** + **JWT (access)** + **refresh в httpOnly cookie** | Надёжная классика для своего бэка; OAuth (Google и т.д.) можно **добавить вторым шагом** без смены БД. |
-| **Хеш пароля** | **Argon2id** (предпочтительно) или **bcrypt** | Не хранить пароли в открытом виде; в Node популярны `argon2` / `bcrypt`. |
+#### 4. Миграции (после деплоя)
 
-**Почему не только JWT в `localStorage`:** удобно, но уязвимее к XSS. Для коммерции лучше: **короткоживущий access JWT** (память или заголовок) + **refresh в httpOnly, Secure, SameSite cookie** — баланс удобства и риска.
+```bash
+# Локально, указав production DATABASE_URL
+cd server
+DATABASE_URL="postgresql://..." npx prisma migrate deploy
+```
 
-**OAuth (Google и др.):** хорош для конверсии «в один клик». На старте можно отложить: нужны client id/secret, redirect URI, политика конфиденциальности. Технически укладывается в ту же таблицу `users` + `provider` / `provider_user_id` (nullable).
+### Переход с SQLite на PostgreSQL
 
----
+В `server/prisma/schema.prisma` изменить:
+```diff
+- provider = "sqlite"
++ provider = "postgresql"
+```
 
-## 2. Максимально бесплатно на старте: что взять с интернета
-
-Цены и лимиты меняются — перед выбором проверьте актуальные страницы pricing.
-
-### База данных (PostgreSQL)
-
-- **Neon** — serverless Postgres, часто **без карты** на free tier, небольшой объём, **scale-to-zero** (экономит деньги, первый запрос после простоя может быть медленнее).
-- **Supabase** — Postgres + по желанию готовая Auth/Storage; free tier ограничен, но удобен, если не хотите писать всё auth с нуля.
-- **Render** — в прошлом предлагал бесплатный Postgres с ограничениями (в т.ч. срок жизни инстанса на free — **уточнять в docs**).
-
-**Вывод:** для «почти бесплатно» **Neon + свой Node API** или **Supabase (Postgres + опционально GoTrue Auth)** — два рабочих пути.
-
-### Frontend (уже Vite/React)
-
-- **Cloudflare Pages**, **Netlify**, **Vercel** — бесплатные уровни для статики/SPA; подключить **custom domain** часто бесплатно на базовом уровне.
-
-### Backend API (Node)
-
-- **Render** (Web Service) — бесплатный tier с **засыпанием** после простоя → первый запрос после паузы **десятки секунд**; для продакшена с платящими пользователями позже лучше платный always-on или Fly.io с запасом по free allowance.
-- **Fly.io** — есть **free ресурсы** (лимиты по CPU/RAM); подходит для небольшого API.
-- **Railway** — чаще **кредиты/платёж**, не рассчитывать как «вечно $0» без проверки.
-
-**Вывод:** старт «$0»: **Neon + API на Render/Fly** + **фронт на Pages/Netlify/Vercel**. Учитывать cold start; для API можно держать бесплатный «пинг» только в dev — в проде лучче eventually платить за отсутствие sleep.
+Затем `npx prisma generate` и `npx prisma migrate deploy`.
 
 ---
 
-## 3. Проектирование БД (пользователи и прогресс)
+## 7. Логирование
 
-Ниже — логическая модель. Имена таблиц/полей можно адаптировать под ORM.
+Сервер использует **pino** + **pino-pretty** (dev) для структурированного логирования:
 
-### `users`
+- **info** — все входящие запросы, завершение, auth события (login/register/logout)
+- **warn** — неудачные попытки входа (user_not_found, wrong_password)
+- **error** — внутренние ошибки сервера
+- **debug** — детальный вывод (режим разработки)
 
-| Поле | Тип | Комментарий |
-|------|-----|-------------|
-| `id` | `uuid`, PK | |
-| `email` | `citext` + UNIQUE | Нормализовать lower case при записи. |
-| `password_hash` | `text` | Только hash (argon2/bcrypt); для OAuth-only позже можно NULL + запрет локального логина. |
-| `display_name` | `text`, nullable | |
-| `email_verified_at` | `timestamptz`, nullable | На бесплатном старте можно `NULL` и не слать письма. |
-| `created_at` / `updated_at` | `timestamptz` | |
-
-### `user_task_progress` (или `task_submissions`)
-
-Одна строка = факт «пользователь **успешно** решил задачу» (или последнее состояние — по бизнес-правилу).
-
-| Поле | Тип | Комментарий |
-|------|-----|-------------|
-| `id` | `bigserial` или `uuid` | |
-| `user_id` | FK → `users` | |
-| `task_id` | `text` | Пока совпадает с id из `TASKS` / будущей таблицы `tasks`. |
-| `difficulty` | `text` | `easy` / `medium` / `hard` — **денормализация** для быстрых отчётов (или JOIN к `tasks`). |
-| `solved_at` | `timestamptz` | |
-| `attempts_count` | `int`, default 0 | Опционально. |
-| `last_run_at` | `timestamptz`, nullable | |
-
-**UNIQUE (`user_id`, `task_id`)** — одна запись на задачу, если храним только «лучший/финальный» успех.
-
-### `user_sessions` или refresh-хранилище
-
-Если refresh-токены **ротируемые** и храните на сервере:
-
-| Поле | Тип |
-|------|-----|
-| `id` | uuid |
-| `user_id` | FK |
-| `token_hash` | text (хранить hash refresh, не сам токен) |
-| `expires_at` | timestamptz |
-| `created_at` | timestamptz |
-
-При логауте — удалять/ревокировать строки.
-
-### Будущее: контент вместо `db.json`
-
-Отдельные таблицы, например:
-
-- `articles` (slug, title, body_mdx, published_at, …)
-- `tasks` (id, title, description, difficulty, topic_id, tests JSONB, …)
-- `theories` / связи many-to-many по структуре roadmap  
-
-Миграция: одноразовый скрипт импорта из `db.json` → Postgres; фронт переключается на API по **feature flag** или **env** (`VITE_CONTENT_SOURCE=api|static`).
+Примеры auth логов:
+```
+auth:register      { userId: "xxx", username: "john" }
+auth:login:ok      { userId: "xxx" }
+auth:login:fail    { identifier: "...", reason: "wrong_password" }
+auth:logout        { }
+auth:password:changed { userId: "xxx" }
+```
 
 ---
 
-## 4. Авторизация: практичная схема
+## 8. Статистика и дашборд
 
-1. **Регистрация:** `POST /auth/register` — валидация email/пароля (длина, сложность), hash, создание `users`.
-2. **Логин:** `POST /auth/login` — проверка пароля, выдача **access JWT** (5–15 мин) + **refresh** (7–30 дней) в **httpOnly** cookie.
-3. **Обновление access:** `POST /auth/refresh` — по cookie с refresh.
-4. **Смена пароля:** `POST /auth/password` — старый пароль + новый (авторизованный пользователь).
-5. **Защита API:** middleware проверяет JWT; чувствительные операции только HTTPS.
+### KPI-карточки (6 шт.)
 
-**CORS:** явно разрешить origin фронта (не `*` с credentials).  
-**Rate limiting:** логин/регистрация — жёстче (защита от перебора), остальное мягче (Express-rate-limit / Fastify plugin).
+| Карточка | Данные | Цвет |
+|----------|--------|------|
+| 🔥 Серия дней | Текущий streak (дни подряд) | Оранжевый |
+| 📊 Всего решено | Общее число решённых | Фиолетовый |
+| ⚡ С первой попытки | % задач решённых с 1-й попытки | Зелёный |
+| 📅 Дней активности | Дней с первого решения | Синий |
+| 🏆 Самый длинный streak | Рекорд streak | Янтарный |
+| 📈 За 7 дней | Решено за последнюю неделю | Розовый |
 
----
+### Графики
 
-## 5. Статистика для ЛК и для страницы `/tasks`
+| График | Библиотека | Данные |
+|--------|-----------|--------|
+| Calendar Heatmap | CSS Grid (кастомный) | 12 мес., задачи за каждый день |
+| Donut по сложности | Recharts PieChart | Easy/Medium/Hard |
+| Bar по темам | Recharts BarChart | Решено/Всего по каждой теме |
+| AreaChart активность | Recharts AreaChart | Решения за 30 дней |
 
-### В личном кабинете (дашборд)
+### События фронт → бэк
 
-- Всего решено / всего задач в каталоге (если число известно с фронта или из API контента).
-- Разбивка по **easy / medium / hard**.
-- **Последние N решений** (дата, название задачи).
-- **Серия дней** (streak) — если сохранять дату каждого первого успеха за день.
-- **Время с первого решения** / «участник с …».
-
-Запросы к БД — агрегаты + кеш на 1–5 минут в памяти при росте нагрузки (позже Redis, не обязательно на старте).
-
-### На странице `Tasks` (левая колонка)
-
-Компактный блок:
-
-- мини-диаграмма (например donut: easy/medium/hard) — **Recharts уже в проекте**;
-- 2–3 цифры: «решено X из Y»;
-- кнопка **«Подробная статистика»** → `/account` или `/me`.
-
-**Пока пользователь не залогинен:** показывать заглушку «Войдите, чтобы видеть прогресс» и ту же кнопку на страницу входа — **текущий каталог задач не зависит от авторизации**.
+- `POST /me/progress/solved` — вызывается при успешном прохождении всех тестов задачи
+- Только для авторизованных пользователей и при активном `VITE_API_URL`
+- Без API — запуск кода работает, но прогресс не сохраняется
 
 ---
 
-## 6. Иконка в хедере
+## 9. Обработка ошибок (фронтенд)
 
-- Справа (рядом с переключателем темы) — иконка «профиль».
-- Неавторизован: клик → модалка или страница **Вход / Регистрация**.
-- Авторизован: клик → **Личный кабинет**; в меню — **Выйти**.
+`apiFetch` бросает типизированные ошибки:
 
-Реализация без поломки старого поведения: все запросы к API **опциональны**; при `401` или сетевой ошибке приложение ведёт себя как сейчас.
-
----
-
-## 7. Переменные окружения (ориентир)
-
-**Frontend**
-
-- `VITE_API_URL` — база бэкенда, пусто = нет аккаунта/статистики.
-
-**Backend**
-
-- `DATABASE_URL` — Neon/Supabase connection string.
-- `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` — длинные случайные строки.
-- `COOKIE_DOMAIN`, `NODE_ENV`, `FRONTEND_ORIGIN` (CORS).
-
----
-
-## 8. Юридическое и коммерция (кратко)
-
-Для «коммерческих целей» даже на бесплатном хостинге стоит иметь: **политика конфиденциальности**, **условия использования**, понятная **обработка персональных данных** (email). Это не код, но снижает риски при первых платящих пользователях.
-
----
-
-## 9. Этапы внедрения (рекомендуемый порядок)
-
-1. Создать репозиторий/папку `server`, Postgres (Neon), миграции, таблицы `users` + `user_task_progress`.
-2. Auth endpoints + тесты на happy path и неверный пароль.
-3. Эндпоинт `GET /me/stats`, `POST /tasks/:id/solve` (или `PUT` прогресса после успешного прогона тестов на фронте — **серверу доверять**: либо повторная проверка на бэке сложна для Pyodide, либо фиксировать «пользователь отметил успех» с антиабузом — **продуктовое решение**; для честности в контестах позже — sandbox на сервере).
-4. Фронт: контекст/auth store, хедер, страница ЛК, встраивание виджета на `TasksPage`.
-5. Деплой: фронт + API + миграции в CI.
-6. Позже: импорт `db.json` в таблицы контента, OAuth, платежи.
-
-*Примечание по честности статистики:* сейчас проверка кода в браузере (Pyodide). «Решено» в БД можно трактовать как «пользователь нажал успех после локальных тестов»; для строгой проверки нужен серверный раннер — отдельный платный/сложный шаг.
+| Класс | Когда | Что делать |
+|-------|-------|------------|
+| `ApiNotConfiguredError` | `VITE_API_URL` не задан | Не показывать ЛК |
+| `ApiAuthError` (401) | Токен истёк | Logout пользователя |
+| `ApiServerError` (5xx) | Сервер недоступен | Показать «Сервер недоступен» |
+| `ApiNetworkError` | Network недоступен | Показать «Проверьте соединение» |
 
 ---
 
 ## 10. Итог
 
-- **PostgreSQL** — хороший выбор под ваши требования и будущий перенос контента с `db.json`.
-- **Node.js (TS)** — разумный бэкенд; **JWT + refresh cookie** — надёжная база; OAuth — опционально.
-- **Почти бесплатно:** **Neon + Render/Fly + Cloudflare Pages/Netlify/Vercel** с пониманием лимитов и cold start.
-- Текущее приложение сохраняется, если внедрять **опциональный** API и не блокировать просмотр задач без логина.
-
-Документ можно дополнять ссылками на выбранные провайдеры и версии стека после финализации POC.
+- **PostgreSQL** — production-ready, бесплатные managed-инстансы (Neon)
+- **JWT + refresh cookie** — надёжная auth-схема
+- **FSD** — чёткая архитектура фронтенда
+- **Без API** — контент доступен всем (статьи, задачи)
+- **Почти бесплатно:** Neon + Render + Vercel/Cloudflare Pages

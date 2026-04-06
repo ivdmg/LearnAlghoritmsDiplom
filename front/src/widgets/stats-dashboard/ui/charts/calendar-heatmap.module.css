@@ -1,0 +1,147 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.grid {
+  position: relative;
+  display: flex;
+  gap: 0;
+  min-width: 680px;
+}
+
+.dayLabels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 0;
+  padding-right: 6px;
+  font-size: 0.7rem;
+  color: rgba(229, 231, 235, 0.4);
+  min-height: 96px;
+  margin-top: 18px;
+}
+
+[data-theme='light'] .dayLabels span {
+  color: rgba(15, 23, 42, 0.4);
+}
+
+.monthRow {
+  position: relative;
+  height: 16px;
+  margin-left: 22px;
+  flex: 1;
+}
+
+.monthLabel {
+  position: absolute;
+  font-size: 0.7rem;
+  color: rgba(229, 231, 235, 0.4);
+  white-space: nowrap;
+}
+
+[data-theme='light'] .monthLabel {
+  color: rgba(15, 23, 42, 0.4);
+}
+
+.weeksContainer {
+  display: flex;
+  flex: 1;
+  overflow: visible;
+}
+
+.weeksGrid {
+  display: flex;
+  gap: 3px;
+}
+
+.weekCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dayCell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  outline: 1px solid rgba(255, 255, 255, 0.04);
+  transition: outline 0.15s;
+}
+
+.dayCell:hover {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+[data-theme='light'] .dayCell {
+  outline: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .dayCell:hover {
+  outline: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.level0 {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme='light'] .level0 {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.level1 {
+  background: #e2e8a0;
+}
+
+[data-theme='light'] .level1 {
+  background: #d6e685;
+}
+
+.level2 {
+  background: #a8d85a;
+}
+
+.level3 {
+  background: #54a521;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: #1e1e2e;
+  color: #e5e7eb;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='light'] .tooltip {
+  background: #fff;
+  color: #0b1220;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  font-size: 0.7rem;
+  color: rgba(229, 231, 235, 0.5);
+}
+
+[data-theme='light'] .legend {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.legendCell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}

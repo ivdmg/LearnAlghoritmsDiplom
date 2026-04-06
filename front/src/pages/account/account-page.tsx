@@ -6,9 +6,11 @@ import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selec
 import {
   changePassword,
   clearAuthError,
+  deleteAccount,
   login,
   logout,
   register,
+  updateProfile,
 } from '@/shared/store/slices/auth-slice';
 import { isApiConfigured } from '@/shared/config/api-url';
 import { useMyStats } from '@/shared/hooks/use-my-stats';
@@ -16,6 +18,367 @@ import { TASKS } from '@/entities/task';
 import styles from './account-page.module.css';
 
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
+
+/** Секция профиля (чтобы не дублировать состояние на каждый rerender) */
+function ProfileSection({ user }: { user: { id: string; email: string; username: string | null; displayName: string | null; createdAt?: string } }) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  // Редактирование displayName
+  const [editName, setEditName] = useState(false);
+  const [displayName, setDisplayName] = useState(user.displayName ?? '');
+  const [nameMsg, setNameMsg] = useState<string | null>(null);
+
+  // Редактирование username
+  const [editUsername, setEditUsername] = useState(false);
+  const [username, setUsername] = useState(user.username ?? '');
+  const [usernamePwd, setUsernamePwd] = useState('');
+  const [usernameMsg, setUsernameMsg] = useState<string | null>(null);
+
+  // Редактирование email
+  const [editEmail, setEditEmail] = useState(false);
+  const [email, setEmail] = useState(user.email ?? '');
+  const [emailPwd, setEmailPwd] = useState('');
+  const [emailMsg, setEmailMsg] = useState<string | null>(null);
+
+  // Удаление
+  const [showDelete, setShowDelete] = useState(false);
+  const [deletePwd, setDeletePwd] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState('');
+  const [deleteMsg, setDeleteMsg] = useState<string | null>(null);
+
+  const passwordMatch = deletePwd === deleteConfirm;
+
+  const handleSaveDisplayName = () => {
+    setNameMsg(null);
+    void dispatch(updateProfile({ displayName: displayName.trim() || undefined })).then((a) => {
+      if (updateProfile.fulfilled.match(a)) {
+        setEditName(false);
+        setNameMsg('Сохранено');
+      } else {
+        setNameMsg(String(a.payload ?? 'Ошибка'));
+      }
+    });
+  };
+
+  const handleSaveUsername = (e: React.FormEvent) => {
+    e.preventDefault();
+    setUsernameMsg(null);
+    void dispatch(updateProfile({ username: username.trim(), currentPassword: usernamePwd })).then((a) => {
+      if (updateProfile.fulfilled.match(a)) {
+        setEditUsername(false);
+        setUsernamePwd('');
+        setUsernameMsg('Логин обновлён');
+      } else {
+        setUsernameMsg(String(a.payload ?? 'Ошибка'));
+      }
+    });
+  };
+
+  const handleSaveEmail = (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmailMsg(null);
+    void dispatch(updateProfile({ email: email.trim(), currentPassword: emailPwd })).then((a) => {
+      if (updateProfile.fulfilled.match(a)) {
+        setEditEmail(false);
+        setEmailPwd('');
+        setEmailMsg('Email обновлён');
+      } else {
+        setEmailMsg(String(a.payload ?? 'Ошибка'));
+      }
+    });
+  };
+
+  const handleDelete = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!passwordMatch) {
+      setDeleteMsg('Пароли не совпадают');
+      return;
+    }
+    setDeleteMsg(null);
+    void dispatch(deleteAccount({ currentPassword: deletePwd })).then((a) => {
+      if (deleteAccount.fulfilled.match(a)) {
+        navigate('/');
+      } else {
+        setDeleteMsg(String(a.payload ?? 'Ошибка'));
+      }
+    });
+  };
+
+  return (
+    <>
+      {/* ---- Карточка профиля ---- */}
+      <section className={styles.card}>
+        <h2 className={styles.h2}>Профиль</h2>
+
+        {/* Логин */}
+        <div className={styles.rowFlex}>
+          <div className={styles.row}>
+            <span className={styles.muted}>Логин</span>{' '}
+            {editUsername ? <strong className={styles.editMode}>{username}</strong> : <strong>{user.username}</strong>}
+          </div>
+          <button
+            type="button"
+            className={styles.editBtn}
+            onClick={() => {
+              setEditUsername(!editUsername);
+              setUsername(user.username ?? '');
+              setUsernameMsg(null);
+            }}
+          >
+            {editUsername ? 'Отмена' : 'Изменить'}
+          </button>
+        </div>
+        {editUsername && (
+          <form className={styles.subForm} onSubmit={handleSaveUsername}>
+            <label className={styles.label}>
+              Новый логин
+              <input
+                className={`${styles.input} ${USERNAME_RE.test(username) ? '' : styles.inputError}`}
+                value={username}
+                onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
+                autoComplete="username"
+                placeholder="3–24 символа, a-z, 0-9, _"
+              />
+            </label>
+            <label className={styles.label}>
+              Текущий пароль
+              <input
+                className={styles.input}
+                type="password"
+                required
+                value={usernamePwd}
+                onChange={(e) => setUsernamePwd(e.target.value)}
+                autoComplete="current-password"
+              />
+            </label>
+            {usernameMsg && (
+              <p className={usernameMsg.includes('обновлён') || usernameMsg === 'Сохранено' ? styles.ok : styles.error}>
+                {usernameMsg}
+              </p>
+            )}
+            <GlassButton type="submit">Сохранить логин</GlassButton>
+          </form>
+        )}
+
+        {/* Email */}
+        <div className={styles.rowFlex}>
+          <div className={styles.row}>
+            <span className={styles.muted}>Email</span>{' '}
+            {editEmail ? <span className={styles.editMode}>{email}</span> : <span>{user.email}</span>}
+          </div>
+          <button
+            type="button"
+            className={styles.editBtn}
+            onClick={() => {
+              setEditEmail(!editEmail);
+              setEmail(user.email ?? '');
+              setEmailMsg(null);
+            }}
+          >
+            {editEmail ? 'Отмена' : 'Изменить'}
+          </button>
+        </div>
+        {editEmail && (
+          <form className={styles.subForm} onSubmit={handleSaveEmail}>
+            <label className={styles.label}>
+              Новый email
+              <input
+                className={styles.input}
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+              />
+            </label>
+            <label className={styles.label}>
+              Текущий пароль
+              <input
+                className={styles.input}
+                type="password"
+                required
+                value={emailPwd}
+                onChange={(e) => setEmailPwd(e.target.value)}
+                autoComplete="current-password"
+              />
+            </label>
+            {emailMsg && (
+              <p className={emailMsg.includes('обновлён') || emailMsg === 'Сохранено' ? styles.ok : styles.error}>
+                {emailMsg}
+              </p>
+            )}
+            <GlassButton type="submit">Сохранить email</GlassButton>
+          </form>
+        )}
+
+        {/* Имя (displayName) */}
+        <div className={styles.rowFlex}>
+          <div className={styles.row}>
+            <span className={styles.muted}>Имя</span>{' '}
+            {editName ? <span className={styles.editMode}>{displayName || '—'}</span> : <span>{user.displayName || '—'}</span>}
+          </div>
+          <button
+            type="button"
+            className={styles.editBtn}
+            onClick={() => {
+              setEditName(!editName);
+              setDisplayName(user.displayName ?? '');
+              setNameMsg(null);
+            }}
+          >
+            {editName ? 'Отмена' : 'Изменить'}
+          </button>
+        </div>
+        {editName && (
+          <div className={styles.subForm}>
+            <label className={styles.label}>
+              Новое имя
+              <input
+                className={styles.input}
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value.slice(0, 50))}
+                autoComplete="nickname"
+                placeholder="Максимум 50 символов"
+              />
+            </label>
+            {nameMsg && (
+              <p className={nameMsg === 'Сохранено' ? styles.ok : styles.error}>{nameMsg}</p>
+            )}
+            <GlassButton onClick={handleSaveDisplayName}>Сохранить имя</GlassButton>
+          </div>
+        )}
+
+        <div className={styles.actions}>
+          <GlassButton onClick={() => void dispatch(logout())}>Выйти</GlassButton>
+        </div>
+      </section>
+
+      {/* ---- Смена пароля ---- */}
+      <section className={styles.card}>
+        <h2 className={styles.h2}>Смена пароля</h2>
+        <ChangePasswordForm />
+      </section>
+
+      {/* ---- Удаление аккаунта ---- */}
+      <section className={styles.card}>
+        <h2 className={styles.h2}>Удаление аккаунта</h2>
+        <p className={styles.muted}>Это действие необратимо. Все данные будут удалены.</p>
+        {!showDelete ? (
+          <GlassButton onClick={() => setShowDelete(true)}>Удалить аккаунт</GlassButton>
+        ) : (
+          <form className={styles.form} onSubmit={handleDelete}>
+            <label className={styles.label}>
+              Текущий пароль
+              <input
+                className={styles.input}
+                type="password"
+                required
+                value={deletePwd}
+                onChange={(e) => setDeletePwd(e.target.value)}
+                autoComplete="current-password"
+              />
+            </label>
+            <label className={styles.label}>
+              Подтвердите пароль
+              <input
+                className={`${styles.input} ${deleteConfirm && !passwordMatch ? styles.inputError : ''}`}
+                type="password"
+                required
+                value={deleteConfirm}
+                onChange={(e) => setDeleteConfirm(e.target.value)}
+                autoComplete="current-password"
+              />
+              {deleteConfirm && !passwordMatch && (
+                <span className={styles.fieldError}>Пароли не совпадают</span>
+              )}
+            </label>
+            {deleteMsg && <p className={styles.error}>{deleteMsg}</p>}
+            <div className={styles.rowFlex}>
+              <GlassButton type="submit">Удалить навсегда</GlassButton>
+              <GlassButton onClick={() => { setShowDelete(false); setDeletePwd(''); setDeleteConfirm(''); setDeleteMsg(null); }}>Отмена</GlassButton>
+            </div>
+          </form>
+        )}
+      </section>
+    </>
+  );
+}
+
+function ChangePasswordForm() {
+  const dispatch = useAppDispatch();
+  const [curPwd, setCurPwd] = useState('');
+  const [newPwd, setNewPwd] = useState('');
+  const [confirmPwd, setConfirmPwd] = useState('');
+  const [pwdMsg, setPwdMsg] = useState<string | null>(null);
+  const passwordsMatch = newPwd === confirmPwd && newPwd.length > 0;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwdMsg(null);
+    if (!passwordsMatch) {
+      setPwdMsg('Пароли не совпадают');
+      return;
+    }
+    void dispatch(changePassword({ currentPassword: curPwd, newPassword: newPwd })).then((a) => {
+      if (changePassword.fulfilled.match(a)) {
+        setPwdMsg('Пароль обновлён. Войдите снова.');
+        setCurPwd('');
+        setNewPwd('');
+        setConfirmPwd('');
+      } else if (changePassword.rejected.match(a)) {
+        setPwdMsg(String(a.payload ?? 'Ошибка'));
+      }
+    });
+  };
+
+  return (
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <label className={styles.label}>
+        Текущий пароль
+        <input
+          className={styles.input}
+          type="password"
+          required
+          value={curPwd}
+          onChange={(e) => setCurPwd(e.target.value)}
+          autoComplete="current-password"
+        />
+      </label>
+      <label className={styles.label}>
+        Новый пароль
+        <input
+          className={styles.input}
+          type="password"
+          required
+          minLength={8}
+          value={newPwd}
+          onChange={(e) => setNewPwd(e.target.value)}
+          autoComplete="new-password"
+          placeholder="Минимум 8 символов, буквы + цифры"
+        />
+      </label>
+      <label className={styles.label}>
+        Подтвердите пароль
+        <input
+          className={`${styles.input} ${confirmPwd && !passwordsMatch ? styles.inputError : ''}`}
+          type="password"
+          required
+          minLength={8}
+          value={confirmPwd}
+          onChange={(e) => setConfirmPwd(e.target.value)}
+          autoComplete="new-password"
+        />
+        {confirmPwd && !passwordsMatch && (
+          <span className={styles.fieldError}>Пароли не совпадают</span>
+        )}
+      </label>
+      {pwdMsg && (
+        <p className={pwdMsg.includes('обновлён') ? styles.ok : styles.error}>{pwdMsg}</p>
+      )}
+      <GlassButton type="submit">Сохранить пароль</GlassButton>
+    </form>
+  );
+}
 
 export function AccountPage() {
   const navigate = useNavigate();
@@ -29,14 +392,9 @@ export function AccountPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [curPwd, setCurPwd] = useState('');
-  const [newPwd, setNewPwd] = useState('');
-  const [confirmPwd, setConfirmPwd] = useState('');
-  const [pwdMsg, setPwdMsg] = useState<string | null>(null);
 
   const usernameValid = USERNAME_RE.test(username);
   const usernameTouched = username.length > 0;
-  const passwordsMatch = newPwd === confirmPwd && newPwd.length > 0;
 
   const apiOn = isApiConfigured();
 
@@ -80,30 +438,6 @@ export function AccountPage() {
     } else {
       void dispatch(register({ email, password, username: username.trim(), displayName: displayName.trim() || undefined }));
     }
-  };
-
-  const handleLogout = () => {
-    void dispatch(logout());
-    setPwdMsg(null);
-  };
-
-  const handleChangePassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPwdMsg(null);
-    if (!passwordsMatch) {
-      setPwdMsg('Пароли не совпадают');
-      return;
-    }
-    void dispatch(changePassword({ currentPassword: curPwd, newPassword: newPwd })).then((a) => {
-      if (changePassword.fulfilled.match(a)) {
-        setPwdMsg('Пароль обновлён. Войдите снова.');
-        setCurPwd('');
-        setNewPwd('');
-        setConfirmPwd('');
-      } else if (changePassword.rejected.match(a)) {
-        setPwdMsg(String(a.payload ?? 'Ошибка'));
-      }
-    });
   };
 
   return (
@@ -218,75 +552,7 @@ export function AccountPage() {
           </section>
         ) : (
           <>
-            <section className={styles.card}>
-              <h2 className={styles.h2}>Профиль</h2>
-              {user?.username && (
-                <p className={styles.row}>
-                  <span className={styles.muted}>Логин</span>{' '}
-                  <strong>{user.username}</strong>
-                </p>
-              )}
-              <p className={styles.row}>
-                <span className={styles.muted}>Email</span> {user?.email}
-              </p>
-              {user?.displayName && (
-                <p className={styles.row}>
-                  <span className={styles.muted}>Имя</span> {user.displayName}
-                </p>
-              )}
-              <div className={styles.actions}>
-                <GlassButton onClick={handleLogout}>Выйти</GlassButton>
-              </div>
-            </section>
-
-            <section className={styles.card}>
-              <h2 className={styles.h2}>Смена пароля</h2>
-              <form className={styles.form} onSubmit={handleChangePassword}>
-                <label className={styles.label}>
-                  Текущий пароль
-                  <input
-                    className={styles.input}
-                    type="password"
-                    required
-                    value={curPwd}
-                    onChange={(e) => setCurPwd(e.target.value)}
-                    autoComplete="current-password"
-                  />
-                </label>
-                <label className={styles.label}>
-                  Новый пароль
-                  <input
-                    className={styles.input}
-                    type="password"
-                    required
-                    minLength={8}
-                    value={newPwd}
-                    onChange={(e) => setNewPwd(e.target.value)}
-                    autoComplete="new-password"
-                    placeholder="Минимум 8 символов, буквы + цифры"
-                  />
-                </label>
-                <label className={styles.label}>
-                  Подтвердите пароль
-                  <input
-                    className={`${styles.input} ${confirmPwd && !passwordsMatch ? styles.inputError : ''}`}
-                    type="password"
-                    required
-                    minLength={8}
-                    value={confirmPwd}
-                    onChange={(e) => setConfirmPwd(e.target.value)}
-                    autoComplete="new-password"
-                  />
-                  {confirmPwd && !passwordsMatch && (
-                    <span className={styles.fieldError}>Пароли не совпадают</span>
-                  )}
-                </label>
-                {pwdMsg && (
-                  <p className={pwdMsg.includes('обновлён') ? styles.ok : styles.error}>{pwdMsg}</p>
-                )}
-                <GlassButton type="submit">Сохранить пароль</GlassButton>
-              </form>
-            </section>
+            {user && <ProfileSection user={user} />}
 
             <section className={styles.card}>
               <div className={styles.statsHeader}>

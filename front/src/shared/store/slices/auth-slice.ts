@@ -129,6 +129,48 @@ export const recordTaskSolved = createAsyncThunk(
   },
 );
 
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (
+    payload: { displayName?: string; username?: string; email?: string; currentPassword?: string },
+    { getState, rejectWithValue },
+  ) => {
+    const token = (getState() as { auth: AuthState }).auth.accessToken;
+    if (!token) return rejectWithValue('Не авторизован');
+    const res = await apiFetch('/me/profile', {
+      method: 'PUT',
+      accessToken: token,
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return rejectWithValue((data as { error?: string }).error ?? 'Не удалось обновить');
+    }
+    return (data as { user: AuthUser }).user;
+  },
+);
+
+export const deleteAccount = createAsyncThunk(
+  'auth/deleteAccount',
+  async (
+    payload: { currentPassword: string },
+    { getState, rejectWithValue },
+  ) => {
+    const token = (getState() as { auth: AuthState }).auth.accessToken;
+    if (!token) return rejectWithValue('Не авторизован');
+    const res = await apiFetch('/me/account', {
+      method: 'DELETE',
+      accessToken: token,
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      return rejectWithValue((data as { error?: string }).error ?? 'Не удалось удалить');
+    }
+    return true;
+  },
+);
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -203,7 +245,14 @@ export const authSlice = createSlice({
       .addCase(changePassword.fulfilled, (state) => {
         state.accessToken = null;
         state.user = null;
-      });
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(deleteAccount.fulfilled, (state) => {
+        state.accessToken = null;
+        state.user = null;
+      })
   },
 });
 

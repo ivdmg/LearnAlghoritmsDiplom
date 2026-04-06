@@ -1,8 +1,11 @@
 import type { FastifyInstance } from 'fastify';
 import type { Difficulty } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import { prisma } from '../db.js';
-import { validateUsername } from '../lib/validate.js';
+import { validateUsername, validateEmail, normalizeEmail } from '../lib/validate.js';
 import { requireAuth, type AuthedRequest } from '../auth/guard.js';
+
+const SALT_ROUNDS = 10;
 
 const DIFFICULTIES = ['easy', 'medium', 'hard'] as const;
 
@@ -58,49 +61,95 @@ export async function registerMeRoutes(app: FastifyInstance) {
   });
 
   // ===== PUT /me/profile =====
-  app.put<{ Body: { displayName?: string; username?: string } }>(
+  app.put<{ Body: { displayName?: string; username?: string; email?: string; currentPassword?: string } }>(
     '/me/profile',
     { preHandler: requireAuth },
     async (request, reply) => {
       const req = request as AuthedRequest;
-      const { displayName, username } = request.body ?? {};
+      const { displayName, username, email, currentPassword } = request.body ?? {};
 
-      const updateData: { displayName?: string | null; username?: string } = {};
+      const isSensitive = username !== undefined || email !== undefined;
+      // displayName можно менять без пароля
+      if (isSensitive && typeof currentPassword !== 'string') {
+        return reply.status(422).send({ error: 'Введите текущий пароль для подтверждения' });
+      }
+
+      const user = await prisma.user.findUnique({ where: { id: req.userId } });
+      if (!user) return reply.status(404).send({ error: 'Пользователь не найден' });
+
+      if (isSensitive) {
+        const ok = await bcrypt.compare(currentPassword!, user.passwordHash);
+        if (!ok) return reply.status(401).send({ error: 'Неверный текущий пароль' });
+      }
+
+      const updateData: { displayName?: string | null; username?: string; email?: string } = {};
 
       if (displayName !== undefined) {
-        updateData.displayName = displayName.trim() === '' ? null : displayName.trim();
+        updateData.displayName = displayName.trim() === '' ? null : displayName.trim().slice(0, 50);
       }
 
       if (username !== undefined) {
         const trimmed = username.trim().toLowerCase();
         const err = validateUsername(trimmed);
         if (err) return reply.status(422).send({ error: err });
-
-        try {
-          updateData.username = trimmed;
-          const updated = await prisma.user.update({
-            where: { id: req.userId },
-            data: updateData,
-            select: { id: true, email: true, username: true, displayName: true, createdAt: true },
-          });
-          return reply.send({ user: updated });
-        } catch (e) {
-          if (typeof e === 'object' && e !== null && 'code' in e && (e as { code: string }).code === 'P2002') {
-            return reply.status(409).send({ error: 'Это имя пользователя уже занято' });
-          }
-          app.log.error(e);
-          return reply.status(500).send({ error: 'Внутренняя ошибка сервера' });
-        }
+        updateData.username = trimmed;
       }
 
-      const updated = await prisma.user.update({
-        where: { id: req.userId },
-        data: updateData,
-        select: { id: true, email: true, username: true, displayName: true, createdAt: true },
-      });
-      return reply.send({ user: updated });
+      if (email !== undefined) {
+        const eErr = validateEmail(email);
+        if (eErr) return reply.status(422).send({ error: eErr });
+        updateData.email = normalizeEmail(email);
+      }
+
+      if (Object.keys(updateData).length === 0) {
+        return reply.send({ user: { id: user.id, email: user.email, username: user.username, displayName: user.displayName, createdAt: user.createdAt } });
+      }
+
+      try {
+        const updated = await prisma.user.update({
+          where: { id: req.userId },
+          data: updateData,
+          select: { id: true, email: true, username: true, displayName: true, createdAt: true },
+        });
+        return reply.send({ user: updated });
+      } catch (e) {
+        if (typeof e === 'object' && e !== null && 'code' in e) {
+          const code = (e as { code: string }).code;
+          if (code === 'P2002') {
+            const meta = (e as { meta?: { target?: string[] } }).meta;
+            if (meta?.target?.includes('username'))
+              return reply.status(409).send({ error: 'Это имя пользователя уже занято' });
+            if (meta?.target?.includes('email'))
+              return reply.status(409).send({ error: 'Этот email уже зарегистрирован' });
+          }
+        }
+        app.log.error(e);
+        return reply.status(500).send({ error: 'Внутренняя ошибка сервера' });
+      }
     },
   );
+
+  // ===== DELETE /me/account =====
+  app.delete('/me/account', { preHandler: requireAuth }, async (request, reply) => {
+    const req = request as AuthedRequest;
+    const { currentPassword } = (request.body ?? {}) as { currentPassword?: string };
+
+    if (typeof currentPassword !== 'string') {
+      return reply.status(422).send({ error: 'Введите текущий пароль для подтверждения' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: req.userId } });
+    if (!user) return reply.status(404).send({ error: 'Пользователь не найден' });
+
+    const ok = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!ok) return reply.status(401).send({ error: 'Неверный текущий пароль' });
+
+    // Cascade удалит прогресс и сессии
+    await prisma.user.delete({ where: { id: user.id } });
+    reply.clearCookie('refreshToken', { path: '/' });
+
+    return reply.send({ ok: true });
+  });
 
   // ===== GET /me/stats =====
   app.get('/me/stats', { preHandler: requireAuth }, async (request, reply) => {

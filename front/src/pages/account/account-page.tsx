@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import {
   UserOutlined,
@@ -20,11 +20,8 @@ import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import {
   changePassword,
-  clearAuthError,
   deleteAccount,
-  login,
   logout,
-  register,
   updateProfile,
 } from '@/shared/store/slices/auth-slice';
 import { isApiConfigured } from '@/shared/config/api-url';
@@ -367,16 +364,14 @@ export function AccountPage() {
   const { accessToken, user, loading, error, bootstrapDone } = useAppSelector((s) => s.auth);
   const { stats, loading: statsLoading, reload } = useMyStats();
 
-  const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [identifier, setIdentifier] = useState('');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-
-  const usernameValid = USERNAME_RE.test(username);
-  const usernameTouched = username.length > 0;
   const apiOn = isApiConfigured();
+
+  // Redirect to home if not authenticated
+  useEffect(() => {
+    if (apiOn && bootstrapDone && !loading && !accessToken) {
+      navigate('/', { replace: true });
+    }
+  }, [apiOn, bootstrapDone, loading, accessToken, navigate]);
 
   if (apiOn && !bootstrapDone) {
     return (
@@ -407,15 +402,17 @@ export function AccountPage() {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(clearAuthError());
-    if (mode === 'login') {
-      void dispatch(login({ identifier: identifier.trim(), password }));
-    } else {
-      void dispatch(register({ email, password, username: username.trim(), displayName: displayName.trim() || undefined }));
-    }
-  };
+  // Show loading state while checking auth
+  if (!accessToken) {
+    return (
+      <div className={styles.layout}>
+        <AppHeader />
+        <main className={styles.main}>
+          <p className={styles.muted}>Перенаправление…</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.layout}>
@@ -423,35 +420,8 @@ export function AccountPage() {
       <main className={styles.main}>
         <h1 className={styles.h1}>Личный кабинет</h1>
 
-        {!accessToken ? (
-          <section className={styles.card}>
-            <div className={styles.tabs}>
-              <button type="button" className={`${styles.tab} ${mode === 'login' ? styles.tabActive : ''}`} onClick={() => setMode('login')}>Вход</button>
-              <button type="button" className={`${styles.tab} ${mode === 'register' ? styles.tabActive : ''}`} onClick={() => setMode('register')}>Регистрация</button>
-            </div>
-
-            {mode === 'login' ? (
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.label}>Email или логин<input className={styles.input} value={identifier} onChange={(e) => setIdentifier(e.target.value)} autoComplete="username" placeholder="email@example.com или my_username" /></label>
-                <label className={styles.label}>Пароль<input className={styles.input} type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" /></label>
-                {error && <p className={styles.error}>{error}</p>}
-                <GlassButton type="submit" disabled={loading}>{loading ? '…' : 'Войти'}</GlassButton>
-              </form>
-            ) : (
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.label}>Логин *<input className={`${styles.input} ${usernameTouched && !usernameValid ? styles.inputError : ''}`} value={username} onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))} autoComplete="username" placeholder="3–24 символа, a-z, 0-9, _" required />{usernameTouched && !usernameValid && <span className={styles.fieldError}>3–24 символа, только a-z, 0-9, _</span>}</label>
-                <label className={styles.label}>Email *<input className={styles.input} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></label>
-                <label className={styles.label}>Пароль *<input className={styles.input} type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" placeholder="Минимум 8 символов, буквы + цифры" /></label>
-                <label className={styles.label}>Имя (необязательно)<input className={styles.input} value={displayName} onChange={(e) => setDisplayName(e.target.value)} autoComplete="nickname" /></label>
-                {error && <p className={styles.error}>{error}</p>}
-                <GlassButton type="submit" disabled={loading || (usernameTouched && !usernameValid)}>{loading ? '…' : 'Зарегистрироваться'}</GlassButton>
-              </form>
-            )}
-          </section>
-        ) : (
-          user && (
-            <ProfileSection user={user} stats={stats} statsLoading={statsLoading} reload={reload} navigate={navigate} />
-          )
+        {user && (
+          <ProfileSection user={user} stats={stats} statsLoading={statsLoading} reload={reload} navigate={navigate} />
         )}
       </main>
     </div>

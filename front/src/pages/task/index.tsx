@@ -185,6 +185,11 @@ export function TaskPage() {
         <div className={styles.leftPanel}>
           <ScrollArea className={styles.leftScrollPanel} viewportClassName={styles.leftScrollViewport}>
             <div className={styles.leftTopRow}>
+              {task && (
+                <span className={`${styles.diffBadge} ${styles[`diff_${task.difficulty}`]}`}>
+                  {task.difficulty === 'easy' ? 'Easy' : task.difficulty === 'medium' ? 'Medium' : 'Hard'}
+                </span>
+              )}
               <div className={styles.leftNavButtons}>
                 <GlassButton onClick={handleBack} className={styles.iconButton}>
                   <Home size={18} strokeWidth={2} />

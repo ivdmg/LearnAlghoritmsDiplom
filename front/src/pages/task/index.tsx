@@ -281,7 +281,7 @@ export function TaskPage() {
               />
             </div>
 
-            <div className={styles.panelContent}>
+            <div className={styles.outputPanel}>
               <div className={styles.outputHeader}>
                 <h3 className={styles.sectionSubtitle}>Вывод</h3>
                 {hasRun && (

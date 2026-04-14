@@ -74,11 +74,6 @@
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   color: rgba(229, 231, 235, 0.45);
-  transition: color 0.2s ease;
-}
-
-.tabButton:hover:not(:disabled) {
-  color: rgba(229, 231, 235, 0.75);
 }
 
 .tabButtonActive {
@@ -87,10 +82,6 @@
 
 [data-theme='light'] .tabButton {
   color: rgba(15, 23, 42, 0.38);
-}
-
-[data-theme='light'] .tabButton:hover:not(:disabled) {
-  color: rgba(15, 23, 42, 0.62);
 }
 
 [data-theme='light'] .tabButtonActive {
@@ -122,12 +113,6 @@
     inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
     inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
   color: rgba(229, 231, 235, 0.45);
-  transition: color 0.2s ease, background 0.2s ease;
-}
-
-.iconTabButton:hover:not(:disabled) {
-  color: rgba(229, 231, 235, 0.75);
-  background: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme='light'] .iconTabButton {
@@ -137,11 +122,6 @@
     0 0 0 1px rgba(15, 23, 42, 0.08),
     0 4px 12px rgba(2, 6, 23, 0.08);
   color: rgba(15, 23, 42, 0.38);
-}
-
-[data-theme='light'] .iconTabButton:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.78);
-  color: rgba(15, 23, 42, 0.62);
 }
 
 .spacer {

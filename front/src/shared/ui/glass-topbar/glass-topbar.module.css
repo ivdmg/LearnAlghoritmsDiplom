@@ -64,6 +64,10 @@
 [data-theme='light'] .title {
   color: #0b1220;
 }
+button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.4);
+}
 
 @media (max-width: 768px) {
   .root {

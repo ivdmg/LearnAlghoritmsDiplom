@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import {
-  LineChartOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  FireOutlined,
-  TrophyOutlined,
-  LoginOutlined,
-  BarChartOutlined,
-} from '@ant-design/icons';
+  TrendingUp,
+  CheckCircle,
+  Clock,
+  Flame,
+  Trophy,
+  LogIn,
+  BarChart3,
+} from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
@@ -17,6 +17,7 @@ import { TASKS } from '@/entities/task';
 import styles from './tasks-stats-snippet.module.css';
 
 const COLORS = ['#4ade80', '#fbbf24', '#f87171'];
+const iconProps = { size: 14, strokeWidth: 2 };
 
 export function TasksStatsSnippet() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export function TasksStatsSnippet() {
   if (!apiOn) {
     return (
       <section className={styles.card}>
-        <h3 className={styles.title}><BarChartOutlined /> Прогресс</h3>
+        <h3 className={styles.title}><BarChart3 {...iconProps} /> Прогресс</h3>
         <p className={styles.muted}>
           Укажите <code className={styles.code}>VITE_API_URL</code> и запустите сервер — здесь появится статистика решённых задач.
         </p>
@@ -38,10 +39,10 @@ export function TasksStatsSnippet() {
   if (!accessToken) {
     return (
       <section className={styles.card}>
-        <h3 className={styles.title}><BarChartOutlined /> Прогресс</h3>
+        <h3 className={styles.title}><BarChart3 {...iconProps} /> Прогресс</h3>
         <p className={styles.muted}>Войдите в личный кабинет, чтобы сохранять и видеть статистику решённых задач.</p>
         <GlassButton type="button" className={styles.btn} onClick={() => navigate('/account')}>
-          <LoginOutlined /> Войти
+          <LogIn {...iconProps} /> Войти
         </GlassButton>
       </section>
     );
@@ -66,7 +67,7 @@ export function TasksStatsSnippet() {
 
   return (
     <section className={styles.card}>
-      <h3 className={styles.title}><BarChartOutlined /> Ваш прогресс</h3>
+      <h3 className={styles.title}><BarChart3 {...iconProps} /> Ваш прогресс</h3>
 
       {loading && !stats ? (
         <p className={styles.muted}>Загрузка…</p>
@@ -75,7 +76,7 @@ export function TasksStatsSnippet() {
           {/* Summary row */}
           <div className={styles.summaryRow}>
             <span className={styles.summaryBig}>
-              <CheckCircleOutlined className={styles.checkIcon} />
+              <CheckCircle {...iconProps} className={styles.checkIcon} />
               Решено: <strong>{solved}</strong> / {totalCatalog}
             </span>
             {stats && stats.solvedTotal > 0 && (
@@ -124,19 +125,19 @@ export function TasksStatsSnippet() {
               {/* KPI badges */}
               <div className={styles.kpiGrid}>
                 <div className={styles.kpiItem}>
-                  <FireOutlined style={{ color: '#f97316' }} />
+                  <Flame size={14} strokeWidth={2} style={{ color: '#f97316' }} />
                   <span>{stats.streakDays} {stats.streakDays === 1 ? 'день' : stats.streakDays < 5 ? 'дня' : 'дней'}</span>
                 </div>
                 <div className={styles.kpiItem}>
-                  <ClockCircleOutlined style={{ color: '#60a5fa' }} />
+                  <Clock size={14} strokeWidth={2} style={{ color: '#60a5fa' }} />
                   <span>{stats.firstAttemptRate > 0 ? `${Math.round(stats.firstAttemptRate)}%` : '0%'} с 1-й попытки</span>
                 </div>
                 <div className={styles.kpiItem}>
-                  <TrophyOutlined style={{ color: '#f59e0b' }} />
+                  <Trophy size={14} strokeWidth={2} style={{ color: '#f59e0b' }} />
                   <span>Рекорд серии: {stats.longestStreak || '—'}</span>
                 </div>
                 <div className={styles.kpiItem}>
-                  <LineChartOutlined style={{ color: '#a78bfa' }} />
+                  <TrendingUp size={14} strokeWidth={2} style={{ color: '#a78bfa' }} />
                   <span>7 дней: {stats.solvedLast7 ?? 0}</span>
                 </div>
               </div>

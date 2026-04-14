@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { LayoutGroup, motion } from 'framer-motion';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { UserOutlined } from '@ant-design/icons';
+import { User } from 'lucide-react';
 import { ThemeToggle } from '@/widgets/theme-toggle';
 import { GlassTopbar, AuthModal } from '@/shared/ui';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
@@ -9,12 +8,6 @@ import { TASKS } from '@/entities/task';
 import { isApiConfigured } from '@/shared/config/api-url';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import styles from './app-header.module.css';
-
-const navSpring = {
-  type: 'spring' as const,
-  stiffness: 320,
-  damping: 32,
-};
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -63,83 +56,121 @@ export function AppHeader() {
     navigate('/account');
   };
 
+  // Скользящий индикатор навигации — CSS transition вместо framer-motion layoutId
+  const navTrackRef = useRef<HTMLDivElement>(null);
+  const [navIndicatorStyle, setNavIndicatorStyle] = useState<React.CSSProperties | null>(null);
+  const [navMounted, setNavMounted] = useState(false);
+
+  const updateNavIndicator = useCallback(() => {
+    const track = navTrackRef.current;
+    if (!track) return;
+
+    const activeBtn = track.querySelector(`.${styles.navBtnActive}`) as HTMLElement | null;
+    if (!activeBtn) {
+      setNavIndicatorStyle(null);
+      return;
+    }
+
+    const trackRect = track.getBoundingClientRect();
+    const btnRect = activeBtn.getBoundingClientRect();
+
+    setNavIndicatorStyle({
+      left: btnRect.left - trackRect.left,
+      top: btnRect.top - trackRect.top,
+      width: btnRect.width,
+      height: btnRect.height,
+    });
+  }, []);
+
+  // Первый рендер — без transition
+  useEffect(() => {
+    updateNavIndicator();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setNavMounted(true);
+      });
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // При смене страницы — обновляем позицию
+  useEffect(() => {
+    if (navMounted) {
+      updateNavIndicator();
+    }
+  }, [activeNavTab, navMounted, updateNavIndicator]);
+
+  useEffect(() => {
+    window.addEventListener('resize', updateNavIndicator);
+    return () => window.removeEventListener('resize', updateNavIndicator);
+  }, [updateNavIndicator]);
+
   return (
     <>
       <header className={styles.headerShell}>
-        <LayoutGroup>
-          <GlassTopbar
-            left={
-              <nav className={styles.navPill} aria-label="Основная навигация">
-                <div className={styles.navTrack}>
-                  <div className={styles.navSlot}>
-                    {activeNavTab === 'roadmap' && (
-                      <motion.div
-                        className={styles.navIndicator}
-                        layoutId="header-main-nav-pill"
-                        transition={navSpring}
-                      />
-                    )}
-                    <button
-                      type="button"
-                      className={`${styles.navBtn} ${activeNavTab === 'roadmap' ? styles.navBtnActive : ''}`}
-                      onClick={() => navigate('/')}
-                      aria-current={activeNavTab === 'roadmap' ? 'page' : undefined}
-                    >
-                      Roadmap
-                    </button>
-                  </div>
-                  <div className={styles.navSlot}>
-                    {activeNavTab === 'tasks' && (
-                      <motion.div
-                        className={styles.navIndicator}
-                        layoutId="header-main-nav-pill"
-                        transition={navSpring}
-                      />
-                    )}
-                    <button
-                      type="button"
-                      className={`${styles.navBtn} ${activeNavTab === 'tasks' ? styles.navBtnActive : ''}`}
-                      onClick={() => navigate('/tasks')}
-                      aria-current={activeNavTab === 'tasks' ? 'page' : undefined}
-                    >
-                      Tasks
-                    </button>
-                  </div>
-                </div>
-              </nav>
-            }
-            center={
-              <div className={styles.titleSlot}>
-                {(isTaskSolution || isAccount) && (
-                  <motion.div
-                    className={styles.titleNavIndicator}
-                    layoutId="header-main-nav-pill"
-                    transition={navSpring}
+        <GlassTopbar
+          left={
+            <nav className={styles.navPill} aria-label="Основная навигация">
+              <div ref={navTrackRef} className={styles.navTrack}>
+                {/* Скользящий индикатор — CSS transition вместо framer-motion layoutId */}
+                {navIndicatorStyle && (
+                  <div
+                    className={styles.navIndicator}
+                    style={{
+                      ...navIndicatorStyle,
+                      transition: navMounted
+                        ? 'left 0.5s cubic-bezier(0.4, 0, 0.2, 1), top 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 0.5s cubic-bezier(0.4, 0, 0.2, 1), height 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+                        : 'none',
+                    }}
+                    aria-hidden
                   />
                 )}
-                <span className={styles.title}>{centerTitle}</span>
-              </div>
-            }
-            right={
-              <div className={styles.headerRight}>
-                <div
-                  className={`${styles.accountWrap} ${accountSignedIn ? styles.accountWrapActive : ''}`}
-                >
-                  {accountSignedIn && <div className={styles.accountUnderGlow} aria-hidden />}
-                  <GlassButton
+                <div className={styles.navSlot}>
+                  <button
                     type="button"
-                    className={`${styles.accountBtn} ${accountSignedIn ? styles.accountBtnSignedIn : ''}`}
-                    onClick={handleProfileClick}
-                    aria-label="Личный кабинет"
+                    className={`${styles.navBtn} ${activeNavTab === 'roadmap' ? styles.navBtnActive : ''}`}
+                    onClick={() => navigate('/')}
+                    aria-current={activeNavTab === 'roadmap' ? 'page' : undefined}
                   >
-                    <UserOutlined />
-                  </GlassButton>
+                    Roadmap
+                  </button>
                 </div>
-                <ThemeToggle compact />
+                <div className={styles.navSlot}>
+                  <button
+                    type="button"
+                    className={`${styles.navBtn} ${activeNavTab === 'tasks' ? styles.navBtnActive : ''}`}
+                    onClick={() => navigate('/tasks')}
+                    aria-current={activeNavTab === 'tasks' ? 'page' : undefined}
+                  >
+                    Tasks
+                  </button>
+                </div>
               </div>
-            }
-          />
-        </LayoutGroup>
+            </nav>
+          }
+          center={
+            <div className={styles.titleSlot}>
+              <span className={styles.title}>{centerTitle}</span>
+            </div>
+          }
+          right={
+            <div className={styles.headerRight}>
+              <div
+                className={`${styles.accountWrap} ${accountSignedIn ? styles.accountWrapActive : ''}`}
+              >
+                {accountSignedIn && <div className={styles.accountUnderGlow} aria-hidden />}
+                <GlassButton
+                  type="button"
+                  className={`${styles.accountBtn} ${accountSignedIn ? styles.accountBtnSignedIn : ''}`}
+                  onClick={handleProfileClick}
+                  aria-label="Личный кабинет"
+                >
+                  <User size={18} strokeWidth={2} />
+                </GlassButton>
+              </div>
+              <ThemeToggle compact />
+            </div>
+          }
+        />
       </header>
       <AuthModal
         open={authModalOpen}

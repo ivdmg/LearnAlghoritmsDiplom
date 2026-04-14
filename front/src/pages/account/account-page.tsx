@@ -1,20 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
-import {
-  UserOutlined,
-  EditOutlined,
-  KeyOutlined,
-  MailOutlined,
-  DeleteOutlined,
-  LogoutOutlined,
-  ReloadOutlined,
-  CalendarOutlined,
-  BarChartOutlined,
-  LineChartOutlined,
-  TrophyOutlined,
-  BookOutlined,
-  ClockCircleOutlined,
-} from '@ant-design/icons';
+import { User, Pencil, Key, Mail, Trash2, LogOut, RefreshCw, Calendar, BarChart3, TrendingUp, Trophy, BookOpen, Clock } from 'lucide-react';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selector';
@@ -30,6 +16,8 @@ import { TASKS } from '@/entities/task';
 import { StatsKPI } from '@/widgets/stats-kpi';
 import { CalendarHeatmap, DifficultyPie, TopicBarChart, ActivityLineChart } from '@/widgets/stats-dashboard/ui/charts';
 import styles from './account-page.module.css';
+
+const iconProps = { size: 12, strokeWidth: 2 };
 
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
 
@@ -158,11 +146,11 @@ function ProfileSection({
             {/* Логин */}
             <div className={styles.rowFlex}>
               <div className={styles.row}>
-                <span className={styles.muted}><UserOutlined style={{ fontSize: 12, marginRight: 4 }} />Логин</span>{' '}
+                <span className={styles.muted}><User {...iconProps} />Логин</span>{' '}
                 {editUsername ? <strong className={styles.editMode}>{username}</strong> : <strong>{user.username}</strong>}
               </div>
               <button type="button" className={styles.editBtn} onClick={() => { setEditUsername(!editUsername); setUsername(user.username ?? ''); setUsernameMsg(null); }}>
-                {editUsername ? 'Отмена' : <EditOutlined />}
+                {editUsername ? 'Отмена' : <Pencil {...iconProps} />}
               </button>
             </div>
             {editUsername && (
@@ -180,11 +168,11 @@ function ProfileSection({
             {/* Email */}
             <div className={styles.rowFlex}>
               <div className={styles.row}>
-                <span className={styles.muted}><MailOutlined style={{ fontSize: 12, marginRight: 4 }} />Email</span>{' '}
+                <span className={styles.muted}><Mail {...iconProps} />Email</span>{' '}
                 {editEmail ? <span className={styles.editMode}>{email}</span> : <span>{user.email}</span>}
               </div>
               <button type="button" className={styles.editBtn} onClick={() => { setEditEmail(!editEmail); setEmail(user.email ?? ''); setEmailMsg(null); }}>
-                {editEmail ? 'Отмена' : <EditOutlined />}
+                {editEmail ? 'Отмена' : <Pencil {...iconProps} />}
               </button>
             </div>
             {editEmail && (
@@ -199,11 +187,11 @@ function ProfileSection({
             {/* Имя */}
             <div className={styles.rowFlex}>
               <div className={styles.row}>
-                <span className={styles.muted}><UserOutlined style={{ fontSize: 12, marginRight: 4 }} />Имя</span>{' '}
+                <span className={styles.muted}><User {...iconProps} />Имя</span>{' '}
                 {editName ? <span className={styles.editMode}>{displayName || '—'}</span> : <span>{user.displayName || '—'}</span>}
               </div>
               <button type="button" className={styles.editBtn} onClick={() => { setEditName(!editName); setDisplayName(user.displayName ?? ''); setNameMsg(null); }}>
-                {editName ? 'Отмена' : <EditOutlined />}
+                {editName ? 'Отмена' : <Pencil {...iconProps} />}
               </button>
             </div>
             {editName && (
@@ -215,19 +203,19 @@ function ProfileSection({
             )}
 
             <div className={styles.actions}>
-              <GlassButton onClick={() => void dispatch(logout())}><LogoutOutlined /> Выйти</GlassButton>
+              <GlassButton onClick={() => void dispatch(logout())}><LogOut {...iconProps} /> Выйти</GlassButton>
             </div>
           </div>
 
           {/* Смена пароля */}
           <div className={`${styles.card} ${styles.settingsCard}`}>
-            <h3 className={styles.h2}><KeyOutlined /> Смена пароля</h3>
+            <h3 className={styles.h2}><Key {...iconProps} /> Смена пароля</h3>
             <ChangePasswordForm />
           </div>
 
           {/* Удаление */}
           <div className={`${styles.card} ${styles.dangerCard}`}>
-            <h3 className={styles.h2}><DeleteOutlined /> Удаление аккаунта</h3>
+            <h3 className={styles.h2}><Trash2 {...iconProps} style={{ color: '#f87171' }} /> Удаление аккаунта</h3>
             <p className={styles.muted}>Это действие необратимо. Все данные будут удалены.</p>
             {!showDelete ? (
               <GlassButton onClick={() => setShowDelete(true)} className={styles.dangerBtn}>Удалить аккаунт</GlassButton>
@@ -253,7 +241,7 @@ function ProfileSection({
           {/* Статистика заголовок */}
           <div className={styles.statsHeader}>
             <h2 className={styles.h2}>Аналитика</h2>
-            <GlassButton type="button" onClick={() => reload()}><ReloadOutlined /> Обновить</GlassButton>
+            <GlassButton type="button" onClick={() => reload()}><RefreshCw {...iconProps} /> Обновить</GlassButton>
           </div>
 
           {statsLoading && !stats && <p className={styles.muted}>Загрузка…</p>}
@@ -263,7 +251,7 @@ function ProfileSection({
               {/* Heatmap */}
               <div className={styles.chartFull}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><CalendarOutlined /> Календарь активности</h3>
+                  <h3 className={styles.h3}><Calendar {...iconProps} /> Календарь активности</h3>
                   <CalendarHeatmap data={stats.calendarData} />
                 </div>
               </div>
@@ -271,13 +259,13 @@ function ProfileSection({
               {/* Donut + Line */}
               <div className={styles.chartCol}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><BarChartOutlined /> По сложности</h3>
+                  <h3 className={styles.h3}><BarChart3 {...iconProps} /> По сложности</h3>
                   <DifficultyPie easy={stats.byDifficulty.easy ?? 0} medium={stats.byDifficulty.medium ?? 0} hard={stats.byDifficulty.hard ?? 0} />
                 </div>
               </div>
               <div className={styles.chartCol}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><LineChartOutlined /> Активность по дням</h3>
+                  <h3 className={styles.h3}><TrendingUp {...iconProps} /> Активность по дням</h3>
                   <ActivityLineChart calendarData={stats.calendarData} />
                 </div>
               </div>
@@ -285,7 +273,7 @@ function ProfileSection({
               {/* Topics */}
               <div className={styles.chartFull}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><BookOutlined /> По темам</h3>
+                  <h3 className={styles.h3}><BookOpen {...iconProps} /> По темам</h3>
                   <TopicBarChart byTopic={stats.byTopic} />
                 </div>
               </div>
@@ -293,7 +281,7 @@ function ProfileSection({
               {/* Recent solved */}
               <div className={styles.chartFull}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><ClockCircleOutlined /> Недавние решения</h3>
+                  <h3 className={styles.h3}><Clock {...iconProps} /> Недавние решения</h3>
                   {stats.lastSolved.length > 0 ? (
                     <ul className={styles.list}>
                       {stats.lastSolved.slice(0, 10).map((x) => (
@@ -353,7 +341,7 @@ function ChangePasswordForm() {
       <label className={styles.label}>Новый пароль<input className={styles.input} type="password" required minLength={8} value={newPwd} onChange={(e) => setNewPwd(e.target.value)} autoComplete="new-password" placeholder="Минимум 8 символов, буквы + цифры" /></label>
       <label className={styles.label}>Подтвердите пароль<input className={`${styles.input} ${confirmPwd && !passwordsMatch ? styles.inputError : ''}`} type="password" required minLength={8} value={confirmPwd} onChange={(e) => setConfirmPwd(e.target.value)} autoComplete="new-password" />{confirmPwd && !passwordsMatch && <span className={styles.fieldError}>Пароли не совпадают</span>}</label>
       {pwdMsg && <p className={pwdMsg.includes('обновлён') ? styles.ok : styles.error}>{pwdMsg}</p>}
-      <GlassButton type="submit"><KeyOutlined /> Сохранить пароль</GlassButton>
+      <GlassButton type="submit"><Key {...iconProps} /> Сохранить пароль</GlassButton>
     </form>
   );
 }
@@ -361,7 +349,7 @@ function ChangePasswordForm() {
 export function AccountPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { accessToken, user, loading, error, bootstrapDone } = useAppSelector((s) => s.auth);
+  const { accessToken, user, loading, bootstrapDone } = useAppSelector((s) => s.auth);
   const { stats, loading: statsLoading, reload } = useMyStats();
 
   const apiOn = isApiConfigured();

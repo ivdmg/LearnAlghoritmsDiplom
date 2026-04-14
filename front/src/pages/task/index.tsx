@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { LeftOutlined, RightOutlined, HomeOutlined, CheckCircleFilled, CloseCircleFilled, DownOutlined } from '@ant-design/icons';
+import { ChevronLeft, ChevronRight, Home, CheckCircle, XCircle, ChevronDown } from 'lucide-react';
 import { useMemo, useState, useEffect, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selec
 import { recordTaskSolved } from '@/shared/store/slices/auth-slice';
 import { isApiConfigured } from '@/shared/config/api-url';
 import { getOrderedTaskIds, useTaskById } from '@/entities/task';
-import { usePyodide } from '@/features/run-python';
+import { usePyodide, preloadPyodide } from '@/features/run-python';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { ScrollArea } from '@/shared/ui';
@@ -34,6 +34,21 @@ export function TaskPage() {
   /** С включённым API запуск тестов только для вошедших пользователей (статистика). Без API — как раньше. */
   const runBlocked = apiOn && bootstrapDone && !accessToken;
   const runAuthLoading = apiOn && !bootstrapDone;
+
+  // Ленивая загрузка Pyodide при открытии страницы задачи (в idle time)
+  useEffect(() => {
+    const idlePreload = () => {
+      preloadPyodide().catch(() => {
+        // ошибка всплывёт в usePyodide при запуске
+      });
+    };
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(idlePreload);
+    } else {
+      const id = globalThis.setTimeout(idlePreload, 500);
+      return () => globalThis.clearTimeout(id);
+    }
+  }, []);
 
   const { task, loading: taskLoading } = useTaskById(taskId);
 
@@ -172,13 +187,13 @@ export function TaskPage() {
             <div className={styles.leftTopRow}>
               <div className={styles.leftNavButtons}>
                 <GlassButton onClick={handleBack} className={styles.iconButton}>
-                  <HomeOutlined />
+                  <Home size={18} strokeWidth={2} />
                 </GlassButton>
                 <GlassButton onClick={handlePrev} className={`${styles.navButton} ${styles.iconButton}`}>
-                  <LeftOutlined />
+                  <ChevronLeft size={18} strokeWidth={2} />
                 </GlassButton>
                 <GlassButton onClick={handleNext} className={`${styles.navButton} ${styles.iconButton}`}>
-                  <RightOutlined />
+                  <ChevronRight size={18} strokeWidth={2} />
                 </GlassButton>
               </div>
             </div>
@@ -198,7 +213,7 @@ export function TaskPage() {
                   <summary>
                     <span className={styles.hintTitle}>{`Подсказка ${index + 1}`}</span>
                     <span className={styles.hintChevron}>
-                      <DownOutlined />
+                      <ChevronDown size={14} strokeWidth={2} />
                     </span>
                   </summary>
                   <p>{text}</p>
@@ -277,11 +292,11 @@ export function TaskPage() {
                   >
                     {isSuccess ? (
                       <>
-                        <CheckCircleFilled /> Успешно
+                        <CheckCircle size={14} strokeWidth={2} /> Успешно
                       </>
                     ) : (
                       <>
-                        <CloseCircleFilled /> Нужно доработать
+                        <XCircle size={14} strokeWidth={2} /> Нужно доработать
                       </>
                     )}
                   </GlassButton>

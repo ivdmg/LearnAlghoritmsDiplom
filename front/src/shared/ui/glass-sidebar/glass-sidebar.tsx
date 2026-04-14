@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { GlassButton } from "../glass-button/glass-button";
 import { GlassTabs } from "../glass-tabs/glass-tabs";
 import styles from "./glass-sidebar.module.css";
@@ -33,15 +32,36 @@ export function GlassSidebar({
   onClose,
   children,
 }: GlassSidebarProps) {
+  // Состояние для CSS-анимации: монтируем сразу, удаляем после завершения exit-анимации
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true);
+      // Небольшая задержка чтобы CSS transition сработал (rAF)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setVisible(true);
+        });
+      });
+    } else {
+      setVisible(false);
+      // Ждём завершения CSS transition (300ms) перед размонтированием
+      const timer = setTimeout(() => setMounted(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   // Блокируем скролл body, когда открыт сайдбар
   useEffect(() => {
-    if (!open) return;
+    if (!visible) return;
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = originalOverflow;
     };
-  }, [open]);
+  }, [visible]);
 
   const tabItems = tabs.map((t) => ({
     key: t.key,
@@ -51,56 +71,41 @@ export function GlassSidebar({
     variant: t.variant,
   }));
 
+  if (!mounted) return null;
+
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          className={styles.backdrop}
-          onClick={onClose}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-        >
-          <motion.aside
-            className={styles.sidebar}
-            onClick={(e) => e.stopPropagation()}
-            initial={{ x: 480, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 480, opacity: 0 }}
-            transition={{
-              type: "spring",
-              stiffness: 260,
-              damping: 30,
-              mass: 0.8,
-            }}
+    <div
+      className={`${styles.backdrop} ${visible ? styles.backdropVisible : ""}`}
+      onClick={onClose}
+    >
+      <aside
+        className={`${styles.sidebar} ${visible ? styles.sidebarVisible : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <header className={styles.header}>
+          <h2 className={styles.title}>{title}</h2>
+
+          <GlassButton
+            onClick={onClose}
+            variant="close"
+            aria-label="Закрыть"
           >
-            <header className={styles.header}>
-              <h2 className={styles.title}>{title}</h2>
+            ✕
+          </GlassButton>
+        </header>
 
-              <GlassButton
-                onClick={onClose}
-                variant="close"
-                aria-label="Закрыть"
-              >
-                ✕
-              </GlassButton>
-            </header>
+        {tabItems.length > 0 && (
+          <div className={styles.tabsRow}>
+            <GlassTabs
+              items={tabItems}
+              activeKey={activeTab}
+              onChange={onTabChange}
+            />
+          </div>
+        )}
 
-            {tabItems.length > 0 && (
-              <div className={styles.tabsRow}>
-                <GlassTabs
-                  items={tabItems}
-                  activeKey={activeTab}
-                  onChange={onTabChange}
-                />
-              </div>
-            )}
-
-            <div className={styles.content}>{children}</div>
-          </motion.aside>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        <div className={styles.content}>{children}</div>
+      </aside>
+    </div>
   );
 }

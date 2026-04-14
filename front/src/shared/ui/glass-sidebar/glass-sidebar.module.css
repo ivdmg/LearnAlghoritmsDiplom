@@ -7,10 +7,19 @@
   justify-content: flex-end;
   align-items: stretch;
 
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0);
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.3s ease;
+  pointer-events: none;
 }
 
-[data-theme='light'] .backdrop {
+.backdropVisible {
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+[data-theme='light'] .backdropVisible {
   background: rgba(15, 23, 42, 0.18);
 }
 
@@ -48,14 +57,25 @@
   background: rgba(255, 255, 255, 0.05);
 
   border-left: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(30px) saturate(150%);
-  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
   box-shadow: -15px 0 50px rgba(0, 0, 0, 0.65);
 
   color: #f9fafb;
 
   border-top-left-radius: 24px;
   border-bottom-left-radius: 24px;
+
+  /* CSS transition вместо framer-motion spring */
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.sidebarVisible {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 [data-theme='light'] .sidebar {
@@ -65,8 +85,8 @@
     -12px 0 40px rgba(2, 6, 23, 0.18),
     -1px 0 0 rgba(255, 255, 255, 0.35) inset;
   color: #0f172a;
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(110%);
+  -webkit-backdrop-filter: blur(12px) saturate(110%);
 }
 
 .header {

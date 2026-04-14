@@ -305,6 +305,8 @@
   font-size: 0.9rem;
   white-space: pre-wrap;
   min-height: 80px;
+  max-height: 300px;
+  overflow-y: auto;
   color: #e5e7eb;
   border-radius: 16px;
   backdrop-filter: blur(14px);

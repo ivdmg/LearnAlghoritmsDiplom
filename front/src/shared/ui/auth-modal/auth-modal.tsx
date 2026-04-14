@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { UserOutlined, MailOutlined } from '@ant-design/icons';
+import { User, Mail } from 'lucide-react';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { PasswordInput } from '@/shared/ui/password-input/password-input';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import { login, register, clearAuthError } from '@/shared/store/slices/auth-slice';
 import { isApiConfigured } from '@/shared/config/api-url';
 import styles from './auth-modal.module.css';
+
+const iconProps = { size: 12, strokeWidth: 2 };
 
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
 
@@ -28,6 +29,25 @@ export function AuthModal({ open, onClose, onLoginSuccess }: AuthModalProps) {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
 
+  // CSS-анимация: монтируем сразу, удаляем после завершения exit
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setVisible(true);
+        });
+      });
+    } else {
+      setVisible(false);
+      const timer = setTimeout(() => setMounted(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   // Reset form when modal opens
   useEffect(() => {
     if (open) {
@@ -37,23 +57,23 @@ export function AuthModal({ open, onClose, onLoginSuccess }: AuthModalProps) {
 
   // Block body scroll when modal is open
   useEffect(() => {
-    if (!open) return;
+    if (!visible) return;
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = originalOverflow;
     };
-  }, [open]);
+  }, [visible]);
 
   // Close on Escape
   useEffect(() => {
-    if (!open) return;
+    if (!visible) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [open, onClose]);
+  }, [visible, onClose]);
 
   const usernameValid = USERNAME_RE.test(username);
   const usernameTouched = username.length > 0;
@@ -85,153 +105,137 @@ export function AuthModal({ open, onClose, onLoginSuccess }: AuthModalProps) {
   };
 
   if (!apiOn) return null;
+  if (!mounted) return null;
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          className={styles.backdrop}
-          onClick={handleBackdropClick}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-        >
-          <motion.div
-            className={styles.modal}
-            onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{
-              type: 'spring',
-              stiffness: 300,
-              damping: 30,
-              mass: 0.8,
-            }}
+    <div
+      className={`${styles.backdrop} ${visible ? styles.backdropVisible : ''}`}
+      onClick={handleBackdropClick}
+    >
+      <div
+        className={`${styles.modal} ${visible ? styles.modalVisible : ''}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className={styles.header}>
+          <h2 className={styles.title}>Личный кабинет</h2>
+          <GlassButton onClick={onClose} variant="close" aria-label="Закрыть">
+            ✕
+          </GlassButton>
+        </div>
+
+        {/* Tabs */}
+        <div className={styles.tabs}>
+          <button
+            type="button"
+            className={`${styles.tab} ${mode === 'login' ? styles.tabActive : ''}`}
+            onClick={() => { setMode('login'); dispatch(clearAuthError()); }}
           >
-            {/* Header */}
-            <div className={styles.header}>
-              <h2 className={styles.title}>Личный кабинет</h2>
-              <GlassButton onClick={onClose} variant="close" aria-label="Закрыть">
-                ✕
-              </GlassButton>
-            </div>
+            Вход
+          </button>
+          <button
+            type="button"
+            className={`${styles.tab} ${mode === 'register' ? styles.tabActive : ''}`}
+            onClick={() => { setMode('register'); dispatch(clearAuthError()); }}
+          >
+            Регистрация
+          </button>
+        </div>
 
-            {/* Tabs */}
-            <div className={styles.tabs}>
-              <button
-                type="button"
-                className={`${styles.tab} ${mode === 'login' ? styles.tabActive : ''}`}
-                onClick={() => { setMode('login'); dispatch(clearAuthError()); }}
-              >
-                Вход
-              </button>
-              <button
-                type="button"
-                className={`${styles.tab} ${mode === 'register' ? styles.tabActive : ''}`}
-                onClick={() => { setMode('register'); dispatch(clearAuthError()); }}
-              >
-                Регистрация
-              </button>
-            </div>
-
-            {/* Forms */}
-            {mode === 'login' ? (
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.label}>
-                  <span className={styles.labelText}>
-                    <UserOutlined style={{ fontSize: 12, marginRight: 4 }} />
-                    Email или логин
-                  </span>
-                  <input
-                    className={styles.input}
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    autoComplete="username"
-                    placeholder="email@example.com или my_username"
-                  />
-                </label>
-                <label className={styles.label}>
-                  <span className={styles.labelText}>Пароль</span>
-                  <PasswordInput
-                    value={password}
-                    onChange={setPassword}
-                    placeholder="Введите пароль"
-                    minLength={8}
-                    required
-                  />
-                </label>
-                {error && <p className={styles.error}>{error}</p>}
-                <GlassButton type="submit" disabled={loading} className={styles.submitBtn}>
-                  {loading ? '…' : 'Войти'}
-                </GlassButton>
-              </form>
-            ) : (
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.label}>
-                  <span className={styles.labelText}>Логин *</span>
-                  <input
-                    className={`${styles.input} ${usernameTouched && !usernameValid ? styles.inputError : ''}`}
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
-                    autoComplete="username"
-                    placeholder="3–24 символа, a-z, 0-9, _"
-                    required
-                  />
-                  {usernameTouched && !usernameValid && (
-                    <span className={styles.fieldError}>3–24 символа, только a-z, 0-9, _</span>
-                  )}
-                </label>
-                <label className={styles.label}>
-                  <span className={styles.labelText}>
-                    <MailOutlined style={{ fontSize: 12, marginRight: 4 }} />
-                    Email *
-                  </span>
-                  <input
-                    className={styles.input}
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="email"
-                    placeholder="email@example.com"
-                  />
-                </label>
-                <label className={styles.label}>
-                  <span className={styles.labelText}>Пароль *</span>
-                  <PasswordInput
-                    value={password}
-                    onChange={setPassword}
-                    placeholder="Минимум 8 символов, буквы + цифры"
-                    minLength={8}
-                    required
-                    autoComplete="new-password"
-                  />
-                </label>
-                <label className={styles.label}>
-                  <span className={styles.labelText}>Имя (необязательно)</span>
-                  <input
-                    className={styles.input}
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value.slice(0, 50))}
-                    autoComplete="nickname"
-                    placeholder="Как вас называть?"
-                  />
-                </label>
-                {error && <p className={styles.error}>{error}</p>}
-                <GlassButton
-                  type="submit"
-                  disabled={loading || (usernameTouched && !usernameValid)}
-                  className={styles.submitBtn}
-                >
-                  {loading ? '…' : 'Зарегистрироваться'}
-                </GlassButton>
-              </form>
-            )}
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        {/* Forms */}
+        {mode === 'login' ? (
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <label className={styles.label}>
+              <span className={styles.labelText}>
+                <User {...iconProps} />
+                Email или логин
+              </span>
+              <input
+                className={styles.input}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                autoComplete="username"
+                placeholder="email@example.com или my_username"
+              />
+            </label>
+            <label className={styles.label}>
+              <span className={styles.labelText}>Пароль</span>
+              <PasswordInput
+                value={password}
+                onChange={setPassword}
+                placeholder="Введите пароль"
+                minLength={8}
+                required
+              />
+            </label>
+            {error && <p className={styles.error}>{error}</p>}
+            <GlassButton type="submit" disabled={loading} className={styles.submitBtn}>
+              {loading ? '…' : 'Войти'}
+            </GlassButton>
+          </form>
+        ) : (
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <label className={styles.label}>
+              <span className={styles.labelText}>Логин *</span>
+              <input
+                className={`${styles.input} ${usernameTouched && !usernameValid ? styles.inputError : ''}`}
+                value={username}
+                onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
+                autoComplete="username"
+                placeholder="3–24 символа, a-z, 0-9, _"
+                required
+              />
+              {usernameTouched && !usernameValid && (
+                <span className={styles.fieldError}>3–24 символа, только a-z, 0-9, _</span>
+              )}
+            </label>
+            <label className={styles.label}>
+              <span className={styles.labelText}>
+                <Mail {...iconProps} />
+                Email *
+              </span>
+              <input
+                className={styles.input}
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                placeholder="email@example.com"
+              />
+            </label>
+            <label className={styles.label}>
+              <span className={styles.labelText}>Пароль *</span>
+              <PasswordInput
+                value={password}
+                onChange={setPassword}
+                placeholder="Минимум 8 символов, буквы + цифры"
+                minLength={8}
+                required
+                autoComplete="new-password"
+              />
+            </label>
+            <label className={styles.label}>
+              <span className={styles.labelText}>Имя (необязательно)</span>
+              <input
+                className={styles.input}
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value.slice(0, 50))}
+                autoComplete="nickname"
+                placeholder="Как вас называть?"
+              />
+            </label>
+            {error && <p className={styles.error}>{error}</p>}
+            <GlassButton
+              type="submit"
+              disabled={loading || (usernameTouched && !usernameValid)}
+              className={styles.submitBtn}
+            >
+              {loading ? '…' : 'Зарегистрироваться'}
+            </GlassButton>
+          </form>
+        )}
+      </div>
+    </div>
   );
 }

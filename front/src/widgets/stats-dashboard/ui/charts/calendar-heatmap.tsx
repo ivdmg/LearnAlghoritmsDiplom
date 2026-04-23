@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import styles from './calendar-heatmap.module.css';
 
 type CalendarDay = { date: string; count: number };

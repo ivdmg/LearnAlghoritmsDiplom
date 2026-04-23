@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ConfigProvider } from 'antd';
+import ConfigProvider from 'antd/es/config-provider';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from '@/shared/store';

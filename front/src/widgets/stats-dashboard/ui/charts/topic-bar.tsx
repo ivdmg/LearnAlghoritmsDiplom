@@ -56,10 +56,11 @@ export function TopicBarChart({ byTopic }: Props) {
           axisLine={false}
         />
         <Tooltip
-          formatter={(value: number, name: string) => {
+          formatter={(value, name) => {
+            const v = Number(value ?? 0);
             if (name === 'solved') return [`${value} решено`, 'Решено'];
             if (name === 'total') return [`${value} всего`, 'Всего'];
-            return [value, name];
+            return [v, String(name)];
           }}
           cursor={{ fill: 'rgba(255,255,255,0.03)' }}
         />

@@ -51,10 +51,13 @@ export function DifficultyPie({ easy, medium, hard }: Props) {
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number) => [
-                `${value} (${formatValue(value, total)})`,
+              formatter={(value) => {
+                const v = Number(value ?? 0);
+                return [
+                  `${v} (${formatValue(v, total)})`,
                 '',
-              ]}
+                ];
+              }}
             />
           </PieChart>
         </ResponsiveContainer>

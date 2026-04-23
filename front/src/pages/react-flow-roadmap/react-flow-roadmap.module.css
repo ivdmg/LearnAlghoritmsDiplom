@@ -93,8 +93,7 @@
   z-index: 1;
   border-radius: inherit;
   background: var(--plate-overlay-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(6px);
+  /* backdrop-filter сильно грузит paint/layout на множестве нод; заменяем на лёгкий overlay */
   pointer-events: none;
   transition: opacity 0.4s ease;
   transform: translateZ(0);
@@ -138,8 +137,7 @@
   z-index: 1;
   border-radius: inherit;
   background: var(--plate-overlay-bg);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  /* backdrop-filter сильно грузит paint/layout на множестве нод; заменяем на лёгкий overlay */
   pointer-events: none;
   transition: opacity 0.4s ease;
   transform: translateZ(0);

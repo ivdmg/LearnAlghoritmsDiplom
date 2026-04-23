@@ -71,6 +71,8 @@ export function TasksStatsSnippet() {
 
       {loading && !stats ? (
         <p className={styles.muted}>Загрузка…</p>
+      ) : !stats ? (
+        <p className={styles.muted}>Нет данных статистики.</p>
       ) : (
         <>
           {/* Summary row */}

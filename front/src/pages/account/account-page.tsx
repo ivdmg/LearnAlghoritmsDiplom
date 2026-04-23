@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
-import { User, Pencil, Key, Mail, Trash2, LogOut, RefreshCw, Calendar, BarChart3, TrendingUp, Trophy, BookOpen, Clock } from 'lucide-react';
+import { User, Pencil, Key, Mail, Trash2, LogOut, RefreshCw, Calendar, BarChart3, TrendingUp, BookOpen, Clock } from 'lucide-react';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selector';
@@ -348,7 +348,6 @@ function ChangePasswordForm() {
 
 export function AccountPage() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { accessToken, user, loading, bootstrapDone } = useAppSelector((s) => s.auth);
   const { stats, loading: statsLoading, reload } = useMyStats();
 

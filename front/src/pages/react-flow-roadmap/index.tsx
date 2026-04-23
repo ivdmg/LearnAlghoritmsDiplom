@@ -61,7 +61,7 @@ export function ReactFlowRoadmapPage() {
 
       <div className={styles.pageBody}>
         <div
-          className={styles.flowContainer}
+          className={`${styles.flowContainer} ${sidebarOpen ? styles.flowContainerBlurred : ''}`}
           ref={containerRef}
         >
           {!hydrated && (

@@ -86,6 +86,24 @@ export function TaskPage() {
     setHasRun(false);
     setOutput('Выполнение...');
 
+    const isSortingTask = task.topicId === 'sortirovki';
+    if (isSortingTask) {
+      // Учебный античит: запрещаем использовать готовую сортировку.
+      // Это не идеальная защита (клиент), но сильно снижает желание "схитрить" на предзащите.
+      const src = code || initCode;
+      const forbidden: { re: RegExp; msg: string }[] = [
+        { re: /\bsorted\s*\(/, msg: 'Нельзя использовать sorted(). Реализуйте сортировку вручную.' },
+        { re: /\.sort\s*\(/, msg: 'Нельзя использовать list.sort(). Реализуйте сортировку вручную.' },
+      ];
+      const hit = forbidden.find((x) => x.re.test(src));
+      if (hit) {
+        setOutput(hit.msg);
+        setIsRunning(false);
+        setHasRun(true);
+        return;
+      }
+    }
+
     const cases = task.testCases;
     if (!cases || cases.length === 0) {
       setOutput('Нет тест-кейсов для проверки.');
@@ -100,7 +118,9 @@ export function TaskPage() {
 
       for (let i = 0; i < cases.length; i++) {
         const tc = cases[i];
-        const result = await runPython(code, tc.input);
+        const result = await runPython(code, tc.input, {
+          policy: task.topicId === 'sortirovki' ? 'restricted' : 'default',
+        });
         const got = (result ?? '').trim();
         const want = (tc.expected ?? '').trim();
         const passed = got === want;

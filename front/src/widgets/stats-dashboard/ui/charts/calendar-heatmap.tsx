@@ -11,6 +11,13 @@ export type HeatmapRange = 'week' | 'month' | 'year';
 
 const MONTH_NAMES = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 
+function toDateKeyLocal(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 function getLevel(count: number): number {
   if (count === 0) return 0;
   if (count <= 2) return 1;
@@ -63,7 +70,9 @@ function buildWeeks(
     const week: { date: string; count: number; level: number }[] = [];
     for (let d = 0; d < 7; d++) {
       if (current > end) break;
-      const dateStr = current.toISOString().slice(0, 10);
+      // Important: do NOT use toISOString() here — it converts to UTC and может "съесть" сегодняшний день
+      // в некоторых таймзонах. Нам нужен ключ именно локальной календарной даты.
+      const dateStr = toDateKeyLocal(current);
       const count = dataMap.get(dateStr) ?? 0;
       week.push({ date: dateStr, count, level: getLevel(count) });
       current.setDate(current.getDate() + 1);

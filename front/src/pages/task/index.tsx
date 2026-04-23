@@ -148,7 +148,7 @@ export function TaskPage() {
       setExecTimeMs(batch.totalExecTimeMs);
       if (allPassed && task && apiOn && accessToken) {
         void dispatch(
-          recordTaskSolved({ taskId: task.id, difficulty: task.difficulty }),
+          recordTaskSolved({ taskId: task.id, difficulty: task.difficulty, topicId: task.topicId }),
         );
       }
     } catch (err) {

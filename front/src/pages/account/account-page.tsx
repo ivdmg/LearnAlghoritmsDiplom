@@ -274,7 +274,7 @@ function ProfileSection({
               <div className={styles.chartFull}>
                 <div className={styles.chartCard}>
                   <h3 className={styles.h3}><BookOpen {...iconProps} /> По темам</h3>
-                  <TopicBarChart byTopic={stats.byTopic} />
+                  <TopicBarChart byTopic={stats.byTopic} solvedTaskIds={stats.solvedTaskIds} />
                 </div>
               </div>
 

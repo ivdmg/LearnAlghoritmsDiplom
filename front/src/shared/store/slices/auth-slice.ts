@@ -111,7 +111,7 @@ export const changePassword = createAsyncThunk(
 export const recordTaskSolved = createAsyncThunk(
   'auth/recordTaskSolved',
   async (
-    payload: { taskId: string; difficulty: string },
+    payload: { taskId: string; difficulty: string; topicId?: string },
     { getState, rejectWithValue },
   ) => {
     const token = (getState() as { auth: AuthState }).auth.accessToken;

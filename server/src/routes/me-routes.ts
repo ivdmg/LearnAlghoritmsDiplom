@@ -207,6 +207,7 @@ export async function registerMeRoutes(app: FastifyInstance) {
 
     return reply.send({
       solvedTotal: rows.length,
+      solvedTaskIds: rows.map((r) => r.taskId),
       byDifficulty,
       byTopic,
       lastSolved,

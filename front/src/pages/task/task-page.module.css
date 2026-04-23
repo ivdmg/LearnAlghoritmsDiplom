@@ -384,6 +384,42 @@
   margin-bottom: 8px;
 }
 
+.resultRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.execTimePill {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(229, 231, 235, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+[data-theme='light'] .execTimePill {
+  color: rgba(15, 23, 42, 0.72);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  box-shadow:
+    0 12px 24px rgba(2, 6, 23, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
 .output {
   padding: 14px 16px;
   border-radius: 14px;

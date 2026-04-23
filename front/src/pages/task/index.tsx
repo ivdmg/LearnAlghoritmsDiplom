@@ -23,8 +23,9 @@ export function TaskPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [hasRun, setHasRun] = useState(false);
+  const [execTimeMs, setExecTimeMs] = useState<number | null>(null);
 
-  const { runPython, isLoading } = usePyodide();
+  const { runPython, runPythonBatch, isLoading } = usePyodide();
   const layoutRef = useRef<HTMLDivElement | null>(null);
   const themeMode = useAppSelector((state) => state.theme.mode);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
@@ -66,6 +67,7 @@ export function TaskPage() {
     setOutput('');
     setIsSuccess(false);
     setHasRun(false);
+    setExecTimeMs(null);
   }, [taskId, task?.solutionTemplate]);
 
   const handleRun = async () => {
@@ -84,6 +86,7 @@ export function TaskPage() {
     setIsRunning(true);
     setIsSuccess(false);
     setHasRun(false);
+    setExecTimeMs(null);
     setOutput('Выполнение...');
 
     const isSortingTask = task.topicId === 'sortirovki';
@@ -116,12 +119,16 @@ export function TaskPage() {
       const lines: string[] = [];
       let allPassed = true;
 
+      const inputs = cases.map((tc) => tc.input ?? '');
+
+      const src = code || initCode;
+      const batch = await runPythonBatch(src, inputs, {
+        policy: task.topicId === 'sortirovki' ? 'restricted' : 'default',
+      });
+
       for (let i = 0; i < cases.length; i++) {
         const tc = cases[i];
-        const result = await runPython(code, tc.input, {
-          policy: task.topicId === 'sortirovki' ? 'restricted' : 'default',
-        });
-        const got = (result ?? '').trim();
+        const got = String(batch.outputs[i] ?? '').trim();
         const want = (tc.expected ?? '').trim();
         const passed = got === want;
         if (!passed) allPassed = false;
@@ -138,6 +145,7 @@ export function TaskPage() {
 
       setOutput(summary + '\n\n' + lines.join('\n\n'));
       setIsSuccess(allPassed);
+      setExecTimeMs(batch.totalExecTimeMs);
       if (allPassed && task && apiOn && accessToken) {
         void dispatch(
           recordTaskSolved({ taskId: task.id, difficulty: task.difficulty }),
@@ -310,21 +318,34 @@ export function TaskPage() {
               <div className={styles.outputHeader}>
                 <h3 className={styles.sectionSubtitle}>Вывод</h3>
                 {hasRun && (
-                  <GlassButton
-                    className={`${styles.resultBadge} ${
-                      isSuccess ? styles.resultBadgeSuccess : styles.resultBadgeError
-                    }`}
-                  >
-                    {isSuccess ? (
-                      <>
-                        <CheckCircle size={14} strokeWidth={2} /> Успешно
-                      </>
-                    ) : (
-                      <>
-                        <XCircle size={14} strokeWidth={2} /> Нужно доработать
-                      </>
+                  <div className={styles.resultRow}>
+                    {execTimeMs !== null && (
+                      <div className={styles.execTimePill}>
+                        {execTimeMs < 0.01
+                          ? '<0.01 ms'
+                          : execTimeMs < 1
+                            ? `${execTimeMs.toFixed(3)} ms`
+                            : execTimeMs < 1000
+                              ? `${execTimeMs.toFixed(2)} ms`
+                              : `${(execTimeMs / 1000).toFixed(2)} s`}
+                      </div>
                     )}
-                  </GlassButton>
+                    <GlassButton
+                      className={`${styles.resultBadge} ${
+                        isSuccess ? styles.resultBadgeSuccess : styles.resultBadgeError
+                      }`}
+                    >
+                      {isSuccess ? (
+                        <>
+                          <CheckCircle size={14} strokeWidth={2} /> Успешно
+                        </>
+                      ) : (
+                        <>
+                          <XCircle size={14} strokeWidth={2} /> Нужно доработать
+                        </>
+                      )}
+                    </GlassButton>
+                  </div>
                 )}
               </div>
               <pre className={styles.output}>{output || '(нажмите Запустить)'}</pre>

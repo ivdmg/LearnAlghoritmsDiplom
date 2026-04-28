@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { RoadmapTopic } from '@/entities/roadmap';
 import styles from './subtopic-list.module.css';
 
@@ -10,8 +9,6 @@ interface SubtopicListProps {
   onClose: () => void;
 }
 
-const INDICATOR_PADDING = 6; // <-- расстояние от краёв
-
 export function SubtopicList({
   topic,
   activeSubtopicId,
@@ -21,49 +18,57 @@ export function SubtopicList({
   const targetSubtopicId = hoveredSubtopicId ?? activeSubtopicId;
 
   const cardRef = useRef<HTMLDivElement | null>(null);
-  const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  const [indicatorRect, setIndicatorRect] = useState<{
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-  } | null>(null);
+  const updateIndicator = useCallback(() => {
+    const card = cardRef.current;
+    if (!card) return;
 
-  const updateIndicatorRect = () => {
-    const cardEl = cardRef.current;
-    if (!cardEl) return;
-
-    if (!targetSubtopicId) {
-      setIndicatorRect(null);
+    const targetId = targetSubtopicId;
+    if (!targetId) {
+      setIndicatorStyle(null);
       return;
     }
 
-    const itemEl = itemRefs.current[targetSubtopicId];
-    if (!itemEl) return;
+    const itemEl = card.querySelector(`[data-subtopic-id="${targetId}"]`) as HTMLElement | null;
+    if (!itemEl) {
+      setIndicatorStyle(null);
+      return;
+    }
 
-    const cardBox = cardEl.getBoundingClientRect();
-    const itemBox = itemEl.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const itemRect = itemEl.getBoundingClientRect();
 
-    setIndicatorRect({
-      left: itemBox.left - cardBox.left + INDICATOR_PADDING,
-      top: itemBox.top - cardBox.top + INDICATOR_PADDING / 2,
-      width: itemBox.width - INDICATOR_PADDING * 2,
-      height: itemBox.height - INDICATOR_PADDING,
+    setIndicatorStyle({
+      left: itemRect.left - cardRect.left,
+      top: itemRect.top - cardRect.top,
+      width: itemRect.width,
+      height: itemRect.height,
     });
-  };
+  }, [targetSubtopicId]);
 
-  useLayoutEffect(() => {
-    updateIndicatorRect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetSubtopicId, topic.subtopics.length]);
+  // Первый рендер — без transition
+  useEffect(() => {
+    updateIndicator();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setMounted(true);
+      });
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // При смене активного сабтопика — обновляем позицию
+  useEffect(() => {
+    if (mounted) {
+      updateIndicator();
+    }
+  }, [activeSubtopicId, mounted, updateIndicator]);
 
   useEffect(() => {
-    const onResize = () => updateIndicatorRect();
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetSubtopicId]);
+    window.addEventListener('resize', updateIndicator);
+    return () => window.removeEventListener('resize', updateIndicator);
+  }, [updateIndicator]);
 
   return (
     <div
@@ -71,28 +76,19 @@ export function SubtopicList({
       className={styles.card}
       onMouseLeave={() => setHoveredSubtopicId(null)}
     >
-      <motion.div
-        className={styles.indicatorOverlay}
-        initial={false}
-        animate={
-          indicatorRect
-            ? {
-                opacity: 1,
-                left: indicatorRect.left,
-                top: indicatorRect.top,
-                width: indicatorRect.width,
-                height: indicatorRect.height,
-              }
-            : { opacity: 0 }
-        }
-        transition={{
-          type: 'spring',
-          stiffness: 420,
-          damping: 40,
-          mass: 0.9,
-        }}
-        style={{ pointerEvents: 'none' }}
-      />
+      {/* Скользящий индикатор — CSS transition вместо framer-motion spring */}
+      {indicatorStyle && (
+        <div
+          className={styles.indicatorOverlay}
+          style={{
+            ...indicatorStyle,
+            transition: mounted
+              ? 'left 0.35s cubic-bezier(0.4, 0, 0.2, 1), top 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1), height 0.35s cubic-bezier(0.4, 0, 0.2, 1)'
+              : 'none',
+          }}
+          aria-hidden
+        />
+      )}
 
       {topic.subtopics.map((subtopic) => {
         const isActive = subtopic.id === activeSubtopicId;
@@ -100,10 +96,8 @@ export function SubtopicList({
         return (
           <button
             key={subtopic.id}
-            ref={(el) => {
-              itemRefs.current[subtopic.id] = el;
-            }}
             type="button"
+            data-subtopic-id={subtopic.id}
             className={`${styles.subtopicItem} ${
               isActive ? styles.subtopicItemActive : ''
             }`}

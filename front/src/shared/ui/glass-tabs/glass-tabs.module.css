@@ -5,15 +5,6 @@
   padding: 4px;
   border-radius: 999px;
 
-  /* прозрачный фон для эффекта стекла */
-  /* background: rgba(14, 14, 14, 0.65); */
-  
-  /* background: rgba(255, 255, 255, 0.05); */
-
-  /* стеклянная прозрачность + размытие фона */
-  /* backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%); */
-
   /* мягкие тени и контур */
   box-shadow:
     inset 0 1px 2px rgba(255, 255, 255, 0.15),
@@ -42,22 +33,13 @@
   margin-right: 0;
 }
 
-/* Стеклянная плашка, которая скользит между табами */
+/* Скользящий индикатор — CSS transition вместо framer-motion layoutId */
 .indicator {
   position: absolute;
-  top: 2px;
-  bottom: 2px;
-  left: 5px;
-  right: 5px;
   border-radius: 999px;
-  
-  /* background: linear-gradient(
-    145deg,
-    rgba(60, 65, 85, 0.15),
-    rgba(45, 50, 70, 0.05)
-  ); */
+  z-index: 0;
+  pointer-events: none;
   background: rgba(255, 255, 255, 0.05);
-  
   box-shadow:
     inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.08),
     inset 3px 5px 2px -4.75px rgba(255, 255, 255, 0.08),
@@ -67,7 +49,6 @@
     inset 0px -3px 1px rgba(0, 0, 0, 0.04),
     inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
     inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
-  z-index: 0;
 }
 
 [data-theme='light'] .indicator {
@@ -92,6 +73,19 @@
   border-radius: 567.293px;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  color: rgba(229, 231, 235, 0.45);
+}
+
+.tabButtonActive {
+  color: #f9fafb;
+}
+
+[data-theme='light'] .tabButton {
+  color: rgba(15, 23, 42, 0.38);
+}
+
+[data-theme='light'] .tabButtonActive {
+  color: #0b1220;
 }
 
 [data-theme='light'] .root .tabButton {
@@ -100,7 +94,6 @@
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
-  color: #0b1220;
 }
 
 .iconTabButton {
@@ -119,15 +112,18 @@
     inset 0px -3px 1px rgba(0, 0, 0, 0.04),
     inset 2.5px -2px 3px rgba(200, 200, 200, 0.04),
     inset 0px -3px 3px 1px rgba(255, 255, 255, 0.02);
+  color: rgba(229, 231, 235, 0.45);
 }
 
 [data-theme='light'] .iconTabButton {
-  background: transparent !important;
-  box-shadow: none !important;
-  color: #0b1220;
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.55),
+    0 0 0 1px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(2, 6, 23, 0.08);
+  color: rgba(15, 23, 42, 0.38);
 }
 
 .spacer {
   flex: 1;
 }
-

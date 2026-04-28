@@ -1,19 +1,13 @@
-import { LayoutGroup, motion } from 'framer-motion';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { UserOutlined } from '@ant-design/icons';
+import { User } from 'lucide-react';
 import { ThemeToggle } from '@/widgets/theme-toggle';
-import { GlassTopbar } from '@/shared/ui';
+import { GlassTopbar, AuthModal } from '@/shared/ui';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { TASKS } from '@/entities/task';
 import { isApiConfigured } from '@/shared/config/api-url';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import styles from './app-header.module.css';
-
-const navSpring = {
-  type: 'spring' as const,
-  stiffness: 320,
-  damping: 32,
-};
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -22,6 +16,8 @@ export function AppHeader() {
   const accessToken = useAppSelector((s) => s.auth.accessToken);
   const apiOn = isApiConfigured();
   const accountSignedIn = Boolean(apiOn && accessToken);
+
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const isRoadmap = location.pathname === '/';
   const isTasksList = location.pathname === '/tasks';
@@ -47,21 +43,88 @@ export function AppHeader() {
     centerTitle = 'AlgoLearn';
   }
 
+  const handleProfileClick = () => {
+    if (accountSignedIn) {
+      navigate('/account');
+    } else {
+      setAuthModalOpen(true);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    // After successful login, navigate to account page
+    navigate('/account');
+  };
+
+  // Скользящий индикатор навигации — CSS transition вместо framer-motion layoutId
+  const navTrackRef = useRef<HTMLDivElement>(null);
+  const [navIndicatorStyle, setNavIndicatorStyle] = useState<React.CSSProperties | null>(null);
+  const [navMounted, setNavMounted] = useState(false);
+
+  const updateNavIndicator = useCallback(() => {
+    const track = navTrackRef.current;
+    if (!track) return;
+
+    const activeBtn = track.querySelector(`.${styles.navBtnActive}`) as HTMLElement | null;
+    if (!activeBtn) {
+      setNavIndicatorStyle(null);
+      return;
+    }
+
+    const trackRect = track.getBoundingClientRect();
+    const btnRect = activeBtn.getBoundingClientRect();
+
+    setNavIndicatorStyle({
+      left: btnRect.left - trackRect.left,
+      top: btnRect.top - trackRect.top,
+      width: btnRect.width,
+      height: btnRect.height,
+    });
+  }, []);
+
+  // Первый рендер — без transition
+  useEffect(() => {
+    updateNavIndicator();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setNavMounted(true);
+      });
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // При смене страницы — обновляем позицию
+  useEffect(() => {
+    if (navMounted) {
+      updateNavIndicator();
+    }
+  }, [activeNavTab, navMounted, updateNavIndicator]);
+
+  useEffect(() => {
+    window.addEventListener('resize', updateNavIndicator);
+    return () => window.removeEventListener('resize', updateNavIndicator);
+  }, [updateNavIndicator]);
+
   return (
-    <header className={styles.headerShell}>
-      <LayoutGroup>
+    <>
+      <header className={styles.headerShell}>
         <GlassTopbar
           left={
             <nav className={styles.navPill} aria-label="Основная навигация">
-              <div className={styles.navTrack}>
+              <div ref={navTrackRef} className={styles.navTrack}>
+                {/* Скользящий индикатор — CSS transition вместо framer-motion layoutId */}
+                {navIndicatorStyle && (
+                  <div
+                    className={styles.navIndicator}
+                    style={{
+                      ...navIndicatorStyle,
+                      transition: navMounted
+                        ? 'left 0.35s cubic-bezier(0.4, 0, 0.2, 1), top 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1), height 0.35s cubic-bezier(0.4, 0, 0.2, 1)'
+                        : 'none',
+                    }}
+                    aria-hidden
+                  />
+                )}
                 <div className={styles.navSlot}>
-                  {activeNavTab === 'roadmap' && (
-                    <motion.div
-                      className={styles.navIndicator}
-                      layoutId="header-main-nav-pill"
-                      transition={navSpring}
-                    />
-                  )}
                   <button
                     type="button"
                     className={`${styles.navBtn} ${activeNavTab === 'roadmap' ? styles.navBtnActive : ''}`}
@@ -72,13 +135,6 @@ export function AppHeader() {
                   </button>
                 </div>
                 <div className={styles.navSlot}>
-                  {activeNavTab === 'tasks' && (
-                    <motion.div
-                      className={styles.navIndicator}
-                      layoutId="header-main-nav-pill"
-                      transition={navSpring}
-                    />
-                  )}
                   <button
                     type="button"
                     className={`${styles.navBtn} ${activeNavTab === 'tasks' ? styles.navBtnActive : ''}`}
@@ -93,13 +149,6 @@ export function AppHeader() {
           }
           center={
             <div className={styles.titleSlot}>
-              {(isTaskSolution || isAccount) && (
-                <motion.div
-                  className={styles.titleNavIndicator}
-                  layoutId="header-main-nav-pill"
-                  transition={navSpring}
-                />
-              )}
               <span className={styles.title}>{centerTitle}</span>
             </div>
           }
@@ -112,17 +161,22 @@ export function AppHeader() {
                 <GlassButton
                   type="button"
                   className={`${styles.accountBtn} ${accountSignedIn ? styles.accountBtnSignedIn : ''}`}
-                  onClick={() => navigate('/account')}
+                  onClick={handleProfileClick}
                   aria-label="Личный кабинет"
                 >
-                  <UserOutlined />
+                  <User size={18} strokeWidth={2} />
                 </GlassButton>
               </div>
               <ThemeToggle compact />
             </div>
           }
         />
-      </LayoutGroup>
-    </header>
+      </header>
+      <AuthModal
+        open={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
+    </>
   );
 }

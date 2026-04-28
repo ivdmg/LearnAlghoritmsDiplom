@@ -1,30 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
-import {
-  UserOutlined,
-  EditOutlined,
-  KeyOutlined,
-  MailOutlined,
-  DeleteOutlined,
-  LogoutOutlined,
-  ReloadOutlined,
-  CalendarOutlined,
-  BarChartOutlined,
-  LineChartOutlined,
-  TrophyOutlined,
-  BookOutlined,
-  ClockCircleOutlined,
-} from '@ant-design/icons';
+import { User, Pencil, Key, Mail, Trash2, LogOut, RefreshCw, Calendar, BarChart3, TrendingUp, BookOpen, Clock } from 'lucide-react';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selector';
 import {
   changePassword,
-  clearAuthError,
   deleteAccount,
-  login,
   logout,
-  register,
   updateProfile,
 } from '@/shared/store/slices/auth-slice';
 import { isApiConfigured } from '@/shared/config/api-url';
@@ -33,6 +16,8 @@ import { TASKS } from '@/entities/task';
 import { StatsKPI } from '@/widgets/stats-kpi';
 import { CalendarHeatmap, DifficultyPie, TopicBarChart, ActivityLineChart } from '@/widgets/stats-dashboard/ui/charts';
 import styles from './account-page.module.css';
+
+const iconProps = { size: 12, strokeWidth: 2 };
 
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
 
@@ -161,11 +146,11 @@ function ProfileSection({
             {/* Логин */}
             <div className={styles.rowFlex}>
               <div className={styles.row}>
-                <span className={styles.muted}><UserOutlined style={{ fontSize: 12, marginRight: 4 }} />Логин</span>{' '}
+                <span className={styles.muted}><User {...iconProps} />Логин</span>{' '}
                 {editUsername ? <strong className={styles.editMode}>{username}</strong> : <strong>{user.username}</strong>}
               </div>
               <button type="button" className={styles.editBtn} onClick={() => { setEditUsername(!editUsername); setUsername(user.username ?? ''); setUsernameMsg(null); }}>
-                {editUsername ? 'Отмена' : <EditOutlined />}
+                {editUsername ? 'Отмена' : <Pencil {...iconProps} />}
               </button>
             </div>
             {editUsername && (
@@ -183,11 +168,11 @@ function ProfileSection({
             {/* Email */}
             <div className={styles.rowFlex}>
               <div className={styles.row}>
-                <span className={styles.muted}><MailOutlined style={{ fontSize: 12, marginRight: 4 }} />Email</span>{' '}
+                <span className={styles.muted}><Mail {...iconProps} />Email</span>{' '}
                 {editEmail ? <span className={styles.editMode}>{email}</span> : <span>{user.email}</span>}
               </div>
               <button type="button" className={styles.editBtn} onClick={() => { setEditEmail(!editEmail); setEmail(user.email ?? ''); setEmailMsg(null); }}>
-                {editEmail ? 'Отмена' : <EditOutlined />}
+                {editEmail ? 'Отмена' : <Pencil {...iconProps} />}
               </button>
             </div>
             {editEmail && (
@@ -202,11 +187,11 @@ function ProfileSection({
             {/* Имя */}
             <div className={styles.rowFlex}>
               <div className={styles.row}>
-                <span className={styles.muted}><UserOutlined style={{ fontSize: 12, marginRight: 4 }} />Имя</span>{' '}
+                <span className={styles.muted}><User {...iconProps} />Имя</span>{' '}
                 {editName ? <span className={styles.editMode}>{displayName || '—'}</span> : <span>{user.displayName || '—'}</span>}
               </div>
               <button type="button" className={styles.editBtn} onClick={() => { setEditName(!editName); setDisplayName(user.displayName ?? ''); setNameMsg(null); }}>
-                {editName ? 'Отмена' : <EditOutlined />}
+                {editName ? 'Отмена' : <Pencil {...iconProps} />}
               </button>
             </div>
             {editName && (
@@ -218,19 +203,19 @@ function ProfileSection({
             )}
 
             <div className={styles.actions}>
-              <GlassButton onClick={() => void dispatch(logout())}><LogoutOutlined /> Выйти</GlassButton>
+              <GlassButton onClick={() => void dispatch(logout())}><LogOut {...iconProps} /> Выйти</GlassButton>
             </div>
           </div>
 
           {/* Смена пароля */}
           <div className={`${styles.card} ${styles.settingsCard}`}>
-            <h3 className={styles.h2}><KeyOutlined /> Смена пароля</h3>
+            <h3 className={styles.h2}><Key {...iconProps} /> Смена пароля</h3>
             <ChangePasswordForm />
           </div>
 
           {/* Удаление */}
           <div className={`${styles.card} ${styles.dangerCard}`}>
-            <h3 className={styles.h2}><DeleteOutlined /> Удаление аккаунта</h3>
+            <h3 className={styles.h2}><Trash2 {...iconProps} style={{ color: '#f87171' }} /> Удаление аккаунта</h3>
             <p className={styles.muted}>Это действие необратимо. Все данные будут удалены.</p>
             {!showDelete ? (
               <GlassButton onClick={() => setShowDelete(true)} className={styles.dangerBtn}>Удалить аккаунт</GlassButton>
@@ -256,7 +241,7 @@ function ProfileSection({
           {/* Статистика заголовок */}
           <div className={styles.statsHeader}>
             <h2 className={styles.h2}>Аналитика</h2>
-            <GlassButton type="button" onClick={() => reload()}><ReloadOutlined /> Обновить</GlassButton>
+            <GlassButton type="button" onClick={() => reload()}><RefreshCw {...iconProps} /> Обновить</GlassButton>
           </div>
 
           {statsLoading && !stats && <p className={styles.muted}>Загрузка…</p>}
@@ -266,7 +251,7 @@ function ProfileSection({
               {/* Heatmap */}
               <div className={styles.chartFull}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><CalendarOutlined /> Календарь активности</h3>
+                  <h3 className={styles.h3}><Calendar {...iconProps} /> Календарь активности</h3>
                   <CalendarHeatmap data={stats.calendarData} />
                 </div>
               </div>
@@ -274,13 +259,13 @@ function ProfileSection({
               {/* Donut + Line */}
               <div className={styles.chartCol}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><BarChartOutlined /> По сложности</h3>
+                  <h3 className={styles.h3}><BarChart3 {...iconProps} /> По сложности</h3>
                   <DifficultyPie easy={stats.byDifficulty.easy ?? 0} medium={stats.byDifficulty.medium ?? 0} hard={stats.byDifficulty.hard ?? 0} />
                 </div>
               </div>
               <div className={styles.chartCol}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><LineChartOutlined /> Активность по дням</h3>
+                  <h3 className={styles.h3}><TrendingUp {...iconProps} /> Активность по дням</h3>
                   <ActivityLineChart calendarData={stats.calendarData} />
                 </div>
               </div>
@@ -288,15 +273,15 @@ function ProfileSection({
               {/* Topics */}
               <div className={styles.chartFull}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><BookOutlined /> По темам</h3>
-                  <TopicBarChart byTopic={stats.byTopic} />
+                  <h3 className={styles.h3}><BookOpen {...iconProps} /> По темам</h3>
+                  <TopicBarChart byTopic={stats.byTopic} solvedTaskIds={stats.solvedTaskIds} />
                 </div>
               </div>
 
               {/* Recent solved */}
               <div className={styles.chartFull}>
                 <div className={styles.chartCard}>
-                  <h3 className={styles.h3}><ClockCircleOutlined /> Недавние решения</h3>
+                  <h3 className={styles.h3}><Clock {...iconProps} /> Недавние решения</h3>
                   {stats.lastSolved.length > 0 ? (
                     <ul className={styles.list}>
                       {stats.lastSolved.slice(0, 10).map((x) => (
@@ -356,27 +341,24 @@ function ChangePasswordForm() {
       <label className={styles.label}>Новый пароль<input className={styles.input} type="password" required minLength={8} value={newPwd} onChange={(e) => setNewPwd(e.target.value)} autoComplete="new-password" placeholder="Минимум 8 символов, буквы + цифры" /></label>
       <label className={styles.label}>Подтвердите пароль<input className={`${styles.input} ${confirmPwd && !passwordsMatch ? styles.inputError : ''}`} type="password" required minLength={8} value={confirmPwd} onChange={(e) => setConfirmPwd(e.target.value)} autoComplete="new-password" />{confirmPwd && !passwordsMatch && <span className={styles.fieldError}>Пароли не совпадают</span>}</label>
       {pwdMsg && <p className={pwdMsg.includes('обновлён') ? styles.ok : styles.error}>{pwdMsg}</p>}
-      <GlassButton type="submit"><KeyOutlined /> Сохранить пароль</GlassButton>
+      <GlassButton type="submit"><Key {...iconProps} /> Сохранить пароль</GlassButton>
     </form>
   );
 }
 
 export function AccountPage() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { accessToken, user, loading, error, bootstrapDone } = useAppSelector((s) => s.auth);
+  const { accessToken, user, loading, bootstrapDone } = useAppSelector((s) => s.auth);
   const { stats, loading: statsLoading, reload } = useMyStats();
 
-  const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [identifier, setIdentifier] = useState('');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-
-  const usernameValid = USERNAME_RE.test(username);
-  const usernameTouched = username.length > 0;
   const apiOn = isApiConfigured();
+
+  // Redirect to home if not authenticated
+  useEffect(() => {
+    if (apiOn && bootstrapDone && !loading && !accessToken) {
+      navigate('/', { replace: true });
+    }
+  }, [apiOn, bootstrapDone, loading, accessToken, navigate]);
 
   if (apiOn && !bootstrapDone) {
     return (
@@ -407,15 +389,17 @@ export function AccountPage() {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(clearAuthError());
-    if (mode === 'login') {
-      void dispatch(login({ identifier: identifier.trim(), password }));
-    } else {
-      void dispatch(register({ email, password, username: username.trim(), displayName: displayName.trim() || undefined }));
-    }
-  };
+  // Show loading state while checking auth
+  if (!accessToken) {
+    return (
+      <div className={styles.layout}>
+        <AppHeader />
+        <main className={styles.main}>
+          <p className={styles.muted}>Перенаправление…</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.layout}>
@@ -423,35 +407,8 @@ export function AccountPage() {
       <main className={styles.main}>
         <h1 className={styles.h1}>Личный кабинет</h1>
 
-        {!accessToken ? (
-          <section className={styles.card}>
-            <div className={styles.tabs}>
-              <button type="button" className={`${styles.tab} ${mode === 'login' ? styles.tabActive : ''}`} onClick={() => setMode('login')}>Вход</button>
-              <button type="button" className={`${styles.tab} ${mode === 'register' ? styles.tabActive : ''}`} onClick={() => setMode('register')}>Регистрация</button>
-            </div>
-
-            {mode === 'login' ? (
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.label}>Email или логин<input className={styles.input} value={identifier} onChange={(e) => setIdentifier(e.target.value)} autoComplete="username" placeholder="email@example.com или my_username" /></label>
-                <label className={styles.label}>Пароль<input className={styles.input} type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" /></label>
-                {error && <p className={styles.error}>{error}</p>}
-                <GlassButton type="submit" disabled={loading}>{loading ? '…' : 'Войти'}</GlassButton>
-              </form>
-            ) : (
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <label className={styles.label}>Логин *<input className={`${styles.input} ${usernameTouched && !usernameValid ? styles.inputError : ''}`} value={username} onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))} autoComplete="username" placeholder="3–24 символа, a-z, 0-9, _" required />{usernameTouched && !usernameValid && <span className={styles.fieldError}>3–24 символа, только a-z, 0-9, _</span>}</label>
-                <label className={styles.label}>Email *<input className={styles.input} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></label>
-                <label className={styles.label}>Пароль *<input className={styles.input} type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" placeholder="Минимум 8 символов, буквы + цифры" /></label>
-                <label className={styles.label}>Имя (необязательно)<input className={styles.input} value={displayName} onChange={(e) => setDisplayName(e.target.value)} autoComplete="nickname" /></label>
-                {error && <p className={styles.error}>{error}</p>}
-                <GlassButton type="submit" disabled={loading || (usernameTouched && !usernameValid)}>{loading ? '…' : 'Зарегистрироваться'}</GlassButton>
-              </form>
-            )}
-          </section>
-        ) : (
-          user && (
-            <ProfileSection user={user} stats={stats} statsLoading={statsLoading} reload={reload} navigate={navigate} />
-          )
+        {user && (
+          <ProfileSection user={user} stats={stats} statsLoading={statsLoading} reload={reload} navigate={navigate} />
         )}
       </main>
     </div>

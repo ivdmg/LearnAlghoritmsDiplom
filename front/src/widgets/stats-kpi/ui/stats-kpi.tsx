@@ -1,18 +1,13 @@
 import type { MyStats } from '@/shared/hooks/use-my-stats';
-import {
-  FireOutlined,
-  CheckCircleOutlined,
-  PercentageOutlined,
-  CalendarOutlined,
-  TrophyOutlined,
-  LineChartOutlined,
-} from '@ant-design/icons';
+import { Flame, CheckCircle, Percent, Calendar, Trophy, TrendingUp } from 'lucide-react';
 import styles from './stats-kpi.module.css';
 
 type Props = {
   stats: MyStats | null;
   statsLoading: boolean;
 };
+
+const iconProps = { size: 14, strokeWidth: 2 };
 
 export function StatsKPI({ stats, statsLoading }: Props) {
   if (statsLoading && !stats) {
@@ -43,36 +38,36 @@ export function StatsKPI({ stats, statsLoading }: Props) {
   return (
     <div className={styles.grid}>
       <div className={styles.card}>
-        <span className={styles.label}><FireOutlined /> Серия дней</span>
+        <span className={styles.label}><Flame {...iconProps} /> Серия дней</span>
         <span className={`${styles.value} ${styles.valueStreak}`}>{streakDays}</span>
       </div>
 
       <div className={styles.card}>
-        <span className={styles.label}><CheckCircleOutlined /> Всего решено</span>
+        <span className={styles.label}><CheckCircle {...iconProps} /> Всего решено</span>
         <span className={`${styles.value} ${styles.valueTotal}`}>{solvedTotal}</span>
       </div>
 
       <div className={styles.card}>
-        <span className={styles.label}><PercentageOutlined /> С первой попытки</span>
+        <span className={styles.label}><Percent {...iconProps} /> С первой попытки</span>
         <span className={`${styles.value} ${styles.valueRate}`}>
           {firstAttemptRate > 0 ? `${Math.round(firstAttemptRate)}%` : '—'}
         </span>
       </div>
 
       <div className={styles.card}>
-        <span className={styles.label}><CalendarOutlined /> Дней активности</span>
+        <span className={styles.label}><Calendar {...iconProps} /> Дней активности</span>
         <span className={`${styles.value} ${styles.valueDays}`}>{daysWithActivity || '—'}</span>
       </div>
 
       <div className={styles.card}>
-        <span className={styles.label}><TrophyOutlined /> Рекорд серии</span>
+        <span className={styles.label}><Trophy {...iconProps} /> Рекорд серии</span>
         <span className={`${styles.value} ${styles.valueLongest}`}>
           {longestStreak || '—'}
         </span>
       </div>
 
       <div className={styles.card}>
-        <span className={styles.label}><LineChartOutlined /> За 7 дней</span>
+        <span className={styles.label}><TrendingUp {...iconProps} /> За 7 дней</span>
         <span className={`${styles.value} ${styles.valueRecent}`}>{solvedLast7 || 0}</span>
       </div>
     </div>

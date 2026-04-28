@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useAppSelector } from '@/shared/lib/hooks/use-app-selector';
-import type { ThemeConfig } from 'antd';
-import { theme as antTheme } from 'antd';
+import type { ThemeConfig } from 'antd/es/config-provider/context';
+import antTheme from 'antd/es/theme';
 
 const { darkAlgorithm, defaultAlgorithm } = antTheme;
 

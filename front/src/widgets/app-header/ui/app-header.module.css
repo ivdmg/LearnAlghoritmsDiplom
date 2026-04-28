@@ -14,27 +14,24 @@
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  min-height: 0;
 }
 
 /* Профиль: при входе — зелёная иконка и подсветка снизу (в духе луны в переключателе темы) */
 .accountWrap {
   position: relative;
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
-  padding-bottom: 8px;
-  align-self: center;
+  justify-content: center;
 }
 
 .accountWrapActive {
-  padding-bottom: 10px;
+  /* padding-bottom убран — выравнивание через align-items в родителе */
 }
 
 .accountUnderGlow {
   position: absolute;
   left: 50%;
-  top: calc(100% - 4px);
+  bottom: -6px;
   transform: translateX(-50%);
   width: 56px;
   height: 18px;
@@ -138,6 +135,7 @@
 }
 
 .navTrack {
+  position: relative;
   display: flex;
   align-items: stretch;
 }

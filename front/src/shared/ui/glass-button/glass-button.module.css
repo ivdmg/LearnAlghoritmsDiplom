@@ -15,6 +15,7 @@
   cursor: pointer;
   overflow: hidden;
   z-index: 2;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 
   box-shadow:
     inset 0px 0px 0.25px 1.25px rgba(255, 255, 255, 0.04),
@@ -28,6 +29,15 @@
   z-index: 0;
 }
 
+.button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
 [data-theme='light'] .button {
   color: #0b1220; /* мягкий почти-чёрный */
   border-color: rgba(15, 23, 42, 0.14);
@@ -38,9 +48,18 @@
     0 10px 24px rgba(2, 6, 23, 0.10);
 }
 
+[data-theme='light'] .button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
 .button:disabled {
   opacity: 0.35;
   cursor: default;
+}
+
+.button.active {
+  /* active state — подсветка через CSS вместо framer-motion layoutId */
 }
 
 .label {

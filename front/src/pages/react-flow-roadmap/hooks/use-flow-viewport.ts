@@ -19,6 +19,8 @@ export function useFlowViewport() {
   const currentYRef = useRef(0);
   const minViewportYRef = useRef(0);
   const maxViewportYRef = useRef(0);
+  const rafIdRef = useRef<number>(0);
+  const animatingRef = useRef(false);
 
   const graphExtent = useMemo(
     (): [[number, number], [number, number]] => [
@@ -75,6 +77,43 @@ export function useFlowViewport() {
     setTimeout(adjust, 50);
   }, []);
 
+  const tick = useCallback(() => {
+    const instance = flowInstanceRef.current;
+    if (!instance) {
+      animatingRef.current = false;
+      rafIdRef.current = 0;
+      return;
+    }
+
+    const minY = minViewportYRef.current;
+    const maxY = maxViewportYRef.current;
+    const targetY = clamp(targetYRef.current, minY, maxY);
+    const currentY = currentYRef.current;
+    const diff = targetY - currentY;
+
+    if (Math.abs(diff) > 0.5) {
+      currentYRef.current = clamp(currentY + diff * SMOOTH_FACTOR, minY, maxY);
+      instance.setViewport({
+        x: viewportXRef.current,
+        y: currentYRef.current,
+        zoom: zoomRef.current,
+      });
+      rafIdRef.current = requestAnimationFrame(tick);
+      return;
+    }
+
+    // Snap to target and stop animating
+    currentYRef.current = targetY;
+    animatingRef.current = false;
+    rafIdRef.current = 0;
+  }, []);
+
+  const startTick = useCallback(() => {
+    if (animatingRef.current) return;
+    animatingRef.current = true;
+    rafIdRef.current = requestAnimationFrame(tick);
+  }, [tick]);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el || !ready) return;
@@ -83,38 +122,19 @@ export function useFlowViewport() {
       const minY = minViewportYRef.current;
       const maxY = maxViewportYRef.current;
       targetYRef.current = clamp(targetYRef.current - e.deltaY * SCROLL_SPEED, minY, maxY);
+      startTick();
     };
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
-  }, [ready]);
+  }, [ready, startTick]);
 
   useEffect(() => {
-    let rafId = 0;
-    const animate = () => {
-      const instance = flowInstanceRef.current;
-      const minY = minViewportYRef.current;
-      const maxY = maxViewportYRef.current;
-      if (!instance) {
-        rafId = requestAnimationFrame(animate);
-        return;
-      }
-      const targetY = clamp(targetYRef.current, minY, maxY);
-      const currentY = currentYRef.current;
-      const diff = targetY - currentY;
-      if (Math.abs(diff) > 0.5) {
-        currentYRef.current = currentY + diff * SMOOTH_FACTOR;
-        currentYRef.current = clamp(currentYRef.current, minY, maxY);
-        instance.setViewport({
-          x: viewportXRef.current,
-          y: currentYRef.current,
-          zoom: zoomRef.current,
-        });
-      }
-      rafId = requestAnimationFrame(animate);
+    return () => {
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = 0;
+      animatingRef.current = false;
     };
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, [ready]);
+  }, []);
 
   return { containerRef, onInit, graphExtent, ready };
 }

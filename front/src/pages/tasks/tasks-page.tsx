@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppHeader } from '@/widgets/app-header';
 import { TasksStatsSnippet } from '@/widgets/tasks-stats-snippet';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
-import { ScrollArea, TaskRowList } from '@/shared/ui';
+import { ScrollArea, TaskRowList, DifficultyFilter } from '@/shared/ui';
+import type { DifficultyFilterValue } from '@/shared/ui';
 import { ROADMAP } from '@/entities/roadmap';
 import { TASKS } from '@/entities/task';
 import styles from './tasks-page.module.css';
@@ -21,6 +22,7 @@ type Group = {
 export function TasksPage() {
   const navigate = useNavigate();
   const layoutRef = useRef<HTMLDivElement | null>(null);
+  const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilterValue>(null);
 
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {
@@ -39,13 +41,28 @@ export function TasksPage() {
   const groups: Group[] = useMemo(() => {
     return ROADMAP.map((topic) => {
       const subtopicItems = topic.subtopics.map((st) => {
-        const stTaskIds = TASKS.filter((t) => t.topicId === topic.id && t.subtopicId === st.id).map(
-          (t) => t.id,
-        );
+        let stTaskIds = TASKS
+          .filter((t) => t.topicId === topic.id && t.subtopicId === st.id)
+          .map((t) => t.id);
+        if (difficultyFilter) {
+          stTaskIds = stTaskIds.filter((id) => {
+            const task = taskById.get(id);
+            return task?.difficulty === difficultyFilter;
+          });
+        }
         return { kind: 'subtopic' as const, id: st.id, title: st.title, taskIds: stTaskIds };
       });
 
-      const topicLevelTaskIds = TASKS.filter((t) => t.topicId === topic.id && !t.subtopicId).map((t) => t.id);
+      let topicLevelTaskIds = TASKS
+        .filter((t) => t.topicId === topic.id && !t.subtopicId)
+        .map((t) => t.id);
+      if (difficultyFilter) {
+        topicLevelTaskIds = topicLevelTaskIds.filter((id) => {
+          const task = taskById.get(id);
+          return task?.difficulty === difficultyFilter;
+        });
+      }
+
       const items: Group['items'] = [...subtopicItems];
       if (topicLevelTaskIds.length > 0) {
         items.push({ kind: 'topic', id: topic.id, title: 'Задачи по теме', taskIds: topicLevelTaskIds });
@@ -59,7 +76,7 @@ export function TasksPage() {
         totalTasks,
       };
     }).filter((g) => g.totalTasks > 0);
-  }, []);
+  }, [difficultyFilter, taskById]);
 
   return (
     <div ref={layoutRef} className={styles.layout}>
@@ -75,9 +92,15 @@ export function TasksPage() {
 
         <div className={styles.rightPanel}>
           <ScrollArea className={styles.panelContent} viewportClassName={styles.panelViewport}>
+            <div className={styles.filterRow}>
+              <DifficultyFilter value={difficultyFilter} onChange={setDifficultyFilter} />
+            </div>
+
             {groups.length === 0 ? (
               <div className={styles.empty}>
-                Пока нет задач. Добавьте их в `entities/task/model/data.ts`.
+                {difficultyFilter
+                  ? `Нет задач со сложностью "${difficultyFilter}".`
+                  : 'Пока нет задач. Добавьте их в `entities/task/model/data.ts`.'}
               </div>
             ) : (
               <div className={styles.blocks}>

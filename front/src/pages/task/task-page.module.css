@@ -114,6 +114,14 @@
   gap: 16px;
 }
 
+.rightColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
 /* ---------- GLASS PANEL ---------- */
 
 .panelContent {
@@ -128,6 +136,11 @@
   backdrop-filter: blur(30px) saturate(150%);
   -webkit-backdrop-filter: blur(30px) saturate(150%);
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+  min-height: 0;
+}
+
+.panelContent.root {
+  overflow: hidden;
 }
 
 [data-theme='light'] .panelContent {
@@ -172,6 +185,79 @@
   /* Windows overlay scrollbars часто прячутся. Делаем место под полосу всегда. */
   scrollbar-gutter: stable;
   overflow-y: scroll;
+}
+
+/* ---------- DIFFICULTY BADGE ---------- */
+
+.diffBadge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+}
+
+.diff_easy {
+  background: rgba(34, 197, 94, 0.18);
+  color: #4ade80;
+}
+
+.diff_medium {
+  background: rgba(251, 191, 36, 0.18);
+  color: #fbbf24;
+}
+
+.diff_hard {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+}
+
+[data-theme='light'] .diff_easy {
+  background: rgba(22, 163, 74, 0.22);
+  color: #14532dc4;
+}
+
+[data-theme='light'] .diff_medium {
+  background: rgba(245, 159, 11, 0.514);
+  color: #92410ed3;
+}
+
+[data-theme='light'] .diff_hard {
+  background: rgba(220, 38, 38, 0.18);
+  color: #991b1bc5;
+}
+
+/* ---------- OUTPUT PANEL ---------- */
+
+.outputPanel {
+  flex: 1;
+  margin-top: 16px;
+  padding: 20px 22px;
+  border-radius: 24px;
+  color: #f9fafb;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+[data-theme='light'] .outputPanel {
+  color: #0b1220;
+  background: rgba(255, 255, 255, 0.40);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow:
+    0 12px 28px rgba(2, 6, 23, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
 }
 
 /* ---------- LEFT PANEL HEADER ---------- */
@@ -296,6 +382,42 @@
   gap: 12px;
   margin-top: 16px;
   margin-bottom: 8px;
+}
+
+.resultRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.execTimePill {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(229, 231, 235, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+[data-theme='light'] .execTimePill {
+  color: rgba(15, 23, 42, 0.72);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  box-shadow:
+    0 12px 24px rgba(2, 6, 23, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .output {

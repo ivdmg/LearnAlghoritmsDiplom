@@ -6,6 +6,7 @@ import { setSession } from '@/shared/store/slices/auth-slice';
 
 export type MyStats = {
   solvedTotal: number;
+  solvedTaskIds: string[];
   byDifficulty: Record<string, number>;
   byTopic: Record<string, number>;
   lastSolved: Array<{

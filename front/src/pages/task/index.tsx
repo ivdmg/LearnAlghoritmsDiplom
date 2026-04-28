@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { LeftOutlined, RightOutlined, HomeOutlined, CheckCircleFilled, CloseCircleFilled, DownOutlined } from '@ant-design/icons';
+import { ChevronLeft, ChevronRight, Home, CheckCircle, XCircle, ChevronDown } from 'lucide-react';
 import { useMemo, useState, useEffect, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/use-app-selec
 import { recordTaskSolved } from '@/shared/store/slices/auth-slice';
 import { isApiConfigured } from '@/shared/config/api-url';
 import { getOrderedTaskIds, useTaskById } from '@/entities/task';
-import { usePyodide } from '@/features/run-python';
+import { usePyodide, preloadPyodide } from '@/features/run-python';
 import { AppHeader } from '@/widgets/app-header';
 import { GlassButton } from '@/shared/ui/glass-button/glass-button';
 import { ScrollArea } from '@/shared/ui';
@@ -23,8 +23,9 @@ export function TaskPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [hasRun, setHasRun] = useState(false);
+  const [execTimeMs, setExecTimeMs] = useState<number | null>(null);
 
-  const { runPython, isLoading } = usePyodide();
+  const { runPython, runPythonBatch, isLoading } = usePyodide();
   const layoutRef = useRef<HTMLDivElement | null>(null);
   const themeMode = useAppSelector((state) => state.theme.mode);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
@@ -34,6 +35,21 @@ export function TaskPage() {
   /** С включённым API запуск тестов только для вошедших пользователей (статистика). Без API — как раньше. */
   const runBlocked = apiOn && bootstrapDone && !accessToken;
   const runAuthLoading = apiOn && !bootstrapDone;
+
+  // Ленивая загрузка Pyodide при открытии страницы задачи (в idle time)
+  useEffect(() => {
+    const idlePreload = () => {
+      preloadPyodide().catch(() => {
+        // ошибка всплывёт в usePyodide при запуске
+      });
+    };
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(idlePreload);
+    } else {
+      const id = globalThis.setTimeout(idlePreload, 500);
+      return () => globalThis.clearTimeout(id);
+    }
+  }, []);
 
   const { task, loading: taskLoading } = useTaskById(taskId);
 
@@ -51,6 +67,7 @@ export function TaskPage() {
     setOutput('');
     setIsSuccess(false);
     setHasRun(false);
+    setExecTimeMs(null);
   }, [taskId, task?.solutionTemplate]);
 
   const handleRun = async () => {
@@ -69,7 +86,26 @@ export function TaskPage() {
     setIsRunning(true);
     setIsSuccess(false);
     setHasRun(false);
+    setExecTimeMs(null);
     setOutput('Выполнение...');
+
+    const isSortingTask = task.topicId === 'sortirovki';
+    if (isSortingTask) {
+      // Учебный античит: запрещаем использовать готовую сортировку.
+      // Это не идеальная защита (клиент), но сильно снижает желание "схитрить" на предзащите.
+      const src = code || initCode;
+      const forbidden: { re: RegExp; msg: string }[] = [
+        { re: /\bsorted\s*\(/, msg: 'Нельзя использовать sorted(). Реализуйте сортировку вручную.' },
+        { re: /\.sort\s*\(/, msg: 'Нельзя использовать list.sort(). Реализуйте сортировку вручную.' },
+      ];
+      const hit = forbidden.find((x) => x.re.test(src));
+      if (hit) {
+        setOutput(hit.msg);
+        setIsRunning(false);
+        setHasRun(true);
+        return;
+      }
+    }
 
     const cases = task.testCases;
     if (!cases || cases.length === 0) {
@@ -83,10 +119,16 @@ export function TaskPage() {
       const lines: string[] = [];
       let allPassed = true;
 
+      const inputs = cases.map((tc) => tc.input ?? '');
+
+      const src = code || initCode;
+      const batch = await runPythonBatch(src, inputs, {
+        policy: task.topicId === 'sortirovki' ? 'restricted' : 'default',
+      });
+
       for (let i = 0; i < cases.length; i++) {
         const tc = cases[i];
-        const result = await runPython(code, tc.input);
-        const got = (result ?? '').trim();
+        const got = String(batch.outputs[i] ?? '').trim();
         const want = (tc.expected ?? '').trim();
         const passed = got === want;
         if (!passed) allPassed = false;
@@ -103,9 +145,10 @@ export function TaskPage() {
 
       setOutput(summary + '\n\n' + lines.join('\n\n'));
       setIsSuccess(allPassed);
+      setExecTimeMs(batch.totalExecTimeMs);
       if (allPassed && task && apiOn && accessToken) {
         void dispatch(
-          recordTaskSolved({ taskId: task.id, difficulty: task.difficulty }),
+          recordTaskSolved({ taskId: task.id, difficulty: task.difficulty, topicId: task.topicId }),
         );
       }
     } catch (err) {
@@ -170,15 +213,20 @@ export function TaskPage() {
         <div className={styles.leftPanel}>
           <ScrollArea className={styles.leftScrollPanel} viewportClassName={styles.leftScrollViewport}>
             <div className={styles.leftTopRow}>
+              {task && (
+                <span className={`${styles.diffBadge} ${styles[`diff_${task.difficulty}`]}`}>
+                  {task.difficulty === 'easy' ? 'Easy' : task.difficulty === 'medium' ? 'Medium' : 'Hard'}
+                </span>
+              )}
               <div className={styles.leftNavButtons}>
                 <GlassButton onClick={handleBack} className={styles.iconButton}>
-                  <HomeOutlined />
+                  <Home size={18} strokeWidth={2} />
                 </GlassButton>
                 <GlassButton onClick={handlePrev} className={`${styles.navButton} ${styles.iconButton}`}>
-                  <LeftOutlined />
+                  <ChevronLeft size={18} strokeWidth={2} />
                 </GlassButton>
                 <GlassButton onClick={handleNext} className={`${styles.navButton} ${styles.iconButton}`}>
-                  <RightOutlined />
+                  <ChevronRight size={18} strokeWidth={2} />
                 </GlassButton>
               </div>
             </div>
@@ -198,7 +246,7 @@ export function TaskPage() {
                   <summary>
                     <span className={styles.hintTitle}>{`Подсказка ${index + 1}`}</span>
                     <span className={styles.hintChevron}>
-                      <DownOutlined />
+                      <ChevronDown size={14} strokeWidth={2} />
                     </span>
                   </summary>
                   <p>{text}</p>
@@ -266,25 +314,38 @@ export function TaskPage() {
               />
             </div>
 
-            <div className={styles.panelContent}>
+            <div className={styles.outputPanel}>
               <div className={styles.outputHeader}>
                 <h3 className={styles.sectionSubtitle}>Вывод</h3>
                 {hasRun && (
-                  <GlassButton
-                    className={`${styles.resultBadge} ${
-                      isSuccess ? styles.resultBadgeSuccess : styles.resultBadgeError
-                    }`}
-                  >
-                    {isSuccess ? (
-                      <>
-                        <CheckCircleFilled /> Успешно
-                      </>
-                    ) : (
-                      <>
-                        <CloseCircleFilled /> Нужно доработать
-                      </>
+                  <div className={styles.resultRow}>
+                    {execTimeMs !== null && (
+                      <div className={styles.execTimePill}>
+                        {execTimeMs < 0.01
+                          ? '<0.01 ms'
+                          : execTimeMs < 1
+                            ? `${execTimeMs.toFixed(3)} ms`
+                            : execTimeMs < 1000
+                              ? `${execTimeMs.toFixed(2)} ms`
+                              : `${(execTimeMs / 1000).toFixed(2)} s`}
+                      </div>
                     )}
-                  </GlassButton>
+                    <GlassButton
+                      className={`${styles.resultBadge} ${
+                        isSuccess ? styles.resultBadgeSuccess : styles.resultBadgeError
+                      }`}
+                    >
+                      {isSuccess ? (
+                        <>
+                          <CheckCircle size={14} strokeWidth={2} /> Успешно
+                        </>
+                      ) : (
+                        <>
+                          <XCircle size={14} strokeWidth={2} /> Нужно доработать
+                        </>
+                      )}
+                    </GlassButton>
+                  </div>
                 )}
               </div>
               <pre className={styles.output}>{output || '(нажмите Запустить)'}</pre>

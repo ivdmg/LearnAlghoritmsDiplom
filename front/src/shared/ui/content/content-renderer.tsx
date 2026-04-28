@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, lazy, Suspense } from 'react';
 import type {
   ContentBlock,
   HeadingBlock,
@@ -9,24 +9,16 @@ import type {
   ChartBlock,
   SingleChart,
 } from '@/entities/article';
-import { LayoutGroup, motion } from 'framer-motion';
 import { Highlight, themes } from 'prism-react-renderer';
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from 'recharts';
 import glassTabStyles from '@/shared/ui/glass-tabs/glass-tabs.module.css';
 import { GlassButton } from '../glass-button/glass-button';
 import { VIZ_ANIMATION_BASE_CSS } from './viz-animation-base';
 import { VIZ_IFRAME_RUNTIME_JS } from './viz-iframe-runtime';
 import { VIZ_IFRAME_HELPERS_JS } from './viz-iframe-helpers';
 import styles from "./content-renderer.module.css";
+
+// Lazy-loaded chart component (Recharts ~1.1MB)
+const SingleChartView = lazy(() => import('./chart-block').then((m) => ({ default: m.SingleChartView })));
 
 interface ContentRendererProps {
   blocks: ContentBlock[];
@@ -214,68 +206,56 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
     <div className={styles.animationWrapper}>
       {showToolbar && (
         <div className={styles.animationToolbar} role="toolbar" aria-label="Управление визуализацией">
-          <LayoutGroup>
-            <div
-              className={`${glassTabStyles.root} ${styles.animationToolbarPill}`}
-            >
-              <div className={glassTabStyles.tabWrapper}>
-                <GlassButton
-                  type="button"
-                  className={glassTabStyles.iconTabButton}
-                  onClick={restart}
-                  aria-label="Перезапустить с начала"
-                >
-                  ⟲
-                </GlassButton>
-              </div>
-              <div className={glassTabStyles.tabWrapper}>
-                <GlassButton
-                  type="button"
-                  className={glassTabStyles.iconTabButton}
-                  onClick={pause}
-                  disabled={paused}
-                  aria-label="Пауза"
-                >
-                  ⏸
-                </GlassButton>
-              </div>
-              <div className={glassTabStyles.tabWrapper}>
-                <GlassButton
-                  type="button"
-                  className={glassTabStyles.iconTabButton}
-                  onClick={resume}
-                  disabled={!paused}
-                  aria-label="Продолжить"
-                >
-                  ▶
-                </GlassButton>
-              </div>
-              <div className={glassTabStyles.spacer} aria-hidden />
-              {VIZ_SPEEDS.map((v) => (
-                <div key={v} className={glassTabStyles.tabWrapper}>
-                  {speed === v && (
-                    <motion.div
-                      className={glassTabStyles.indicator}
-                      layoutId={`viz-anim-speed-${block.id}`}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 320,
-                        damping: 32,
-                      }}
-                    />
-                  )}
-                  <GlassButton
-                    type="button"
-                    className={`${glassTabStyles.tabButton} ${styles.animationSpeedTab}`}
-                    onClick={() => setSpeedAndSync(v)}
-                    aria-label={`Скорость ${v}×`}
-                  >
-                    {v}×
-                  </GlassButton>
-                </div>
-              ))}
+          <div
+            className={`${glassTabStyles.root} ${styles.animationToolbarPill}`}
+          >
+            <div className={glassTabStyles.tabWrapper}>
+              <GlassButton
+                type="button"
+                className={glassTabStyles.iconTabButton}
+                onClick={restart}
+                aria-label="Перезапустить с начала"
+              >
+                ⟲
+              </GlassButton>
             </div>
-          </LayoutGroup>
+            <div className={glassTabStyles.tabWrapper}>
+              <GlassButton
+                type="button"
+                className={glassTabStyles.iconTabButton}
+                onClick={pause}
+                disabled={paused}
+                aria-label="Пауза"
+              >
+                ⏸
+              </GlassButton>
+            </div>
+            <div className={glassTabStyles.tabWrapper}>
+              <GlassButton
+                type="button"
+                className={glassTabStyles.iconTabButton}
+                onClick={resume}
+                disabled={!paused}
+                aria-label="Продолжить"
+              >
+                ▶
+              </GlassButton>
+            </div>
+            <div className={glassTabStyles.spacer} aria-hidden />
+            {VIZ_SPEEDS.map((v) => (
+              <div key={v} className={glassTabStyles.tabWrapper}>
+                <GlassButton
+                  type="button"
+                  className={`${glassTabStyles.tabButton} ${styles.animationSpeedTab}`}
+                  onClick={() => setSpeedAndSync(v)}
+                  aria-label={`Скорость ${v}×`}
+                  active={speed === v}
+                >
+                  {v}×
+                </GlassButton>
+              </div>
+            ))}
+          </div>
         </div>
       )}
       <iframe
@@ -291,62 +271,6 @@ function AnimationBlockView({ block }: { block: AnimationBlock }) {
         title={block.id}
         onLoad={onIframeLoad}
       />
-    </div>
-  );
-}
-
-function SingleChartView({ chart, compact }: { chart: SingleChart; compact?: boolean }) {
-  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  const gridColor = isLight ? 'rgba(15,23,42,0.08)' : 'rgba(148,163,184,0.15)';
-  const axisColor = isLight ? '#64748b' : '#94a3b8';
-  const tooltipBg = isLight ? 'rgba(255,255,255,0.92)' : 'rgba(15,23,42,0.92)';
-  const tooltipBorder = isLight ? 'rgba(15,23,42,0.12)' : 'rgba(148,163,184,0.25)';
-  const h = chart.height ?? (compact ? 180 : 300);
-  const m = compact
-    ? { top: 8, right: 16, left: 0, bottom: 4 }
-    : { top: 20, right: 30, left: 10, bottom: 10 };
-
-  return (
-    <div className={styles.chartSingle}>
-      {chart.title && <div className={styles.chartMiniTitle}>{chart.title}</div>}
-      <ResponsiveContainer width="100%" height={h}>
-        <LineChart data={chart.data} margin={m}>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <XAxis
-            dataKey={chart.xKey}
-            tick={{ fontSize: compact ? 9 : 11, fill: axisColor }}
-            label={chart.xLabel ? { value: chart.xLabel, position: 'insideBottomRight', offset: -5, fontSize: compact ? 10 : 12, fill: axisColor } : undefined}
-          />
-          <YAxis
-            tick={{ fontSize: compact ? 9 : 11, fill: axisColor }}
-            width={compact ? 32 : 60}
-            label={chart.yLabel ? { value: chart.yLabel, angle: -90, position: 'insideLeft', fontSize: compact ? 10 : 12, fill: axisColor } : undefined}
-          />
-          <Tooltip
-            contentStyle={{
-              background: tooltipBg,
-              border: `1px solid ${tooltipBorder}`,
-              borderRadius: 8,
-              fontSize: 11,
-              backdropFilter: 'blur(10px)',
-            }}
-          />
-          {!compact && <Legend wrapperStyle={{ fontSize: 12 }} />}
-          {chart.lines.map((line) => (
-            <Line
-              key={line.dataKey}
-              type="monotone"
-              dataKey={line.dataKey}
-              name={line.label}
-              stroke={line.color}
-              strokeWidth={compact ? 2 : 2.5}
-              dot={false}
-              animationDuration={1200}
-              animationEasing="ease-in-out"
-            />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
     </div>
   );
 }
@@ -379,11 +303,15 @@ function ChartBlockView({ block }: { block: ChartBlock }) {
             style={block.columns ? { gridTemplateColumns: `repeat(${block.columns}, 1fr)` } : undefined}
           >
             {block.charts!.map((c, i) => (
-              <SingleChartView key={i} chart={c} compact />
+              <Suspense key={i} fallback={<div className={styles.chartPlaceholder} style={{ height: 180 }} />}>
+                <SingleChartView chart={c} compact />
+              </Suspense>
             ))}
           </div>
         ) : singleChart ? (
-          <SingleChartView chart={singleChart} />
+          <Suspense fallback={<div className={styles.chartPlaceholder} style={{ height: singleChart.height ?? 300 }} />}>
+            <SingleChartView chart={singleChart} />
+          </Suspense>
         ) : null}
       </div>
     </div>

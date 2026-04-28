@@ -1,6 +1,5 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useState, useMemo } from 'react';
-import styles from './activity-line.module.css';
 
 type CalendarEntry = { date: string; count: number };
 
@@ -44,7 +43,7 @@ export function ActivityLineChart({ calendarData }: Props) {
         margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
         onMouseMove={(state) => {
           if (state?.isTooltipActive) {
-            setActiveIdx(state?.activeTooltipIndex);
+            setActiveIdx(typeof state.activeTooltipIndex === 'number' ? state.activeTooltipIndex : null);
           } else {
             setActiveIdx(null);
           }
@@ -69,13 +68,10 @@ export function ActivityLineChart({ calendarData }: Props) {
           allowDecimals={false}
         />
         <Tooltip
-          formatter={(value: number) => [`${value} задач`, '']}
-          labelFormatter={(_idx, items: any[]) => {
-            if (items?.[0]?.payload) {
-              const p = items[0].payload;
-              return `${p.display} ${p.month}`;
-            }
-            return '';
+          formatter={(value) => [`${Number(value ?? 0)} задач`, '']}
+          labelFormatter={(_label, payload) => {
+            const p = (payload?.[0] as any)?.payload;
+            return p ? `${p.display} ${p.month}` : '';
           }}
           cursor={{ stroke: 'rgba(139,92,246,0.3)' }}
         />

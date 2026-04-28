@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ROADMAP } from '@/entities/roadmap/model/data';
 import { TASKS } from '@/entities/task/model/data';
@@ -5,6 +6,7 @@ import styles from './topic-bar.module.css';
 
 type Props = {
   byTopic: Record<string, number>;
+  solvedTaskIds?: string[];
 };
 
 function getBarColor(solved: number, total: number): string {
@@ -15,11 +17,22 @@ function getBarColor(solved: number, total: number): string {
   return '#4ade80';
 }
 
-export function TopicBarChart({ byTopic }: Props) {
+export function TopicBarChart({ byTopic, solvedTaskIds }: Props) {
+  const solvedByTopicFromCatalog = useMemo(() => {
+    if (!solvedTaskIds?.length) return null;
+    const solvedSet = new Set(solvedTaskIds);
+    const acc: Record<string, number> = {};
+    for (const t of TASKS) {
+      if (!solvedSet.has(t.id)) continue;
+      acc[t.topicId] = (acc[t.topicId] ?? 0) + 1;
+    }
+    return acc;
+  }, [solvedTaskIds]);
+
   const data = ROADMAP.map((topic) => {
     const topicTasks = TASKS.filter((t) => t.topicId === topic.id);
     const total = topicTasks.length;
-    const solved = byTopic[topic.id] ?? 0;
+    const solved = (byTopic[topic.id] ?? (solvedByTopicFromCatalog?.[topic.id] ?? 0));
     return {
       name: topic.title.length > 20 ? topic.title.slice(0, 18) + '..' : topic.title,
       solved,
@@ -56,10 +69,11 @@ export function TopicBarChart({ byTopic }: Props) {
           axisLine={false}
         />
         <Tooltip
-          formatter={(value: number, name: string) => {
+          formatter={(value, name) => {
+            const v = Number(value ?? 0);
             if (name === 'solved') return [`${value} решено`, 'Решено'];
             if (name === 'total') return [`${value} всего`, 'Всего'];
-            return [value, name];
+            return [v, String(name)];
           }}
           cursor={{ fill: 'rgba(255,255,255,0.03)' }}
         />

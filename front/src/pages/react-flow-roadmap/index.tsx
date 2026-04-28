@@ -17,11 +17,26 @@ import styles from './react-flow-roadmap.module.css';
 let graphHydratedOnce = false;
 
 export function ReactFlowRoadmapPage() {
-  const { nodes, edges } = useMemo(buildGraph, []);
   const { containerRef, onInit, graphExtent, ready } = useFlowViewport();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<RoadmapNode | null>(null);
   const [hydrated, setHydrated] = useState(graphHydratedOnce);
+  const [mountFlow, setMountFlow] = useState(graphHydratedOnce);
+
+  // Монтируем ReactFlow не в самый первый кадр: шапка/фон/скелетон отрисуются сразу,
+  // а тяжёлый граф — в idle. Это уменьшает TBT/LCP на старте.
+  useEffect(() => {
+    if (mountFlow) return;
+    const start = () => setMountFlow(true);
+    if ('requestIdleCallback' in window) {
+      const id = (window as any).requestIdleCallback(start, { timeout: 1200 });
+      return () => (window as any).cancelIdleCallback?.(id);
+    }
+    const t = globalThis.setTimeout(start, 250);
+    return () => globalThis.clearTimeout(t);
+  }, [mountFlow]);
+
+  const graph = useMemo(() => (mountFlow ? buildGraph() : null), [mountFlow]);
 
   useEffect(() => {
     if (ready && !hydrated) {
@@ -46,7 +61,7 @@ export function ReactFlowRoadmapPage() {
 
       <div className={styles.pageBody}>
         <div
-          className={styles.flowContainer}
+          className={`${styles.flowContainer} ${sidebarOpen ? styles.flowContainerBlurred : ''}`}
           ref={containerRef}
         >
           {!hydrated && (
@@ -63,31 +78,33 @@ export function ReactFlowRoadmapPage() {
             className={styles.flowInner}
             style={{ opacity: ready ? 1 : 0 }}
           >
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              nodeTypes={nodeTypes}
-              edgeTypes={edgeTypes}
-              nodeOrigin={[0.5, 0.5]}
-              defaultEdgeOptions={{ type: 'default' }}
-              onInit={onInit}
-              onNodeClick={handleNodeClick}
-              translateExtent={graphExtent}
-              onlyRenderVisibleElements
-              panOnScroll={false}
-              panOnDrag={false}
-              zoomOnScroll={false}
-              zoomOnPinch={false}
-              zoomOnDoubleClick={false}
-              nodesDraggable={false}
-              nodesConnectable={false}
-              elementsSelectable={false}
-              proOptions={{ hideAttribution: true }}
-              style={{ background: 'transparent' }}
-            >
-              <SmoothProgressDriver />
-              <SubtopicReachedDriver />
-            </ReactFlow>
+            {graph && (
+              <ReactFlow
+                nodes={graph.nodes}
+                edges={graph.edges}
+                nodeTypes={nodeTypes}
+                edgeTypes={edgeTypes}
+                nodeOrigin={[0.5, 0.5]}
+                defaultEdgeOptions={{ type: 'default' }}
+                onInit={onInit}
+                onNodeClick={handleNodeClick}
+                translateExtent={graphExtent}
+                onlyRenderVisibleElements
+                panOnScroll={false}
+                panOnDrag={false}
+                zoomOnScroll={false}
+                zoomOnPinch={false}
+                zoomOnDoubleClick={false}
+                nodesDraggable={false}
+                nodesConnectable={false}
+                elementsSelectable={false}
+                proOptions={{ hideAttribution: true }}
+                style={{ background: 'transparent' }}
+              >
+                <SmoothProgressDriver />
+                <SubtopicReachedDriver />
+              </ReactFlow>
+            )}
           </div>
         </div>
       </div>
